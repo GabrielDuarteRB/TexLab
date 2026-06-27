@@ -1,0 +1,174 @@
+% ============================================================
+% Bem-vindo ao TexLab!
+% Este arquivo e um tutorial basico de LaTeX.
+% Cada secao ensina algo novo. Leia os comentarios (linhas
+% que comecam com %) para entender o que esta acontecendo.
+% ============================================================
+
+% --- 1. PREAMBULO ---
+% Tudo que vem ANTES de \begin{document} e o preambulo.
+% Aqui voce configura o documento: tipo, pacotes, etc.
+
+\documentclass[12pt, a4paper]{article}
+% \documentclass define o tipo de documento.
+% Opcoes comuns: article, report, book, beamer (apresentacao).
+
+% Pacotes adicionam funcionalidades ao LaTeX.
+\usepackage[utf8]{inputenc}   % Permite acentos e caracteres especiais
+\usepackage[T1]{fontenc}      % Codificacao de fontes para portugues
+\usepackage{amsmath, amssymb} % Equacoes matematicas avancadas
+\usepackage{graphicx}         % Incluir imagens
+\usepackage{hyperref}         % Links clicaveis no PDF
+\usepackage{booktabs}         % Tabelas mais bonitas
+\usepackage{biblatex}         % Gerenciamento de referencias
+\addbibresource{references.bib} % Arquivo com as referencias
+
+% Informacoes do documento
+\title{Aprenda LaTeX do Zero}
+\author{Seu Nome}
+\date{\today}
+
+
+% --- 2. INICIO DO DOCUMENTO ---
+\begin{document}
+
+\maketitle  % Gera o titulo com autor e data
+
+% --- 3. RESUMO ---
+\begin{abstract}
+    Este documento e um tutorial basico de LaTeX.
+    Nele voce vai aprender a escrever texto, criar equacoes,
+    montar tabelas e gerar referencias bibliograficas.
+\end{abstract}
+
+
+% --- 4. SECOES ---
+% Secoes organizam o documento. Use \section, \subsection, etc.
+
+\section{Texto Basico}
+
+No LaTeX, voce escreve texto normalmente no editor.
+Para formatar, use comandos entre chaves:
+
+\begin{itemize}
+    \item \textbf{Negrito} com \verb|\textbf{...}|
+    \item \textit{Italico} com \verb|\textit{...}|
+    \item \underline{Sublinhado} com \verb|\underline{...}|
+    \item \texttt{Monoespacado} com \verb|\texttt{...}|
+\end{itemize}
+
+Para criar um paragrafo novo, basta deixar uma linha em branco
+no codigo fonte. O LaTeX cuida do espacamento.
+
+
+\section{Listas}
+
+Existem dois tipos de listas:
+
+Lista com marcadores (ulletize):
+\begin{itemize}
+    \item Primeiro item
+    \item Segundo item
+    \item Terceiro item
+\end{itemize}
+
+Lista numerada (enumerate):
+\begin{enumerate}
+    \item Primeiro passo
+    \item Segundo passo
+    \item Terceiro passo
+\end{enumerate}
+
+
+\section{Equacoes}
+
+O LaTeX e incrivel para equacoes matematicas.
+
+Uma equacao na linha do texto: $E = mc^2$ (usa \$ para entrar no modo matematico).
+
+Uma equacao centralizada e numerada:
+\begin{equation}
+    \int_{a}^{b} f(x) \, dx = F(b) - F(a)
+    \label{eq:integral}
+\end{equation}
+
+A Equacao~\ref{eq:integral} e o Teorema Fundamental do Calculo.
+
+Outras equacoes uteis:
+\begin{itemize}
+    \item Frações: \verb|\frac{a}{b}| $\rightarrow \frac{a}{b}$
+    \item Potencia: \verb|x^2| $\rightarrow x^2$
+    \item Raiz: \verb|\sqrt{x}| $\rightarrow \sqrt{x}$
+    \item Soma: \verb|\sum_{i=1}^{n} i| $\rightarrow \sum_{i=1}^{n} i$
+\end{itemize}
+
+
+\section{Tabelas}
+
+Tabelas usam o ambiente \texttt{tabular}. Exemplo:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c r}
+        \toprule
+        \textbf{Comando} & \textbf{Resultado} & \textbf{Uso} \\
+        \midrule
+        \verb|\textbf{}|  & \textbf{Negrito}  & Emphasi      \\
+        \verb|\textit{}|  & \textit{Italico}   & Citacao      \\
+        \verb|\frac{}{}|  & $\frac{1}{2}$      & Fracao       \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comandos basicos de formatacao}
+    \label{tab:comandos}
+\end{table}
+
+A Tabela~\ref{tab:comandos} mostra os comandos mais usados.
+
+
+\section{Imagens}
+
+Para incluir uma imagem, coloque o arquivo na mesma pasta
+do \texttt{.tex} e use:
+
+\begin{verbatim}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imagem.png}
+    \caption{Descricao da imagem}
+    \label{fig:exemplo}
+\end{figure}
+\end{verbatim}
+
+(Destaque a linha acima com \verb|\begin{verbatim}| para
+mostrar o codigo raw. Em um arquivo real, voce usaria
+o comando \texttt{\textbackslash includegraphics} normal.)
+
+
+\section{Referencias Bibliograficas}
+
+Referencias ficam em um arquivo \texttt{.bib} separado.
+Para citar no texto, use:
+
+\begin{itemize}
+    \item \verb|\cite{chave}| para citar: \cite{knuth1984}
+    \item \verb|\parencite{chave}| para citar com parenteses: \parencite{lamport1994}
+\end{itemize}
+
+No final do documento, use \verb|\printbibliography| para
+gerar a lista de referencias (ela aparece la embaixo).
+
+
+\section{Dicas Finais}
+
+\begin{enumerate}
+    \item \textbf{Salve e compile.} O PDF so atualiza apos compilar.
+    \item \textbf{Leia os erros.} O log mostra onde esta o problema.
+    \item \textbf{Use comentarios.} Linhas com \% nao aparecem no PDF.
+    \item \textbf{Organize com secoes.} Documentos grandes ficam mais faceis de navegar.
+    \item \textbf{Nao tenha medo de errar.} E so corrigir e recompilar!
+\end{enumerate}
+
+% Gerar a lista de referencias
+\printbibliography
+
+\end{document}

@@ -1,0 +1,25 @@
+node_modules/
+.env
+dist/
+.DS_Store
+
+# Ignorar todos os projetos exceto o exemplo
+projects/*
+!projects/exemplo/
+!projects/exemplo/**
+
+# Artefatos de compilacao LaTeX (depois da例外 para sobrescrever)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
