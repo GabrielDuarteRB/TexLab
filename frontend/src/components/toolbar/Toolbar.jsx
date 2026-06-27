@@ -1,16 +1,29 @@
 import { useState } from 'react';
-import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 
 export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
-  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult } =
+  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult, updateProject } =
     useProjectStore();
   const [showLog, setShowLog] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
 
   const handleSave = () => {
     if (currentFile) {
       saveAndCompile(currentFile, fileContents[currentFile] || '');
     }
+  };
+
+  const handleRename = async () => {
+    if (!renameValue.trim()) {
+      setRenaming(false);
+      setRenameValue('');
+      return;
+    }
+    await updateProject(renameValue.trim());
+    setRenaming(false);
+    setRenameValue('');
   };
 
   return (
@@ -19,7 +32,33 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
         <div className="toolbar-left">
           <h1 className="toolbar-title">TexLab</h1>
           {currentProject && (
-            <span className="toolbar-project-name">{currentProject.name}</span>
+            <>
+              {renaming ? (
+                <div className="toolbar-rename">
+                  <input
+                    type="text"
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleRename();
+                      if (e.key === 'Escape') { setRenaming(false); setRenameValue(''); }
+                    }}
+                    autoFocus
+                  />
+                  <button className="icon-btn small" onClick={handleRename}>
+                    <Check size={12} />
+                  </button>
+                  <button className="icon-btn small" onClick={() => { setRenaming(false); setRenameValue(''); }}>
+                    <X size={12} />
+                  </button>
+                </div>
+              ) : (
+                <button className="toolbar-project-name" onClick={() => { setRenaming(true); setRenameValue(currentProject.name); }}>
+                  {currentProject.name}
+                  <Pencil size={12} className="toolbar-project-name-icon" />
+                </button>
+              )}
+            </>
           )}
         </div>
         <div className="toolbar-center">

@@ -17,7 +17,7 @@ export class TexLabCompiler {
 
     try {
       await execAsync(
-        `latexmk -C "${mainFile}"`,
+        `latexmk -C "${mainFile}" && rm -f "${mainFile.replace('.tex', '.bcf')}"`,
         { cwd: projectDir, timeout: 30000 }
       );
 
@@ -42,7 +42,16 @@ export class TexLabCompiler {
       };
     } catch (error) {
       const log = error.stdout || error.stderr || error.message;
-      return { success: false, log, pdfPath: null };
+      // Verificar se o PDF foi gerado mesmo com erro
+      const pdfPath = path.join(projectDir, mainFile.replace('.tex', '.pdf'));
+      let pdfExists = false;
+      try {
+        await fs.access(pdfPath);
+        pdfExists = true;
+      } catch {
+        // no pdf
+      }
+      return { success: pdfExists, log, pdfPath: pdfExists ? mainFile.replace('.tex', '.pdf') : null };
     }
   }
 

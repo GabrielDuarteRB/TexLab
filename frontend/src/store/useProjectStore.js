@@ -137,9 +137,111 @@ const useProjectStore = create((set, get) => ({
     }
   },
 
+  updateProject: async (name) => {
+    const { currentProject, projects, currentFile, fileContents } = get();
+    if (!currentProject) return;
+    try {
+      const updated = await api.updateProject(currentProject.id, name);
+      const oldId = currentProject.id;
+      const newId = updated.id;
+
+      const updatedProject = { ...currentProject, id: newId, name: updated.name };
+      set({
+        currentProject: updatedProject,
+        projects: projects.map((p) => (p.id === oldId ? { ...p, id: newId, name: updated.name } : p)),
+      });
+
+      if (newId !== oldId) {
+        await get().refreshFileTree();
+      }
+
+      return { success: true };
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message };
+    }
+  },
+
   setPageNumber: (page) => set({ pageNumber: page }),
   setPdfPageCount: (count) => set({ pdfPageCount: count }),
   toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+
+  refreshFileTree: async () => {
+    const { currentProject } = get();
+    if (!currentProject) return;
+    try {
+      const project = await api.getProject(currentProject.id);
+      set({ currentProject: project });
+    } catch (error) {
+      set({ error: error.message });
+    }
+  },
+
+  createFolder: async (folderPath) => {
+    const { currentProject } = get();
+    if (!currentProject) return;
+    try {
+      const project = await api.createFolder(currentProject.id, folderPath);
+      set({ currentProject: project });
+      return { success: true };
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message };
+    }
+  },
+
+  deleteFile: async (filePath) => {
+    const { currentProject, currentFile } = get();
+    if (!currentProject) return;
+    try {
+      const project = await api.deleteFile(currentProject.id, filePath);
+      const updates = { currentProject: project };
+      if (currentFile === filePath) {
+        updates.currentFile = null;
+      }
+      set(updates);
+      return { success: true };
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message };
+    }
+  },
+
+  renameFile: async (oldPath, newPath) => {
+    const { currentProject, currentFile, fileContents } = get();
+    if (!currentProject) return;
+    try {
+      const project = await api.renameFile(currentProject.id, oldPath, newPath);
+      const updates = { currentProject: project };
+      if (currentFile === oldPath) {
+        updates.currentFile = newPath;
+      }
+      if (fileContents[oldPath] !== undefined) {
+        const newContents = { ...fileContents };
+        newContents[newPath] = newContents[oldPath];
+        delete newContents[oldPath];
+        updates.fileContents = newContents;
+      }
+      set(updates);
+      return { success: true };
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message };
+    }
+  },
+
+  uploadFile: async (file, folderPath = '') => {
+    const { currentProject } = get();
+    if (!currentProject) return;
+    try {
+      const result = await api.uploadFile(currentProject.id, file, folderPath);
+      set({ currentProject: result.project });
+      return { success: true, filename: result.filename };
+    } catch (error) {
+      set({ error: error.message });
+      return { success: false, error: error.message };
+    }
+  },
 
   clearError: () => set({ error: null }),
 }));
