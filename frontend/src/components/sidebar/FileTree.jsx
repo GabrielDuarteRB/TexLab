@@ -1,10 +1,49 @@
 import { FileText, Folder, ChevronRight, ChevronDown, Plus, Trash2, X, FilePlus, FolderPlus, Pencil, Check, Upload, Image } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import useProjectStore from '../../store/useProjectStore.js';
+import ConfirmModal from '../ui/ConfirmModal.jsx';
+import Toast from '../ui/Toast.jsx';
 
-export default function FileTree({ files, parentPath = '' }) {
+let draggedPath = null;
+
+export function fileExistsInTree(files, targetPath) {
+  for (const f of files) {
+    if (f.path === targetPath) return true;
+    if (f.type === 'directory' && f.children && fileExistsInTree(f.children, targetPath)) return true;
+  }
+  return false;
+}
+
+export default function FileTree({ files, parentPath = '', onDrop: onRootDrop, isRoot = true }) {
+  const [rootDragOver, setRootDragOver] = useState(false);
+
+  const handleRootDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setRootDragOver(true);
+  };
+
+  const handleRootDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setRootDragOver(false);
+    }
+  };
+
+  const handleRootDrop = (e) => {
+    e.preventDefault();
+    setRootDragOver(false);
+    const sourcePath = draggedPath;
+    if (!sourcePath) return;
+    if (onRootDrop) {
+      onRootDrop(sourcePath);
+    }
+  };
+
   return (
-    <ul className="file-tree">
+    <ul
+      className={`file-tree${rootDragOver ? ' root-drag-over' : ''}`}
+      {...(isRoot ? { onDragOver: handleRootDragOver, onDragLeave: handleRootDragLeave, onDrop: handleRootDrop } : {})}
+    >
       {files.map((file) => (
         <FileNode key={file.path} file={file} parentPath={parentPath} />
       ))}
@@ -18,17 +57,107 @@ function FileNode({ file, parentPath }) {
   const [creating, setCreating] = useState(null);
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState('');
+  const [dragOver, setDragOver] = useState(false);
+  const [confirm, setConfirm] = useState(null);
+  const [toast, setToast] = useState(null);
+  const confirmResolveRef = useRef(null);
   const fileInputRef = useRef(null);
   const { openFile, currentFile, createFolder, deleteFile, renameFile, uploadFile } = useProjectStore();
 
+  useEffect(() => {
+    const clearDragOver = () => setDragOver(false);
+    document.addEventListener('dragend', clearDragOver);
+    return () => document.removeEventListener('dragend', clearDragOver);
+  }, []);
+
   const isImage = (filename) => {
     return /\.(png|jpg|jpeg|gif|svg|webp|bmp|tiff|pdf|eps)$/i.test(filename);
+  };
+
+  const isDescendant = (ancestorPath, targetPath) => {
+    return targetPath.startsWith(ancestorPath + '/');
+  };
+
+  const confirmAction = useCallback((message) => {
+    return new Promise((resolve) => {
+      confirmResolveRef.current = resolve;
+      setConfirm(message);
+    });
+  }, []);
+
+  const handleConfirm = () => {
+    setConfirm(null);
+    confirmResolveRef.current?.(true);
+    confirmResolveRef.current = null;
+  };
+
+  const handleCancelConfirm = () => {
+    setConfirm(null);
+    confirmResolveRef.current?.(false);
+    confirmResolveRef.current = null;
+  };
+
+  const handleDragStart = (e) => {
+    draggedPath = file.path;
+    e.dataTransfer.setData('text/plain', file.path);
+    e.dataTransfer.effectAllowed = 'move';
+    e.currentTarget.classList.add('dragging');
+  };
+
+  const handleDragEnd = (e) => {
+    draggedPath = null;
+    e.currentTarget.classList.remove('dragging');
+    setDragOver(false);
+  };
+
+  const handleFolderDragOver = (e) => {
+    if (file.type !== 'directory') return;
+    e.preventDefault();
+    e.stopPropagation();
+    const sourcePath = draggedPath;
+    if (sourcePath && sourcePath !== file.path && !isDescendant(sourcePath, file.path)) {
+      e.dataTransfer.dropEffect = 'move';
+      setDragOver(true);
+    } else {
+      e.dataTransfer.dropEffect = 'none';
+    }
+  };
+
+  const handleFolderDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOver(false);
+    }
+  };
+
+  const handleFolderDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+    if (file.type !== 'directory') return;
+    const sourcePath = draggedPath;
+    if (!sourcePath || sourcePath === file.path || isDescendant(sourcePath, file.path)) return;
+    const itemName = sourcePath.split('/').pop();
+    const newPath = `${file.path}/${itemName}`;
+
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, newPath)) {
+      const confirmed = await confirmAction('Já existe um arquivo ou pasta com esse nome nessa pasta. Deseja sobrescrever?');
+      if (!confirmed) return;
+    }
+
+    await renameFile(sourcePath, newPath);
   };
 
   const handleCreate = async (type) => {
     if (!newName.trim()) return;
     const basePath = file.type === 'directory' ? file.path : parentPath;
     const fullPath = basePath ? `${basePath}/${newName.trim()}` : newName.trim();
+
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, fullPath)) {
+      setToast('Já existe um arquivo ou pasta com esse nome');
+      return;
+    }
 
     if (type === 'file') {
       await useProjectStore.getState().saveFile(fullPath, '');
@@ -52,6 +181,17 @@ function FileNode({ file, parentPath }) {
 
     const dir = file.path.substring(0, file.path.lastIndexOf('/'));
     const newPath = dir ? `${dir}/${newName.trim()}` : newName.trim();
+
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, newPath)) {
+      const confirmed = await confirmAction('Já existe um arquivo ou pasta com esse nome. Deseja sobrescrever?');
+      if (!confirmed) {
+        setRenaming(false);
+        setNewName('');
+        return;
+      }
+    }
+
     const result = await renameFile(file.path, newPath);
     if (result && !result.success) return;
     setRenaming(false);
@@ -65,14 +205,25 @@ function FileNode({ file, parentPath }) {
   const handleUpload = async (e) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
+    const destPath = file.path ? `${file.path}/${selectedFile.name}` : selectedFile.name;
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, destPath)) {
+      const confirmed = await confirmAction(`Já existe um arquivo "${selectedFile.name}" nessa pasta. Deseja sobrescrever?`);
+      if (!confirmed) { e.target.value = ''; return; }
+    }
     await uploadFile(selectedFile, file.path);
     e.target.value = '';
   };
 
   if (file.type === 'directory') {
     return (
-      <li>
-        <div className="file-tree-item-row">
+      <>
+      <li
+        onDragOver={handleFolderDragOver}
+        onDragLeave={handleFolderDragLeave}
+        onDrop={handleFolderDrop}
+      >
+        <div className={`file-tree-item-row${dragOver ? ' drag-over' : ''}`}>
           {renaming ? (
             <div className="rename-input">
               <input
@@ -94,7 +245,13 @@ function FileNode({ file, parentPath }) {
             </div>
           ) : (
             <>
-              <button className="file-tree-item" onClick={() => setExpanded(!expanded)}>
+              <button
+                className="file-tree-item"
+                draggable="true"
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onClick={() => setExpanded(!expanded)}
+              >
                 {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                 <Folder size={14} />
                 <span>{file.name}</span>
@@ -153,12 +310,16 @@ function FileNode({ file, parentPath }) {
             </button>
           </div>
         )}
-        {expanded && file.children && <FileTree files={file.children} parentPath={file.path} />}
+        {expanded && file.children && <FileTree files={file.children} parentPath={file.path} isRoot={false} />}
       </li>
+      <ConfirmModal open={!!confirm} message={confirm} onConfirm={handleConfirm} onCancel={handleCancelConfirm} />
+      <Toast open={!!toast} message={toast} type="error" onClose={() => setToast(null)} />
+    </>
     );
   }
 
   return (
+    <>
     <li>
       <div className="file-tree-item-row">
         {renaming ? (
@@ -184,6 +345,9 @@ function FileNode({ file, parentPath }) {
           <>
             <button
               className={`file-tree-item file ${currentFile === file.path ? 'active' : ''}`}
+              draggable="true"
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
               onClick={() => openFile(file.path)}
             >
               {isImage(file.name) ? <Image size={14} /> : <FileText size={14} />}
@@ -201,5 +365,8 @@ function FileNode({ file, parentPath }) {
         )}
       </div>
     </li>
+    <ConfirmModal open={!!confirm} message={confirm} onConfirm={handleConfirm} onCancel={handleCancelConfirm} />
+    <Toast open={!!toast} message={toast} type="error" onClose={() => setToast(null)} />
+    </>
   );
 }
