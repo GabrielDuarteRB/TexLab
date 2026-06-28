@@ -71,11 +71,15 @@ export async function deleteFile(req, res) {
   res.json(project);
 }
 
-export async function renameFile(req, res) {
-  const { id } = req.params;
-  const { oldPath, newPath } = req.body;
-  if (!oldPath || !newPath) return res.status(400).json({ error: 'oldPath and newPath required' });
-  await repo.renameFile(id, oldPath, newPath);
-  const project = await repo.getProject(id);
-  res.json(project);
+export async function renameFile(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { oldPath, newPath } = req.body;
+    if (!oldPath || !newPath) return res.status(400).json({ error: 'oldPath and newPath required' });
+    await repo.renameFile(id, oldPath, newPath);
+    const project = await repo.getProject(id);
+    res.json(project);
+  } catch (err) {
+    next(err);
+  }
 }

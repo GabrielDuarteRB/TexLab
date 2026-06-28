@@ -6,6 +6,7 @@ import TexLabEditor from '../editor/TexLabEditor.jsx';
 import PdfViewer from '../pdf/PdfViewer.jsx';
 import PdfOutline from '../pdf/PdfOutline.jsx';
 import AiPanel from '../ai/AiPanel.jsx';
+import ProjectScreen from '../projects/ProjectScreen.jsx';
 
 export default function AppLayout() {
   const [aiOpen, setAiOpen] = useState(false);
@@ -29,28 +30,29 @@ export default function AppLayout() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [currentFile, fileContents, saveAndCompile]);
 
+  if (!currentProject) {
+    return (
+      <div className="app-layout">
+        <ProjectScreen />
+      </div>
+    );
+  }
+
   return (
     <div className="app-layout">
       <Toolbar onToggleAi={() => setAiOpen(!aiOpen)} aiOpen={aiOpen} saveStatus={saveStatus} />
       <div className="app-body">
         <Sidebar />
         <main className="main-content">
-          {currentProject ? (
-            <div className="editor-pdf-split">
-              <div className="editor-pane">
-                <TexLabEditor />
-              </div>
-              <div className="pdf-pane">
-                <PdfOutline />
-                <PdfViewer />
-              </div>
+          <div className="editor-pdf-split">
+            <div className="editor-pane">
+              <TexLabEditor />
             </div>
-          ) : (
-            <div className="empty-state">
-              <h2>TexLab</h2>
-              <p>Selecione ou crie um projeto para começar</p>
+            <div className="pdf-pane">
+              <PdfOutline />
+              <PdfViewer />
             </div>
-          )}
+          </div>
         </main>
         {aiOpen && <AiPanel onClose={() => setAiOpen(false)} />}
       </div>

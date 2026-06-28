@@ -25,6 +25,10 @@ const useProjectStore = create((set, get) => ({
   },
 
   selectProject: async (id) => {
+    if (!id) {
+      set({ currentProject: null, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0 });
+      return;
+    }
     set({ loading: true, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0 });
     try {
       const project = await api.getProject(id);
