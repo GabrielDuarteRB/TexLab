@@ -450,20 +450,109 @@ body {
   flex: 1;
 }
 
+/* Context Menu (3-dots) */
+.file-tree-item-row {
+  position: relative;
+}
+
+.context-menu-trigger-wrapper {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  pointer-events: none;
+}
+
+.file-tree-item-row:hover .context-menu-trigger-wrapper {
+  pointer-events: auto;
+}
+
+.context-menu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.file-tree-item-row.renaming .context-menu-trigger-wrapper {
+  display: none;
+}
+
+.file-tree-item-row:hover .context-menu-trigger {
+  opacity: 1;
+  background: var(--bg-hover);
+}
+
+.context-menu-trigger:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.context-menu {
+  position: absolute;
+  right: 8px;
+  min-width: 160px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  padding: 2px 0;
+  pointer-events: auto;
+  animation: fadeIn 0.1s ease;
+  max-width: 150px;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.context-menu-item:hover {
+  background: var(--bg-hover);
+}
+
+.context-menu-item.danger {
+  color: var(--error);
+}
+
+.context-menu-item.danger:hover {
+  background: rgba(243, 139, 168, 0.1);
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
 .file-tree-actions {
   display: none;
-  align-items: center;
-  gap: 1px;
-  padding-right: 4px;
 }
 
-.file-tree-item-row:hover .file-tree-actions,
-.project-list li:hover .file-tree-actions {
-  display: flex;
-}
-
-.delete-btn:hover {
-  color: var(--error) !important;
+.create-menu {
+  display: none;
 }
 
 .file-tree-header {
@@ -484,30 +573,6 @@ body {
 .file-tree-header-actions {
   display: flex;
   gap: 2px;
-}
-
-.create-menu {
-  display: flex;
-  gap: 4px;
-  padding: 4px 8px 4px 20px;
-}
-
-.create-menu button {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  font-size: 11px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.create-menu button:hover {
-  background: var(--bg-hover);
 }
 
 .create-input {
