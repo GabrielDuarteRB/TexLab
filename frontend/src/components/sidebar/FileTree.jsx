@@ -1,5 +1,6 @@
-import { FileText, Folder, ChevronRight, ChevronDown, Plus, Trash2, X, FilePlus, FolderPlus, Pencil, Check, Upload, Image } from 'lucide-react';
+import { FileText, Folder, ChevronRight, ChevronDown, Plus, Trash2, X, FilePlus, FolderPlus, Pencil, Check, Upload, Image, MoreVertical } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import useProjectStore from '../../store/useProjectStore.js';
 import ConfirmModal from '../ui/ConfirmModal.jsx';
 import Toast from '../ui/Toast.jsx';
@@ -53,7 +54,8 @@ export default function FileTree({ files, parentPath = '', onDrop: onRootDrop, i
 
 function FileNode({ file, parentPath }) {
   const [expanded, setExpanded] = useState(true);
-  const [showMenu, setShowMenu] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState(null);
   const [creating, setCreating] = useState(null);
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState('');
@@ -62,6 +64,8 @@ function FileNode({ file, parentPath }) {
   const [toast, setToast] = useState(null);
   const confirmResolveRef = useRef(null);
   const fileInputRef = useRef(null);
+  const menuRef = useRef(null);
+  const portalMenuRef = useRef(null);
   const { openFile, currentFile, createFolder, deleteFile, renameFile, uploadFile } = useProjectStore();
 
   useEffect(() => {
@@ -69,6 +73,20 @@ function FileNode({ file, parentPath }) {
     document.addEventListener('dragend', clearDragOver);
     return () => document.removeEventListener('dragend', clearDragOver);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClickOutside = (e) => {
+      if (
+        (menuRef.current && menuRef.current.contains(e.target)) ||
+        (portalMenuRef.current && portalMenuRef.current.contains(e.target))
+      ) return;
+      setMenuOpen(false);
+      setMenuPos(null);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
 
   const isImage = (filename) => {
     return /\.(png|jpg|jpeg|gif|svg|webp|bmp|tiff|pdf|eps)$/i.test(filename);
@@ -169,7 +187,6 @@ function FileNode({ file, parentPath }) {
 
     setNewName('');
     setCreating(null);
-    setShowMenu(false);
   };
 
   const handleRename = async () => {
@@ -199,6 +216,10 @@ function FileNode({ file, parentPath }) {
   };
 
   const handleDelete = async () => {
+    setMenuOpen(false);
+    setMenuPos(null);
+    const confirmed = await confirmAction('Tem certeza que deseja excluir este item?');
+    if (!confirmed) return;
     await deleteFile(file.path);
   };
 
@@ -215,6 +236,32 @@ function FileNode({ file, parentPath }) {
     e.target.value = '';
   };
 
+  const startRename = () => {
+    setMenuOpen(false);
+    setMenuPos(null);
+    setRenaming(true);
+    setNewName(file.name);
+  };
+
+  const startCreate = (type) => {
+    setMenuOpen(false);
+    setMenuPos(null);
+    setCreating(type);
+  };
+
+  const triggerUpload = () => {
+    setMenuOpen(false);
+    setMenuPos(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    if (renaming) return;
+    setMenuPos({ x: e.clientX, y: e.clientY });
+    setMenuOpen(true);
+  };
+
   if (file.type === 'directory') {
     return (
       <>
@@ -222,8 +269,9 @@ function FileNode({ file, parentPath }) {
         onDragOver={handleFolderDragOver}
         onDragLeave={handleFolderDragLeave}
         onDrop={handleFolderDrop}
+        onContextMenu={handleContextMenu}
       >
-        <div className={`file-tree-item-row${dragOver ? ' drag-over' : ''}`}>
+        <div className={`file-tree-item-row${dragOver ? ' drag-over' : ''}${renaming ? ' renaming' : ''}`}>
           {renaming ? (
             <div className="rename-input">
               <input
@@ -256,33 +304,19 @@ function FileNode({ file, parentPath }) {
                 <Folder size={14} />
                 <span>{file.name}</span>
               </button>
-              <div className="file-tree-actions">
-                <button className="icon-btn small" onClick={() => setShowMenu(!showMenu)} title="Novo">
-                  <Plus size={12} />
-                </button>
-                <button className="icon-btn small" onClick={() => { setRenaming(true); setNewName(file.name); }} title="Renomear">
-                  <Pencil size={12} />
-                </button>
-                <button className="icon-btn small delete-btn" onClick={handleDelete} title="Deletar pasta">
-                  <Trash2 size={12} />
+              <div className="context-menu-trigger-wrapper" ref={menuRef}>
+                <button className="context-menu-trigger" onClick={(e) => {
+                  if (menuOpen) { setMenuOpen(false); setMenuPos(null); return; }
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setMenuPos({ x: rect.right + 4, y: rect.top });
+                  setMenuOpen(true);
+                }} title="Mais opções">
+                  <MoreVertical size={14} />
                 </button>
               </div>
             </>
           )}
         </div>
-        {showMenu && (
-          <div className="create-menu">
-            <button onClick={() => { setCreating('file'); setShowMenu(false); }}>
-              <FilePlus size={12} /> Novo Arquivo
-            </button>
-            <button onClick={() => { setCreating('folder'); setShowMenu(false); }}>
-              <FolderPlus size={12} /> Nova Pasta
-            </button>
-            <button onClick={() => { fileInputRef.current?.click(); setShowMenu(false); }}>
-              <Upload size={12} /> Importar Arquivo
-            </button>
-          </div>
-        )}
         <input
           ref={fileInputRef}
           type="file"
@@ -314,14 +348,39 @@ function FileNode({ file, parentPath }) {
       </li>
       <ConfirmModal open={!!confirm} message={confirm} onConfirm={handleConfirm} onCancel={handleCancelConfirm} />
       <Toast open={!!toast} message={toast} type="error" onClose={() => setToast(null)} />
+      {menuOpen && menuPos && createPortal(
+        <div
+          ref={portalMenuRef}
+          className="context-menu"
+          style={{ position: 'fixed', left: menuPos.x, top: menuPos.y }}
+        >
+          <button className="context-menu-item" onClick={() => startCreate('file')}>
+            <FilePlus size={14} /> Novo Arquivo
+          </button>
+          <button className="context-menu-item" onClick={() => startCreate('folder')}>
+            <FolderPlus size={14} /> Nova Pasta
+          </button>
+          <button className="context-menu-item" onClick={triggerUpload}>
+            <Upload size={14} /> Importar Arquivo
+          </button>
+          <div className="context-menu-divider" />
+          <button className="context-menu-item" onClick={startRename}>
+            <Pencil size={14} /> Renomear
+          </button>
+          <button className="context-menu-item danger" onClick={handleDelete}>
+            <Trash2 size={14} /> Excluir
+          </button>
+        </div>,
+        document.body
+      )}
     </>
     );
   }
 
   return (
     <>
-    <li>
-      <div className="file-tree-item-row">
+    <li onContextMenu={handleContextMenu}>
+      <div className={`file-tree-item-row${renaming ? ' renaming' : ''}`}>
         {renaming ? (
           <div className="rename-input">
             <input
@@ -353,12 +412,14 @@ function FileNode({ file, parentPath }) {
               {isImage(file.name) ? <Image size={14} /> : <FileText size={14} />}
               <span>{file.name}</span>
             </button>
-            <div className="file-tree-actions">
-              <button className="icon-btn small" onClick={() => { setRenaming(true); setNewName(file.name); }} title="Renomear">
-                <Pencil size={12} />
-              </button>
-              <button className="icon-btn small delete-btn" onClick={handleDelete} title="Deletar arquivo">
-                <Trash2 size={12} />
+            <div className="context-menu-trigger-wrapper" ref={menuRef}>
+              <button className="context-menu-trigger" onClick={(e) => {
+                if (menuOpen) { setMenuOpen(false); setMenuPos(null); return; }
+                const rect = e.currentTarget.getBoundingClientRect();
+                setMenuPos({ x: rect.right + 4, y: rect.top });
+                setMenuOpen(true);
+              }} title="Mais opções">
+                <MoreVertical size={14} />
               </button>
             </div>
           </>
@@ -367,6 +428,21 @@ function FileNode({ file, parentPath }) {
     </li>
     <ConfirmModal open={!!confirm} message={confirm} onConfirm={handleConfirm} onCancel={handleCancelConfirm} />
     <Toast open={!!toast} message={toast} type="error" onClose={() => setToast(null)} />
+    {menuOpen && menuPos && createPortal(
+      <div
+        ref={portalMenuRef}
+        className="context-menu"
+        style={{ position: 'fixed', left: menuPos.x, top: menuPos.y }}
+      >
+        <button className="context-menu-item" onClick={startRename}>
+          <Pencil size={14} /> Renomear
+        </button>
+        <button className="context-menu-item danger" onClick={handleDelete}>
+          <Trash2 size={14} /> Excluir
+        </button>
+      </div>,
+      document.body
+    )}
     </>
   );
 }
