@@ -1,23 +1,55 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { PanelLeftClose, PanelLeft, FilePlus, FolderPlus, X, Upload, ArrowLeft } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
-import FileTree from './FileTree.jsx';
+import FileTree, { fileExistsInTree } from './FileTree.jsx';
+import ConfirmModal from '../ui/ConfirmModal.jsx';
+import Toast from '../ui/Toast.jsx';
 
 export default function ProjectList() {
   const { currentProject, sidebarCollapsed, toggleSidebar, createFolder, uploadFile, selectProject } =
     useProjectStore();
   const [creating, setCreating] = useState(null);
   const [newFileName, setNewFileName] = useState('');
+  const [confirm, setConfirm] = useState(null);
+  const [toast, setToast] = useState(null);
+  const confirmResolveRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  const confirmAction = useCallback((message) => {
+    return new Promise((resolve) => {
+      confirmResolveRef.current = resolve;
+      setConfirm(message);
+    });
+  }, []);
+
+  const handleConfirm = () => {
+    setConfirm(null);
+    confirmResolveRef.current?.(true);
+    confirmResolveRef.current = null;
+  };
+
+  const handleCancelConfirm = () => {
+    setConfirm(null);
+    confirmResolveRef.current?.(false);
+    confirmResolveRef.current = null;
+  };
 
   const handleCreateRoot = async (type) => {
     if (!newFileName.trim()) return;
+    const name = newFileName.trim();
+
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, name)) {
+      setToast('Já existe um arquivo ou pasta com esse nome');
+      return;
+    }
+
     if (type === 'file') {
-      await useProjectStore.getState().saveFile(newFileName.trim(), '');
+      await useProjectStore.getState().saveFile(name, '');
       await useProjectStore.getState().refreshFileTree();
-      useProjectStore.getState().openFile(newFileName.trim());
+      useProjectStore.getState().openFile(name);
     } else {
-      await createFolder(newFileName.trim());
+      await createFolder(name);
     }
     setNewFileName('');
     setCreating(null);
@@ -26,8 +58,23 @@ export default function ProjectList() {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, file.name)) {
+      const confirmed = await confirmAction(`Já existe um arquivo "${file.name}" na raiz. Deseja sobrescrever?`);
+      if (!confirmed) { e.target.value = ''; return; }
+    }
     await uploadFile(file, '');
     e.target.value = '';
+  };
+
+  const handleRootDrop = async (sourcePath) => {
+    const itemName = sourcePath.split('/').pop();
+    const project = useProjectStore.getState().currentProject;
+    if (project && fileExistsInTree(project.files, itemName)) {
+      const confirmed = await confirmAction('Já existe um arquivo ou pasta com esse nome na raiz. Deseja sobrescrever?');
+      if (!confirmed) return;
+    }
+    await useProjectStore.getState().renameFile(sourcePath, itemName);
   };
 
   if (!currentProject) return null;
@@ -97,8 +144,10 @@ export default function ProjectList() {
             </button>
           </div>
         )}
-        <FileTree files={currentProject.files} />
+        <FileTree files={currentProject.files} onDrop={handleRootDrop} />
       </div>
+      <ConfirmModal open={!!confirm} message={confirm} onConfirm={handleConfirm} onCancel={handleCancelConfirm} />
+      <Toast open={!!toast} message={toast} type="error" onClose={() => setToast(null)} />
     </aside>
   );
 }
