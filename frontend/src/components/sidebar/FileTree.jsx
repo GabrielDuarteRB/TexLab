@@ -52,7 +52,8 @@ function FileNode({ file, parentPath }) {
 
     const dir = file.path.substring(0, file.path.lastIndexOf('/'));
     const newPath = dir ? `${dir}/${newName.trim()}` : newName.trim();
-    await renameFile(file.path, newPath);
+    const result = await renameFile(file.path, newPath);
+    if (result && !result.success) return;
     setRenaming(false);
     setNewName('');
   };

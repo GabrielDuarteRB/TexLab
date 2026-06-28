@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil } from 'lucide-react';
+import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 
 export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
-  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult, updateProject } =
+  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult, updateProject, selectProject } =
     useProjectStore();
   const [showLog, setShowLog] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -30,6 +30,9 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
     <header className="toolbar-wrapper">
       <header className="toolbar">
         <div className="toolbar-left">
+          <button className="icon-btn" onClick={() => selectProject(null)} title="Voltar aos projetos">
+            <ArrowLeft size={16} />
+          </button>
           <h1 className="toolbar-title">TexLab</h1>
           {currentProject && (
             <>
