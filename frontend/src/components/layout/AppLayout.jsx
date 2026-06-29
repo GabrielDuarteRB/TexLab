@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import useProjectStore from '../../store/useProjectStore.js';
 import Sidebar from '../sidebar/ProjectList.jsx';
 import Toolbar from '../toolbar/Toolbar.jsx';
@@ -6,12 +7,19 @@ import TexLabEditor from '../editor/TexLabEditor.jsx';
 import PdfViewer from '../pdf/PdfViewer.jsx';
 import PdfOutline from '../pdf/PdfOutline.jsx';
 import AiPanel from '../ai/AiPanel.jsx';
-import ProjectScreen from '../projects/ProjectScreen.jsx';
 
 export default function AppLayout() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [aiOpen, setAiOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
-  const { currentProject, currentFile, fileContents, saveAndCompile } = useProjectStore();
+  const { currentProject, currentFile, fileContents, saveAndCompile, selectProject } = useProjectStore();
+
+  useEffect(() => {
+    if (id) {
+      selectProject(id);
+    }
+  }, [id, selectProject]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -33,7 +41,7 @@ export default function AppLayout() {
   if (!currentProject) {
     return (
       <div className="app-layout">
-        <ProjectScreen />
+        <div className="pdf-empty"><p>Carregando projeto...</p></div>
       </div>
     );
   }
