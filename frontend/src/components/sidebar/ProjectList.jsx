@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PanelLeftClose, PanelLeft, FilePlus, FolderPlus, X, Upload, ArrowLeft } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import FileTree, { fileExistsInTree } from './FileTree.jsx';
@@ -6,7 +7,8 @@ import ConfirmModal from '../ui/ConfirmModal.jsx';
 import Toast from '../ui/Toast.jsx';
 
 export default function ProjectList() {
-  const { currentProject, sidebarCollapsed, toggleSidebar, createFolder, uploadFile, selectProject } =
+  const navigate = useNavigate();
+  const { currentProject, sidebarCollapsed, toggleSidebar, createFolder, uploadFile } =
     useProjectStore();
   const [creating, setCreating] = useState(null);
   const [newFileName, setNewFileName] = useState('');
@@ -93,7 +95,7 @@ export default function ProjectList() {
     <aside className="sidebar">
       <div className="sidebar-header">
         <div className="sidebar-header-left">
-          <button className="icon-btn" onClick={() => selectProject(null)} title="Voltar aos projetos">
+          <button className="icon-btn" onClick={() => navigate('/')} title="Voltar aos projetos">
             <ArrowLeft size={16} />
           </button>
           <h2>Arquivos</h2>

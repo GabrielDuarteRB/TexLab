@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft, Download } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 
 export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
-  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult, updateProject, selectProject } =
+  const navigate = useNavigate();
+  const { saveAndCompile, compile, compiling, currentProject, currentFile, fileContents, compileResult, updateProject, pdfUrl } =
     useProjectStore();
   const [showLog, setShowLog] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -12,6 +14,22 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
   const handleSave = () => {
     if (currentFile) {
       saveAndCompile(currentFile, fileContents[currentFile] || '');
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!pdfUrl) return;
+    try {
+      const res = await fetch(pdfUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentProject?.name || 'document'}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Erro ao baixar PDF:', err);
     }
   };
 
@@ -30,7 +48,7 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
     <header className="toolbar-wrapper">
       <header className="toolbar">
         <div className="toolbar-left">
-          <button className="icon-btn" onClick={() => selectProject(null)} title="Voltar aos projetos">
+          <button className="icon-btn" onClick={() => navigate('/')} title="Voltar aos projetos">
             <ArrowLeft size={16} />
           </button>
           <h1 className="toolbar-title">TexLab</h1>
@@ -74,6 +92,10 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
               <button className="toolbar-btn primary" onClick={compile} disabled={compiling}>
                 {compiling ? <Loader2 size={16} className="spin" /> : <Play size={16} />}
                 Compilar
+              </button>
+              <button className="toolbar-btn" onClick={handleDownload} disabled={!pdfUrl} title="Baixar PDF">
+                <Download size={16} />
+                Baixar PDF
               </button>
             </>
           )}

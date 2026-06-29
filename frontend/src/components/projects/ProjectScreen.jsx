@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, FolderOpen, Trash2, Pencil, Check, X } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 
 export default function ProjectScreen() {
-  const { projects, fetchProjects, selectProject, createProject, deleteProject, updateProject } = useProjectStore();
+  const navigate = useNavigate();
+  const { projects, fetchProjects, createProject, deleteProject, updateProject } = useProjectStore();
   const [showInput, setShowInput] = useState(false);
   const [newName, setNewName] = useState('');
   const [renamingId, setRenamingId] = useState(null);
@@ -18,7 +20,7 @@ export default function ProjectScreen() {
     const project = await createProject(newName.trim());
     setNewName('');
     setShowInput(false);
-    if (project) selectProject(project.id);
+    if (project) navigate(`/project/${project.id}`);
   };
 
   const handleRename = async (id) => {
@@ -96,7 +98,7 @@ export default function ProjectScreen() {
                 </div>
               ) : (
                 <>
-                  <button className="project-card-body" onClick={() => selectProject(project.id)}>
+                  <button className="project-card-body" onClick={() => navigate(`/project/${project.id}`)}>
                     <FolderOpen size={32} />
                     <span className="project-card-name">{project.name}</span>
                   </button>
