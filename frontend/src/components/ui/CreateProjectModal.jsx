@@ -1,21 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ArrowLeft, FileText, FolderInput, FileArchive, Loader2 } from 'lucide-react';
+import { X, ArrowLeft, FileText, FolderInput, FileArchive, GitBranch, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useProjectStore from '../../store/useProjectStore.js';
 
+function extractNameFromUrl(url) {
+  try {
+    const match = url.match(/github\.com\/[^/]+\/([^/]+)/);
+    if (match) return match[1].replace(/\.git$/, '');
+    const parts = url.split('/').filter(Boolean);
+    return parts[parts.length - 1]?.replace(/\.git$/, '') || '';
+  } catch {
+    return '';
+  }
+}
+
 export default function CreateProjectModal({ open, onClose }) {
   const navigate = useNavigate();
-  const { createProject, importProject } = useProjectStore();
+  const { createProject, importProject, cloneProject } = useProjectStore();
   const [step, setStep] = useState('choose');
   const [origin, setOrigin] = useState(null);
   const [projectName, setProjectName] = useState('');
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [selectedCount, setSelectedCount] = useState(0);
+  const [gitUrl, setGitUrl] = useState('');
+  const [keepGit, setKeepGit] = useState(false);
   const [loading, setLoading] = useState(false);
   const folderInputRef = useRef(null);
   const zipInputRef = useRef(null);
   const nameInputRef = useRef(null);
+  const gitUrlInputRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
@@ -33,6 +47,8 @@ export default function CreateProjectModal({ open, onClose }) {
       setProjectName('');
       setSelectedFiles(null);
       setSelectedCount(0);
+      setGitUrl('');
+      setKeepGit(false);
       setLoading(false);
     }
   }, [open]);
@@ -40,6 +56,9 @@ export default function CreateProjectModal({ open, onClose }) {
   useEffect(() => {
     if (step === 'name' && nameInputRef.current) {
       nameInputRef.current.focus();
+    }
+    if (step === 'clone' && gitUrlInputRef.current) {
+      gitUrlInputRef.current.focus();
     }
   }, [step]);
 
@@ -49,6 +68,8 @@ export default function CreateProjectModal({ open, onClose }) {
     setProjectName('');
     setSelectedFiles(null);
     setSelectedCount(0);
+    setGitUrl('');
+    setKeepGit(false);
     setLoading(false);
     onClose();
   };
@@ -64,6 +85,11 @@ export default function CreateProjectModal({ open, onClose }) {
 
   const handleChooseZip = () => {
     zipInputRef.current?.click();
+  };
+
+  const handleChooseGit = () => {
+    setOrigin('git');
+    setStep('clone');
   };
 
   const handleFolderSelected = (e) => {
@@ -86,6 +112,13 @@ export default function CreateProjectModal({ open, onClose }) {
     e.target.value = '';
   };
 
+  const handleGitUrlConfirm = () => {
+    if (!gitUrl.trim()) return;
+    const name = extractNameFromUrl(gitUrl.trim());
+    setProjectName(name);
+    setStep('name');
+  };
+
   const handleConfirm = async () => {
     if (!projectName.trim()) return;
     setLoading(true);
@@ -93,6 +126,8 @@ export default function CreateProjectModal({ open, onClose }) {
     let project;
     if (origin === 'empty') {
       project = await createProject(projectName.trim());
+    } else if (origin === 'git') {
+      project = await cloneProject(projectName.trim(), gitUrl.trim(), keepGit);
     } else {
       const isZip = origin === 'zip';
       project = await importProject(projectName.trim(), selectedFiles, isZip);
@@ -106,11 +141,18 @@ export default function CreateProjectModal({ open, onClose }) {
   };
 
   const handleBack = () => {
+    if (origin === 'git' && step === 'name') {
+      setStep('clone');
+      setProjectName('');
+      return;
+    }
     setStep('choose');
     setOrigin(null);
     setProjectName('');
     setSelectedFiles(null);
     setSelectedCount(0);
+    setGitUrl('');
+    setKeepGit(false);
   };
 
   const handleBackdropClick = (e) => {
@@ -158,6 +200,51 @@ export default function CreateProjectModal({ open, onClose }) {
                   <span className="create-option-desc">Importe um projeto compactado</span>
                 </div>
               </button>
+              <button className="create-option" onClick={handleChooseGit}>
+                <div className="create-option-icon">
+                  <GitBranch size={28} />
+                </div>
+                <div className="create-option-info">
+                  <span className="create-option-title">Clonar do GitHub</span>
+                  <span className="create-option-desc">Clone um repositório GitHub público ou privado</span>
+                </div>
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 'clone' && (
+          <>
+            <div className="create-modal-header">
+              <button className="icon-btn" onClick={handleBack} title="Voltar">
+                <ArrowLeft size={18} />
+              </button>
+              <h2>Clonar do GitHub</h2>
+              <button className="icon-btn" onClick={handleClose}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="create-name-form">
+              <label className="create-name-label">URL do repositório</label>
+              <input
+                ref={gitUrlInputRef}
+                type="url"
+                className="create-name-input"
+                placeholder="https://github.com/usuario/repositorio"
+                value={gitUrl}
+                onChange={(e) => setGitUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleGitUrlConfirm();
+                }}
+                disabled={loading}
+              />
+              <button
+                className="create-name-submit"
+                onClick={handleGitUrlConfirm}
+                disabled={loading || !gitUrl.trim()}
+              >
+                Continuar
+              </button>
             </div>
           </>
         )}
@@ -172,22 +259,35 @@ export default function CreateProjectModal({ open, onClose }) {
                 {origin === 'empty' && 'Criar projeto vazio'}
                 {origin === 'folder' && 'Importar pasta'}
                 {origin === 'zip' && 'Importar arquivo .zip'}
+                {origin === 'git' && 'Clonar do GitHub'}
               </h2>
               <button className="icon-btn" onClick={handleClose}>
                 <X size={18} />
               </button>
             </div>
             <div className="create-name-form">
-              {origin !== 'empty' && (
+              {origin === 'folder' && (
                 <div className="create-summary">
                   <span className="create-summary-icon">
-                    {origin === 'folder' ? <FolderInput size={16} /> : <FileArchive size={16} />}
+                    <FolderInput size={16} />
                   </span>
-                  <span>
-                    {origin === 'folder'
-                      ? `${selectedCount} arquivos selecionados`
-                      : `${selectedFiles?.name || 'arquivo.zip'}`}
+                  <span>{`${selectedCount} arquivos selecionados`}</span>
+                </div>
+              )}
+              {origin === 'zip' && (
+                <div className="create-summary">
+                  <span className="create-summary-icon">
+                    <FileArchive size={16} />
                   </span>
+                  <span>{`${selectedFiles?.name || 'arquivo.zip'}`}</span>
+                </div>
+              )}
+              {origin === 'git' && (
+                <div className="create-summary">
+                  <span className="create-summary-icon">
+                    <GitBranch size={16} />
+                  </span>
+                  <span className="create-summary-url">{gitUrl}</span>
                 </div>
               )}
               <label className="create-name-label">Nome do projeto</label>
@@ -203,6 +303,18 @@ export default function CreateProjectModal({ open, onClose }) {
                 }}
                 disabled={loading}
               />
+              {origin === 'git' && (
+                <label className="create-checkbox-label">
+                  <input
+                    type="checkbox"
+                    className="create-checkbox"
+                    checked={keepGit}
+                    onChange={(e) => setKeepGit(e.target.checked)}
+                    disabled={loading}
+                  />
+                  <span>Manter histórico Git (.git)</span>
+                </label>
+              )}
               <button
                 className="create-name-submit"
                 onClick={handleConfirm}
@@ -211,10 +323,10 @@ export default function CreateProjectModal({ open, onClose }) {
                 {loading ? (
                   <>
                     <Loader2 size={16} className="spin" />
-                    Importando...
+                    Clonando...
                   </>
                 ) : (
-                  origin === 'empty' ? 'Criar projeto' : 'Importar projeto'
+                  origin === 'git' ? 'Clonar projeto' : origin === 'empty' ? 'Criar projeto' : 'Importar projeto'
                 )}
               </button>
             </div>

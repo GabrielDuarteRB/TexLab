@@ -110,3 +110,166 @@ export async function importProject(req, res) {
     res.status(500).json({ error: 'Failed to import project' });
   }
 }
+
+export async function cloneProject(req, res) {
+  try {
+    const { name, url, keepGit } = req.body;
+    if (!name) return res.status(400).json({ error: 'Project name required' });
+    if (!url) return res.status(400).json({ error: 'Repository URL required' });
+
+    const project = await repo.createProject(name);
+    const updatedProject = await repo.importFromGit(project.id, url, keepGit);
+    res.status(201).json(updatedProject);
+  } catch (err) {
+    console.error('Clone error:', err);
+    res.status(500).json({ error: err.message || 'Failed to clone repository' });
+  }
+}
+
+export async function initGit(req, res) {
+  try {
+    const { remoteUrl } = req.body;
+    const project = await repo.initGit(req.params.id, remoteUrl);
+    res.json(project);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function getGitStatus(req, res) {
+  try {
+    const status = await repo.getGitStatus(req.params.id);
+    res.json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function listBranches(req, res) {
+  try {
+    const branches = await repo.listBranches(req.params.id);
+    res.json(branches);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function fetchRemote(req, res) {
+  try {
+    await repo.fetchRemote(req.params.id);
+    const branches = await repo.listBranches(req.params.id);
+    res.json(branches);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function createBranch(req, res) {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: 'Branch name required' });
+    await repo.createBranch(req.params.id, name);
+    const branches = await repo.listBranches(req.params.id);
+    res.json(branches);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function checkoutBranch(req, res) {
+  try {
+    const { name, keepChanges } = req.body;
+    if (!name) return res.status(400).json({ error: 'Branch name required' });
+    const { stashConflict, conflicts } = await repo.checkoutBranch(req.params.id, name, keepChanges !== false);
+    const status = await repo.getGitStatus(req.params.id);
+    res.json({ ...status, stashConflict, conflicts });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function resolveConflicts(req, res) {
+  try {
+    const { strategy } = req.body;
+    if (!strategy || !['ours', 'theirs'].includes(strategy)) {
+      return res.status(400).json({ error: 'Strategy required (ours or theirs)' });
+    }
+    await repo.resolveConflicts(req.params.id, strategy);
+    const status = await repo.getGitStatus(req.params.id);
+    res.json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function abortStashPop(req, res) {
+  try {
+    const { originalBranch } = req.body || {};
+    await repo.abortStashPop(req.params.id, originalBranch);
+    const status = await repo.getGitStatus(req.params.id);
+    res.json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function addFile(req, res) {
+  try {
+    const { filepath } = req.body;
+    if (!filepath) return res.status(400).json({ error: 'filepath required' });
+    await repo.addFile(req.params.id, filepath);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function finalizeStash(req, res) {
+  try {
+    const status = await repo.finalizeStash(req.params.id);
+    res.json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function commitAll(req, res) {
+  try {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ error: 'Commit message required' });
+    await repo.commitAll(req.params.id, message);
+    const status = await repo.getGitStatus(req.params.id);
+    res.json(status);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function pushBranch(req, res) {
+  try {
+    await repo.pushBranch(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function getGitDiff(req, res) {
+  try {
+    const files = await repo.getGitDiff(req.params.id);
+    res.json(files);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function getGitFileDiff(req, res) {
+  try {
+    const filePath = req.query.file;
+    if (!filePath) return res.status(400).json({ error: 'file query param required' });
+    const diff = await repo.getGitFileDiff(req.params.id, filePath);
+    res.type('text/plain').send(diff);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}

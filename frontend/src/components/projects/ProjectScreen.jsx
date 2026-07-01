@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, FolderOpen, Trash2, Pencil, Check, X } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import CreateProjectModal from '../ui/CreateProjectModal.jsx';
+import ConfirmModal from '../ui/ConfirmModal.jsx';
 
 export default function ProjectScreen() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function ProjectScreen() {
   const [showModal, setShowModal] = useState(false);
   const [renamingId, setRenamingId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   useEffect(() => {
     fetchProjects();
@@ -24,6 +26,13 @@ export default function ProjectScreen() {
     await updateProject(renameValue.trim());
     setRenamingId(null);
     setRenameValue('');
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteProject(deleteTargetId);
+      setDeleteTargetId(null);
+    }
   };
 
   return (
@@ -84,7 +93,7 @@ export default function ProjectScreen() {
                     </button>
                     <button
                       className="icon-btn small delete-btn"
-                      onClick={() => deleteProject(project.id)}
+                      onClick={() => setDeleteTargetId(project.id)}
                       title="Deletar"
                     >
                       <Trash2 size={14} />
@@ -98,6 +107,12 @@ export default function ProjectScreen() {
       )}
 
       <CreateProjectModal open={showModal} onClose={() => setShowModal(false)} />
+      <ConfirmModal
+        open={!!deleteTargetId}
+        message={`Tem certeza que deseja deletar o projeto "${projects.find(p => p.id === deleteTargetId)?.name || ''}"? Esta ação não pode ser desfeita.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTargetId(null)}
+      />
     </div>
   );
 }

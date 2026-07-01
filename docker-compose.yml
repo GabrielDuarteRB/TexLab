@@ -7,6 +7,8 @@ services:
       - "3001:3001"
     volumes:
       - ./projects:/app/projects
+      - ${GITCONFIG_PATH:-~/.gitconfig}:/root/.gitconfig:ro
+      - ${SSH_DIR_PATH:-~/.ssh}:/root/.ssh:ro
     environment:
       - PORT=3001
       - PROJECTS_DIR=/app/projects

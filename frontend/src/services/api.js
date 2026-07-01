@@ -106,4 +106,59 @@ export const api = {
     }
     return res.json();
   },
+  cloneProject: async (name, url, keepGit = false) => {
+    return request('/projects/clone', {
+      method: 'POST',
+      body: JSON.stringify({ name, url, keepGit }),
+    });
+  },
+  initGit: async (projectId, remoteUrl) => {
+    return request(`/projects/${projectId}/git/init`, {
+      method: 'POST',
+      body: JSON.stringify({ remoteUrl }),
+    });
+  },
+  getGitStatus: (projectId) => request(`/projects/${projectId}/git/status`),
+  listBranches: (projectId) => request(`/projects/${projectId}/git/branches`),
+  fetchRemote: (projectId) =>
+    request(`/projects/${projectId}/git/fetch`, { method: 'POST' }),
+  createBranch: (projectId, name) =>
+    request(`/projects/${projectId}/git/branches`, {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    }),
+  checkoutBranch: (projectId, name, keepChanges = true) =>
+    request(`/projects/${projectId}/git/checkout`, {
+      method: 'POST',
+      body: JSON.stringify({ name, keepChanges }),
+    }),
+  commitAll: (projectId, message) =>
+    request(`/projects/${projectId}/git/commit`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    }),
+  pushBranch: (projectId) =>
+    request(`/projects/${projectId}/git/push`, { method: 'POST' }),
+  getGitDiff: (projectId) => request(`/projects/${projectId}/git/diff`),
+  getGitFileDiff: (projectId, filePath) =>
+    fetch(`${API_URL}/projects/${projectId}/git/diff/file?file=${encodeURIComponent(filePath)}`).then((r) => r.text()),
+  resolveConflicts: (projectId, strategy) =>
+    request(`/projects/${projectId}/git/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ strategy }),
+    }),
+  abortStashPop: (projectId, originalBranch) =>
+    request(`/projects/${projectId}/git/abort`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ originalBranch }),
+    }),
+  addFile: (projectId, filepath) =>
+    request(`/projects/${projectId}/git/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filepath }),
+    }),
+  finalizeStash: (projectId) =>
+    request(`/projects/${projectId}/git/finalize-stash`, { method: 'POST' }),
 };
