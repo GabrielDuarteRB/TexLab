@@ -32,11 +32,25 @@ const useProjectStore = create((set, get) => ({
     set({ loading: true, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0 });
     try {
       const project = await api.getProject(id);
-      const texFile = project.files.find((f) => f.name.endsWith('.tex'));
-      set({ currentProject: project, loading: false });
-      if (texFile) {
-        get().openFile(texFile.path);
-      }
+      const texFiles = [];
+      const findTex = (files) => {
+        for (const f of files) {
+          if (f.type === 'file' && f.name.endsWith('.tex')) texFiles.push(f.path);
+          if (f.type === 'directory' && f.children) findTex(f.children);
+        }
+      };
+      findTex(project.files);
+
+      const loaded = {};
+      await Promise.all(texFiles.map(async (p) => {
+        try {
+          loaded[p] = await api.readFile(project.id, p);
+        } catch {}
+      }));
+
+      const mainTex = project.files.find((f) => f.name.endsWith('.tex'));
+      set({ currentProject: project, fileContents: loaded, loading: false });
+      if (mainTex) set({ currentFile: mainTex.path });
     } catch (error) {
       set({ loading: false, error: error.message });
     }
@@ -122,6 +136,21 @@ const useProjectStore = create((set, get) => ({
   createProject: async (name) => {
     try {
       const project = await api.createProject(name);
+      set({ projects: [...get().projects, project] });
+      return project;
+    } catch (error) {
+      set({ error: error.message });
+    }
+  },
+
+  importProject: async (name, files, isZip = false) => {
+    try {
+      let project;
+      if (isZip) {
+        project = await api.importProjectFromZip(name, files);
+      } else {
+        project = await api.importProjectFromFolder(name, files);
+      }
       set({ projects: [...get().projects, project] });
       return project;
     } catch (error) {

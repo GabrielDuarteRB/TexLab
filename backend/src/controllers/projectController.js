@@ -83,3 +83,30 @@ export async function renameFile(req, res, next) {
     next(err);
   }
 }
+
+export async function importProject(req, res) {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: 'Project name required' });
+
+    const project = await repo.createProject(name);
+
+    if (req.file) {
+      await repo.importFromZip(project.id, req.file.buffer);
+    } else if (req.files && req.files.length > 0) {
+      let filePaths;
+      try {
+        filePaths = JSON.parse(req.body.filePaths);
+      } catch {
+        filePaths = req.files.map((f) => f.originalname);
+      }
+      await repo.importFromFiles(project.id, req.files, filePaths);
+    }
+
+    const updatedProject = await repo.getProject(project.id);
+    res.status(201).json(updatedProject);
+  } catch (err) {
+    console.error('Import error:', err);
+    res.status(500).json({ error: 'Failed to import project' });
+  }
+}

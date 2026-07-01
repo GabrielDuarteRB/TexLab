@@ -15,18 +15,35 @@ export class TexLabCompiler {
       throw new Error(`File ${mainFile} not found in project`);
     }
 
+    const baseName = mainFile.replace('.tex', '');
+
     try {
       await execAsync(
-        `latexmk -C "${mainFile}" && rm -f "${mainFile.replace('.tex', '.bcf')}"`,
+        `latexmk -C "${mainFile}" && rm -f "${baseName}.bcf"`,
         { cwd: projectDir, timeout: 30000 }
       );
 
-      const { stdout, stderr } = await execAsync(
-        `latexmk -pdf -interaction=nonstopmode -halt-on-error "${mainFile}"`,
-        { cwd: projectDir, timeout: 120000 }
+      const { stdout: out1, stderr: err1 } = await execAsync(
+        `pdflatex -interaction=nonstopmode -halt-on-error "${mainFile}"`,
+        { cwd: projectDir, timeout: 60000 }
       );
 
-      const pdfPath = path.join(projectDir, mainFile.replace('.tex', '.pdf'));
+      await execAsync(
+        `bibtex "${baseName}" || true`,
+        { cwd: projectDir, timeout: 30000 }
+      );
+
+      await execAsync(
+        `pdflatex -interaction=nonstopmode -halt-on-error "${mainFile}"`,
+        { cwd: projectDir, timeout: 60000 }
+      );
+
+      const { stdout: out3, stderr: err3 } = await execAsync(
+        `pdflatex -interaction=nonstopmode -halt-on-error "${mainFile}"`,
+        { cwd: projectDir, timeout: 60000 }
+      );
+
+      const pdfPath = path.join(projectDir, `${baseName}.pdf`);
       let pdfExists = false;
       try {
         await fs.access(pdfPath);
@@ -37,13 +54,12 @@ export class TexLabCompiler {
 
       return {
         success: pdfExists,
-        log: stderr || stdout,
-        pdfPath: pdfExists ? mainFile.replace('.tex', '.pdf') : null,
+        log: (err3 || err1 || out3 || out1 || ''),
+        pdfPath: pdfExists ? `${baseName}.pdf` : null,
       };
     } catch (error) {
       const log = error.stdout || error.stderr || error.message;
-      // Verificar se o PDF foi gerado mesmo com erro
-      const pdfPath = path.join(projectDir, mainFile.replace('.tex', '.pdf'));
+      const pdfPath = path.join(projectDir, `${baseName}.pdf`);
       let pdfExists = false;
       try {
         await fs.access(pdfPath);
@@ -51,7 +67,7 @@ export class TexLabCompiler {
       } catch {
         // no pdf
       }
-      return { success: pdfExists, log, pdfPath: pdfExists ? mainFile.replace('.tex', '.pdf') : null };
+      return { success: pdfExists, log, pdfPath: pdfExists ? `${baseName}.pdf` : null };
     }
   }
 

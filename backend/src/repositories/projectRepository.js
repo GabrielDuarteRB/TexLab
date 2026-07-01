@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import AdmZip from 'adm-zip';
 import config from '../config/index.js';
 
 const projectsDir = path.resolve(config.projectsDir);
@@ -155,6 +156,53 @@ export async function renameFile(projectId, oldPath, newPath) {
 
 export async function getProjectDir(projectId) {
   return path.join(projectsDir, projectId);
+}
+
+export async function findMainTexFile(projectDir) {
+  try {
+    const entries = await fs.readdir(projectDir, { withFileTypes: true });
+    const texFiles = entries
+      .filter((e) => e.isFile() && e.name.endsWith('.tex'))
+      .map((e) => e.name);
+
+    for (const file of texFiles) {
+      const content = await fs.readFile(path.join(projectDir, file), 'utf-8');
+      const head = content.slice(0, 5000);
+      if (head.includes('\\documentclass') || head.includes('\\begin{document}')) {
+        return file;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+export async function importFromZip(projectId, zipBuffer) {
+  const projectDir = path.join(projectsDir, projectId);
+  const zip = new AdmZip(zipBuffer);
+  const entries = zip.getEntries();
+
+  for (const entry of entries) {
+    if (entry.isDirectory) continue;
+    const fullPath = path.join(projectDir, entry.entryName);
+    const relative = path.relative(projectDir, fullPath);
+    if (relative.startsWith('..')) continue;
+    await ensureDir(path.dirname(fullPath));
+    await fs.writeFile(fullPath, entry.getData());
+  }
+}
+
+export async function importFromFiles(projectId, files, filePaths) {
+  const projectDir = path.join(projectsDir, projectId);
+  for (let i = 0; i < files.length; i++) {
+    const relativePath = filePaths[i] || files[i].originalname;
+    const fullPath = path.join(projectDir, relativePath);
+    const relative = path.relative(projectDir, fullPath);
+    if (relative.startsWith('..')) continue;
+    await ensureDir(path.dirname(fullPath));
+    await fs.writeFile(fullPath, files[i].buffer);
+  }
 }
 
 async function listFilesRecursive(dir, baseDir) {

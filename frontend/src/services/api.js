@@ -69,4 +69,41 @@ export const api = {
     }
     return res.json();
   },
+  importProjectFromZip: async (name, zipFile) => {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('file', zipFile);
+    const res = await fetch(`${API_URL}/projects/import`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || 'Import failed');
+    }
+    return res.json();
+  },
+  importProjectFromFolder: async (name, files) => {
+    const formData = new FormData();
+    formData.append('name', name);
+    const filePaths = files.map((file) => {
+      const relative = file.webkitRelativePath || file.name;
+      const parts = relative.split('/');
+      parts.shift();
+      return parts.join('/');
+    });
+    formData.append('filePaths', JSON.stringify(filePaths));
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+    const res = await fetch(`${API_URL}/projects/import`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || 'Import failed');
+    }
+    return res.json();
+  },
 };

@@ -1,14 +1,23 @@
 import { TexLabCompiler } from '../services/compilerService.js';
-import { getProjectDir } from '../repositories/projectRepository.js';
+import { getProjectDir, findMainTexFile } from '../repositories/projectRepository.js';
 
 const compiler = new TexLabCompiler();
 
 export async function compile(req, res) {
   const { id } = req.params;
-  const { mainFile } = req.body;
+  let { mainFile } = req.body;
 
   const projectDir = await getProjectDir(id);
-  const result = await compiler.compile(projectDir, mainFile || 'main.tex');
+
+  if (!mainFile) {
+    mainFile = await findMainTexFile(projectDir);
+  }
+
+  if (!mainFile) {
+    return res.status(400).json({ error: 'Nenhum arquivo .tex principal encontrado no projeto' });
+  }
+
+  const result = await compiler.compile(projectDir, mainFile);
   res.json(result);
 }
 
@@ -19,7 +28,15 @@ export async function getPdf(req, res) {
   const path = await import('path');
 
   const projectDir = await getProjectDir(id);
-  const pdfFile = path.join(projectDir, file || 'main.pdf');
+
+  let pdfFile;
+  if (file) {
+    pdfFile = path.join(projectDir, file);
+  } else {
+    const mainTex = await findMainTexFile(projectDir);
+    const mainName = mainTex ? mainTex.replace('.tex', '') : 'main';
+    pdfFile = path.join(projectDir, `${mainName}.pdf`);
+  }
 
   try {
     await fs.access(pdfFile);
@@ -31,11 +48,18 @@ export async function getPdf(req, res) {
 
 export async function getLog(req, res) {
   const { id } = req.params;
+  const fs = await import('fs/promises');
+  const path = await import('path');
+
   const projectDir = await getProjectDir(id);
-  const log = await compiler.getLog(projectDir);
-  if (log) {
-    res.type('text/plain').send(log);
-  } else {
+  const mainTex = await findMainTexFile(projectDir);
+  const mainName = mainTex ? mainTex.replace('.tex', '') : 'main';
+  const logFile = path.join(projectDir, `${mainName}.log`);
+
+  try {
+    const content = await fs.readFile(logFile, 'utf-8');
+    res.type('text/plain').send(content);
+  } catch {
     res.status(404).json({ error: 'No log file' });
   }
 }
