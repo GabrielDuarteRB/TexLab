@@ -1,0 +1,55 @@
+site_name: TexLab
+site_description: Documentação do TexLab - Editor LaTeX local
+site_url: https://gabrielduarterb.github.io/TexLab
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Mudar para modo claro
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Mudar para modo escuro
+  features:
+    - navigation.sections
+    - navigation.expand
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Início: index.md
+  - Instalação: instalacao.md
+  - Uso Geral: uso-geral.md
+  - Funcionalidades Git: funcs-git.md
+  - Importar Projetos: importar.md
+  - Clonar do GitHub: clone-github.md
+  - Configuração Git: config-git.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/seu-usuario/overleaf-local

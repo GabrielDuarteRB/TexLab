@@ -3,10 +3,13 @@ import * as projectController from '../controllers/projectController.js';
 import multer from 'multer';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const uploadImport = multer({ storage: multer.memoryStorage(), limits: { fileSize: 100 * 1024 * 1024 } });
 const router = Router();
 
 router.get('/', projectController.listProjects);
 router.post('/', projectController.createProject);
+router.post('/import', uploadImport.any(), projectController.importProject);
+router.post('/clone', projectController.cloneProject);
 router.get('/:id', projectController.getProject);
 router.patch('/:id', projectController.updateProject);
 router.delete('/:id', projectController.deleteProject);
@@ -16,5 +19,19 @@ router.delete('/:id/files/*', projectController.deleteFile);
 router.patch('/:id/rename', projectController.renameFile);
 router.post('/:id/folders', projectController.createFolder);
 router.post('/:id/files', upload.single('file'), projectController.uploadFile);
+router.post('/:id/git/init', projectController.initGit);
+router.get('/:id/git/status', projectController.getGitStatus);
+router.get('/:id/git/branches', projectController.listBranches);
+router.post('/:id/git/branches', projectController.createBranch);
+router.post('/:id/git/fetch', projectController.fetchRemote);
+router.post('/:id/git/checkout', projectController.checkoutBranch);
+router.post('/:id/git/commit', projectController.commitAll);
+router.post('/:id/git/push', projectController.pushBranch);
+router.get('/:id/git/diff/file', projectController.getGitFileDiff);
+router.get('/:id/git/diff', projectController.getGitDiff);
+router.post('/:id/git/resolve', projectController.resolveConflicts);
+router.post('/:id/git/abort', projectController.abortStashPop);
+router.post('/:id/git/add', projectController.addFile);
+router.post('/:id/git/finalize-stash', projectController.finalizeStash);
 
 export default router;

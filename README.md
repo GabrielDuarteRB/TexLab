@@ -12,8 +12,8 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3001/api
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3001/api
 
 ## Funcionalidades
 
@@ -21,7 +21,27 @@ docker-compose up --build
 - Compilação LaTeX via TexLive (pdflatex/latexmk)
 - Visualização de PDF lado a lado
 - Gerenciamento de projetos e arquivos
+- Importar de pastas, .zip ou GitHub
 - IA opcional para sugestões (configurar `AI_API_KEY` no `.env`)
+
+## Documentação
+
+A documentação completa está na pasta [`docs/`](docs/), disponível também via GitHub Pages.
+
+| Seção | Descrição |
+|---|---|
+| [Instalação](docs/instalacao.md) | Pré-requisitos, configuração e execução |
+| [Uso Geral](docs/uso-geral.md) | Como usar o editor e compilar documentos |
+| [Importar Projetos](docs/importar.md) | Importar de pastas ou arquivos .zip |
+| [Clonar do GitHub](docs/clone-github.md) | Clonar repositórios públicos e privados |
+| [Configuração Git](docs/config-git.md) | Configurar credenciais e caminhos |
+
+### Publicando a documentação
+
+```bash
+pip install mkdocs-material
+mkdocs gh-deploy
+```
 
 ## Stack
 

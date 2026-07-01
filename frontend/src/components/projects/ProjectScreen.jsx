@@ -2,26 +2,20 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, FolderOpen, Trash2, Pencil, Check, X } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
+import CreateProjectModal from '../ui/CreateProjectModal.jsx';
+import ConfirmModal from '../ui/ConfirmModal.jsx';
 
 export default function ProjectScreen() {
   const navigate = useNavigate();
-  const { projects, fetchProjects, createProject, deleteProject, updateProject } = useProjectStore();
-  const [showInput, setShowInput] = useState(false);
-  const [newName, setNewName] = useState('');
+  const { projects, fetchProjects, deleteProject, updateProject } = useProjectStore();
+  const [showModal, setShowModal] = useState(false);
   const [renamingId, setRenamingId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
-
-  const handleCreate = async () => {
-    if (!newName.trim()) return;
-    const project = await createProject(newName.trim());
-    setNewName('');
-    setShowInput(false);
-    if (project) navigate(`/project/${project.id}`);
-  };
 
   const handleRename = async (id) => {
     if (!renameValue.trim()) {
@@ -34,6 +28,13 @@ export default function ProjectScreen() {
     setRenameValue('');
   };
 
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteProject(deleteTargetId);
+      setDeleteTargetId(null);
+    }
+  };
+
   return (
     <div className="project-screen">
       <div className="project-screen-header">
@@ -41,37 +42,17 @@ export default function ProjectScreen() {
           <h1>TexLab</h1>
           <span className="project-screen-subtitle">Editor LaTeX local</span>
         </div>
-        <button className="toolbar-btn primary" onClick={() => setShowInput(true)}>
+        <button className="toolbar-btn primary" onClick={() => setShowModal(true)}>
           <Plus size={16} />
           Novo Projeto
         </button>
       </div>
 
-      {showInput && (
-        <div className="project-screen-input">
-          <input
-            type="text"
-            placeholder="Nome do projeto"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleCreate();
-              if (e.key === 'Escape') { setShowInput(false); setNewName(''); }
-            }}
-            autoFocus
-          />
-          <button onClick={handleCreate}>Criar</button>
-          <button className="icon-btn" onClick={() => { setShowInput(false); setNewName(''); }}>
-            <X size={16} />
-          </button>
-        </div>
-      )}
-
-      {projects.length === 0 && !showInput ? (
+      {projects.length === 0 ? (
         <div className="project-screen-empty">
           <FolderOpen size={48} />
           <h2>Nenhum projeto ainda</h2>
-          <p>Crie um novo projeto para começar a editar</p>
+          <p>Crie um novo projeto ou importe uma pasta/zip para começar</p>
         </div>
       ) : (
         <div className="project-grid">
@@ -112,7 +93,7 @@ export default function ProjectScreen() {
                     </button>
                     <button
                       className="icon-btn small delete-btn"
-                      onClick={() => deleteProject(project.id)}
+                      onClick={() => setDeleteTargetId(project.id)}
                       title="Deletar"
                     >
                       <Trash2 size={14} />
@@ -124,6 +105,14 @@ export default function ProjectScreen() {
           ))}
         </div>
       )}
+
+      <CreateProjectModal open={showModal} onClose={() => setShowModal(false)} />
+      <ConfirmModal
+        open={!!deleteTargetId}
+        message={`Tem certeza que deseja deletar o projeto "${projects.find(p => p.id === deleteTargetId)?.name || ''}"? Esta ação não pode ser desfeita.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTargetId(null)}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import Sidebar from '../sidebar/ProjectList.jsx';
 import Toolbar from '../toolbar/Toolbar.jsx';
@@ -13,7 +14,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const [aiOpen, setAiOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
-  const { currentProject, currentFile, fileContents, saveAndCompile, selectProject } = useProjectStore();
+  const { currentProject, currentFile, fileContents, saveAndCompile, selectProject, loading } = useProjectStore();
 
   useEffect(() => {
     if (id) {
@@ -64,6 +65,12 @@ export default function AppLayout() {
         </main>
         {aiOpen && <AiPanel onClose={() => setAiOpen(false)} />}
       </div>
+      {loading && (
+        <div className="loading-overlay">
+          <Loader2 size={32} className="spin" />
+          <p>Trocando de branch...</p>
+        </div>
+      )}
     </div>
   );
 }
