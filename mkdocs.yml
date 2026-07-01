@@ -1,6 +1,6 @@
 site_name: TexLab
 site_description: Documentação do TexLab - Editor LaTeX local
-site_url: https://seu-usuario.github.io/overleaf-local
+site_url: https://gabrielduarterb.github.io/TexLab
 
 theme:
   name: material
@@ -44,6 +44,7 @@ nav:
   - Início: index.md
   - Instalação: instalacao.md
   - Uso Geral: uso-geral.md
+  - Funcionalidades Git: funcs-git.md
   - Importar Projetos: importar.md
   - Clonar do GitHub: clone-github.md
   - Configuração Git: config-git.md
