@@ -1,0 +1,1168 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação do TexLab - Editor LaTeX local">
+      
+      
+      
+        <link rel="canonical" href="https://gabrielduarterb.github.io/TexLab/funcs-git/">
+      
+      
+        <link rel="prev" href="../uso-geral/">
+      
+      
+        <link rel="next" href="../importar/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Funcionalidades Git - TexLab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#funcionalidades-git" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="TexLab" class="md-header__button md-logo" aria-label="TexLab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TexLab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Funcionalidades Git
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="TexLab" class="md-nav__button md-logo" aria-label="TexLab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TexLab
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instalacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instalação
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uso-geral/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Uso Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades Git
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status-do-repositorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status do Repositório
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gerenciamento-de-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gerenciamento de Branches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gerenciamento de Branches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#listar-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listar Branches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#criar-nova-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Criar Nova Branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trocar-de-branch-checkout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trocar de Branch (Checkout)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolucao-de-conflitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolução de Conflitos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commitar-alteracoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commitar Alterações
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enviar-para-o-remoto-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enviar para o Remoto (Push)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buscar-branches-remotas-fetch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buscar Branches Remotas (Fetch)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualizar-alteracoes-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualizar Alterações (Diff)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visualizar Alterações (Diff)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ver-diff-de-um-arquivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ver Diff de um Arquivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inicializar-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicializar Git
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-rapido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo Rápido
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../importar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Importar Projetos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clone-github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clonar do GitHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuração Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status-do-repositorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status do Repositório
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gerenciamento-de-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gerenciamento de Branches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gerenciamento de Branches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#listar-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listar Branches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#criar-nova-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Criar Nova Branch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trocar-de-branch-checkout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trocar de Branch (Checkout)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolucao-de-conflitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolução de Conflitos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commitar-alteracoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commitar Alterações
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enviar-para-o-remoto-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enviar para o Remoto (Push)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buscar-branches-remotas-fetch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buscar Branches Remotas (Fetch)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualizar-alteracoes-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualizar Alterações (Diff)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visualizar Alterações (Diff)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ver-diff-de-um-arquivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ver Diff de um Arquivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inicializar-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicializar Git
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-rapido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo Rápido
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="funcionalidades-git">Funcionalidades Git<a class="headerlink" href="#funcionalidades-git" title="Permanent link">&para;</a></h1>
+<p>O TexLab possui integração completa com Git, permitindo gerenciar versionamento diretamente pelo editor. Todas as funcionalidades Git ficam acessíveis pelo <strong>botão Git</strong> na barra de ferramentas superior.</p>
+<div class="admonition info">
+<p class="admonition-title">Pré-requisito</p>
+<p>Para usar as funcionalidades Git, o projeto precisa ter um repositório inicializado. Se ainda não tiver, veja a seção <a href="#inicializar-git">Inicializar Git</a> abaixo ou a página <a href="../clone-github/">Clonar do GitHub</a>.</p>
+</div>
+<hr />
+<h2 id="status-do-repositorio">Status do Repositório<a class="headerlink" href="#status-do-repositorio" title="Permanent link">&para;</a></h2>
+<p>Ao abrir um projeto com Git, o TexLab exibe na barra de ferramentas:</p>
+<ul>
+<li><strong>Nome da branch atual</strong> — ex: <code>main</code>, <code>feature/novo-sumario</code></li>
+<li><strong>Indicador de alterações pendentes</strong> — quantidade de arquivos modificados não commitados (ex: "3 alterações")</li>
+</ul>
+<p>O status é atualizado automaticamente após cada operação Git (commit, checkout, push, etc.).</p>
+<hr />
+<h2 id="gerenciamento-de-branches">Gerenciamento de Branches<a class="headerlink" href="#gerenciamento-de-branches" title="Permanent link">&para;</a></h2>
+<p>Clique no botão Git na barra de ferramentas para abrir o dropdown de branches.</p>
+<h3 id="listar-branches">Listar Branches<a class="headerlink" href="#listar-branches" title="Permanent link">&para;</a></h3>
+<p>O dropdown mostra duas seções:</p>
+<table>
+<thead>
+<tr>
+<th>Seção</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Branches locais</strong></td>
+<td>Branches existentes no repositório local</td>
+</tr>
+<tr>
+<td><strong>Branches remotas</strong></td>
+<td>Branches disponíveis no repositório remoto (GitHub) que ainda não existem localmente</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A branch atual aparece com um ícone de ✓ e não é clicável</li>
+<li>Branches remotas exibem um badge "remota"</li>
+</ul>
+<h3 id="criar-nova-branch">Criar Nova Branch<a class="headerlink" href="#criar-nova-branch" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Clique em <strong>"Nova Branch"</strong> (ícone de +) no dropdown</li>
+<li>Digite o nome da branch no campo que aparece</li>
+<li>Pressione <strong>Enter</strong> ou clique em <strong>"Criar"</strong></li>
+<li>A nova branch é criada a partir da branch atual</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Criar uma branch não muda automaticamente para ela. Use o checkout para trocar.</p>
+</div>
+<h3 id="trocar-de-branch-checkout">Trocar de Branch (Checkout)<a class="headerlink" href="#trocar-de-branch-checkout" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Clique no nome de uma branch diferente na lista</li>
+<li><strong>Se não houver alterações pendentes</strong>, a troca é feita imediatamente</li>
+<li><strong>Se houver alterações pendentes</strong>, um modal de aviso aparece com duas opções:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Opção</th>
+<th>O que acontece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Manter alterações</strong></td>
+<td>As alterações são salvas em stash, a branch é trocada, e as alterações são restauradas. Se houver conflitos, o modal de resolução de conflitos é aberto.</td>
+</tr>
+<tr>
+<td><strong>Zerar branch</strong></td>
+<td>Todas as alterações locais são descartadas e a branch é trocada forçadamente</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resolucao-de-conflitos">Resolução de Conflitos<a class="headerlink" href="#resolucao-de-conflitos" title="Permanent link">&para;</a></h3>
+<p>Se ao trocar de branch com "Manter alterações" houver conflitos entre suas alterações e a branch de destino, o <strong>modal de conflitos</strong> é exibido.</p>
+<p>O modal mostra uma lista de arquivos em conflito. Para resolver:</p>
+<ol>
+<li><strong>Clique em um arquivo</strong> para expandi-lo</li>
+<li>O conteúdo do arquivo é carregado com os marcadores de conflito do Git:
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>conteúdo da branch de destino
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>=======
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>suas alterações
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>&gt;&gt;&gt;&gt;&gt;&gt;&gt; stash@{0}
+</code></pre></div></li>
+<li><strong>Edite o conteúdo</strong> no textarea, removendo os marcadores e escolhendo quais alterações manter</li>
+<li>Clique em <strong>"Resolver"</strong> para salvar</li>
+<li>Repita para todos os arquivos em conflito</li>
+<li>Quando todos estiverem resolvidos, clique em <strong>"Concluir"</strong></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Cada arquivo pode ter múltiplas regiões de conflito. O badge ao lado do nome do arquivo indica quantos conflitos existem.</p>
+</div>
+<hr />
+<h2 id="commitar-alteracoes">Commitar Alterações<a class="headerlink" href="#commitar-alteracoes" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Clique em <strong>"Commitar"</strong> no dropdown Git (ícone de check)</li>
+<li>Digite uma <strong>mensagem descrevendo</strong> a alteração</li>
+<li>Clique em <strong>"Commitar"</strong> ou pressione <strong>Enter</strong></li>
+</ol>
+<p>O que acontece por baixo dos panos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git add .
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git commit -sua mensagem
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Boas práticas</p>
+<ul>
+<li>Use mensagens descritivas e concisas</li>
+<li>Exemplos boas: "Adiciona sumário automático", "Corrige formatação da bibliografia"</li>
+<li>Evite mensagens vagas como "atualização" ou "fix"</li>
+</ul>
+</div>
+<hr />
+<h2 id="enviar-para-o-remoto-push">Enviar para o Remoto (Push)<a class="headerlink" href="#enviar-para-o-remoto-push" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Clique em <strong>"Push"</strong> no dropdown Git (ícone de upload)</li>
+<li>A branch atual é enviada para o repositório remoto (origin)</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Requisitos</p>
+<ul>
+<li>O projeto precisa ter um repositório remoto configurado</li>
+<li>Suas credenciais SSH ou HTTPS precisam estar configuradas</li>
+<li>Veja <a href="../config-git/">Configuração Git</a> para mais detalhes</li>
+</ul>
+</div>
+<hr />
+<h2 id="buscar-branches-remotas-fetch">Buscar Branches Remotas (Fetch)<a class="headerlink" href="#buscar-branches-remotas-fetch" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Clique em <strong>"Buscar branches remotas"</strong> no dropdown Git (ícone de refresh)</li>
+<li>O TexLab busca as atualizações do repositório remoto</li>
+</ol>
+<p>Isso atualiza a lista de branches disponíveis, incluindo branches que foram criadas por outros colaboradores no GitHub.</p>
+<div class="admonition info">
+<p class="admonition-title">Quando usar</p>
+<p>Use o fetch antes de trocar de branch para garantir que você tenha a versão mais recente das branches remotas.</p>
+</div>
+<hr />
+<h2 id="visualizar-alteracoes-diff">Visualizar Alterações (Diff)<a class="headerlink" href="#visualizar-alteracoes-diff" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Clique em <strong>"Ver alterações"</strong> no dropdown Git (ícone de lupa)</li>
+<li>Um modal abre mostrando a lista de arquivos modificados</li>
+</ol>
+<p>Cada arquivo é分类ado por tipo de alteração:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Cor</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Adicionado</strong></td>
+<td>Verde</td>
+<td>Arquivo novo, ainda não commitado</td>
+</tr>
+<tr>
+<td><strong>Modificado</strong></td>
+<td>Amarelo</td>
+<td>Arquivo existente que foi alterado</td>
+</tr>
+<tr>
+<td><strong>Excluído</strong></td>
+<td>Vermelho</td>
+<td>Arquivo que foi removido</td>
+</tr>
+<tr>
+<td><strong>Não rastreado</strong></td>
+<td>Cinza</td>
+<td>Arquivo novo que ainda não foi adicionado ao Git</td>
+</tr>
+<tr>
+<td><strong>Renomeado</strong></td>
+<td>Azul</td>
+<td>Arquivo que teve o nome alterado</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ver-diff-de-um-arquivo">Ver Diff de um Arquivo<a class="headerlink" href="#ver-diff-de-um-arquivo" title="Permanent link">&para;</a></h3>
+<p>Clique em um arquivo na lista para expandir e ver as alterações específicas:</p>
+<ul>
+<li><strong>Linhas verdes</strong> (<code>+</code>) — conteúdo adicionado</li>
+<li><strong>Linhas vermelhas</strong> (<code>-</code>) — conteúdo removido</li>
+<li><strong>Linhas cinzas</strong> — contexto (sem alteração)</li>
+</ul>
+<p>Clique novamente para recolher.</p>
+<hr />
+<h2 id="inicializar-git">Inicializar Git<a class="headerlink" href="#inicializar-git" title="Permanent link">&para;</a></h2>
+<p>Se o projeto não tiver um repositório Git:</p>
+<ol>
+<li>O modal <strong>"Inicializar Git"</strong> aparece automaticamente ou pode ser acessado pelo dropdown</li>
+<li>Opcionalmente, insira a <strong>URL do repositório remoto</strong> (ex: <code>https://github.com/usuario/repo.git</code>)</li>
+<li>Clique em <strong>"Confirmar"</strong></li>
+</ol>
+<p>O que acontece:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git init
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git remote add origin &lt;sua-url&gt;    # se informada
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>git add .
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>git commit -m &quot;Initial commit&quot;
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Se você já tem um repositório no GitHub, é mais rápido usar a opção <strong>"Clonar do GitHub"</strong> na tela inicial. Veja <a href="../clone-github/">Clonar do GitHub</a>.</p>
+</div>
+<hr />
+<h2 id="resumo-rapido">Resumo Rápido<a class="headerlink" href="#resumo-rapido" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Funcionalidade</th>
+<th>Botão</th>
+<th>O que faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ver status</td>
+<td>—</td>
+<td>Exibe branch atual e alterações pendentes</td>
+</tr>
+<tr>
+<td>Listar branches</td>
+<td>Dropdown Git</td>
+<td>Mostra branches locais e remotas</td>
+</tr>
+<tr>
+<td>Criar branch</td>
+<td>+ no dropdown</td>
+<td>Cria nova branch a partir da atual</td>
+</tr>
+<tr>
+<td>Trocar branch</td>
+<td>Clique na branch</td>
+<td>Faz checkout (com ou sem stash)</td>
+</tr>
+<tr>
+<td>Commitar</td>
+<td>Check no dropdown</td>
+<td><code>git add .</code> + <code>git commit</code></td>
+</tr>
+<tr>
+<td>Push</td>
+<td>Upload no dropdown</td>
+<td><code>git push -u origin &lt;branch&gt;</code></td>
+</tr>
+<tr>
+<td>Fetch</td>
+<td>Refresh no dropdown</td>
+<td><code>git fetch origin</code></td>
+</tr>
+<tr>
+<td>Ver diff</td>
+<td>Lupa no dropdown</td>
+<td>Lista de arquivos alterados com diff inline</td>
+</tr>
+<tr>
+<td>Resolver conflitos</td>
+<td>Automático</td>
+<td>Modal com textarea para edição manual</td>
+</tr>
+<tr>
+<td>Inicializar Git</td>
+<td>Modal de init</td>
+<td><code>git init</code> + commit inicial</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/seu-usuario/overleaf-local" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
