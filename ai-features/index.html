@@ -1,0 +1,1948 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação do TexLab - Editor LaTeX local">
+      
+      
+      
+        <link rel="canonical" href="https://gabrielduarterb.github.io/TexLab/ai-features/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Funcionalidades de IA - TexLab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#funcionalidades-de-ia" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="TexLab" class="md-header__button md-logo" aria-label="TexLab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TexLab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Funcionalidades de IA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="TexLab" class="md-nav__button md-logo" aria-label="TexLab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TexLab
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instalacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instalação
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uso-geral/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Uso Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../funcs-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../importar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Importar Projetos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clone-github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clonar do GitHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config-git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuração Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ollama-vs-groq-qual-usar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama vs Groq: Qual usar?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-arquitetura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Arquitetura
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Arquitetura">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#visao-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-de-uma-revisao-academica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fluxo de uma Revisão Acadêmica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-academic-review-ollama-groq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Academic Review (Ollama / Groq)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Academic Review (Ollama / Groq)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-faz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que faz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deteccao-de-repeticoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detecção de Repetições
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processamento-paralelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Processamento Paralelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ai-suggest-openai-anthropic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. AI Suggest (OpenAI / Anthropic)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. AI Suggest (OpenAI / Anthropic)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-faz_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que faz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuração
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configuração">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pré-requisitos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variaveis-de-ambiente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variáveis de Ambiente
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variáveis de Ambiente">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-em-docker-composeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (em docker-compose.yml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ollama-em-docker-composeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama (em docker-compose.yml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-configurar-o-groq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como configurar o Groq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-composeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docker-compose.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modelos-suportados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelos Suportados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelos Suportados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ollama-local-roda-no-seu-computador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama (Local — roda no seu computador)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groq-cloud-roda-na-nuvem-sem-precisar-de-gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groq (Cloud — roda na nuvem, sem precisar de GPU)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacao-do-nvidia-container-toolkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalação do NVIDIA Container Toolkit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-do-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull do Modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-api-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. API REST
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. API REST">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-apiaireview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/ai/review
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apiaisuggest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/ai/suggest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apiaistatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/ai/status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apiaiacademic-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/ai/academic-status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Frontend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Frontend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#painel-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Painel IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Abas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-revisar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Revisar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-repeticao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Repetição
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sugerir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sugerir
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualizacao-de-diffs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualização de Diffs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-inventario-de-arquivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Inventário de Arquivos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Inventário de Arquivos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-servicos-de-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend — Serviços de IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-rotas-e-controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend — Rotas e Controllers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker / Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-solucao-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="funcionalidades-de-ia">Funcionalidades de IA<a class="headerlink" href="#funcionalidades-de-ia" title="Permanent link">&para;</a></h1>
+<p>O TexLab possui dois sistemas de IA independentes para auxiliar na escrita acadêmica:</p>
+<table>
+<thead>
+<tr>
+<th>Sistema</th>
+<th>Tipo</th>
+<th>Backend</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Academic Review</strong></td>
+<td>Local (Ollama)</td>
+<td>GPU do seu computador</td>
+<td>Revisão de textos acadêmicos</td>
+</tr>
+<tr>
+<td><strong>Academic Review</strong></td>
+<td>Cloud (Groq)</td>
+<td>API Groq (servidores remotos)</td>
+<td>Revisão de textos acadêmicos</td>
+</tr>
+<tr>
+<td><strong>AI Suggest</strong></td>
+<td>Cloud (OpenAI/Anthropic)</td>
+<td>API</td>
+<td>Assistência livre para LaTeX</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ollama-vs-groq-qual-usar">Ollama vs Groq: Qual usar?<a class="headerlink" href="#ollama-vs-groq-qual-usar" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Ollama (Local)</th>
+<th>Groq (Cloud)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Onde roda</strong></td>
+<td>No seu computador</td>
+<td>Servidores da Groq</td>
+</tr>
+<tr>
+<td><strong>Depende de</strong></td>
+<td>GPU/RAM do seu PC</td>
+<td>Conexão com internet</td>
+</tr>
+<tr>
+<td><strong>Custo</strong></td>
+<td>Gratuito</td>
+<td>Free tier: 14.400 req/dia</td>
+</tr>
+<tr>
+<td><strong>Velocidade</strong></td>
+<td>Depende do hardware</td>
+<td>Muito rápido (LPU)</td>
+</tr>
+<tr>
+<td><strong>Privacidade</strong></td>
+<td>Dados nunca saem do PC</td>
+<td>Dados vão para nuvem</td>
+</tr>
+<tr>
+<td><strong>Modelos</strong></td>
+<td>qwen2.5:7b, llama3.1, etc.</td>
+<td>llama-3.3-70b-versatile, etc.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recomendação:</strong> Use <strong>Ollama</strong> se tiver GPU boa (8GB+ VRAM). Use <strong>Groq</strong> se não tiver GPU ou quiser mais velocidade.</p>
+<hr />
+<h2 id="1-arquitetura">1. Arquitetura<a class="headerlink" href="#1-arquitetura" title="Permanent link">&para;</a></h2>
+<h3 id="visao-geral">Visão Geral<a class="headerlink" href="#visao-geral" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│  Frontend (React + Vite)                                │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│  ┌─────────────────────────────────────────────────┐    │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  │  AiPanel.jsx                                    │    │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  │  ┌───────────┐ ┌───────────┐ ┌───────────┐     │    │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │  │ Revisar   │ │ Repetição │ │ Sugerir   │     │    │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │  └─────┬─────┘ └─────┬─────┘ └─────┬─────┘     │    │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  └────────┼──────────────┼──────────────┼───────────┘    │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│           │              │              │                │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>└───────────┼──────────────┼──────────────┼────────────────┘
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            │              │              │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    POST /api/ai/review   │      POST /api/ai/suggest
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            │              │              │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>┌───────────┼──────────────┼──────────────┼────────────────┐
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│  Backend (Node.js)       │              │                │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│  ┌───────▼────────┐     │       ┌──────▼───────┐       │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│  │ academicReview │     │       │  aiService   │       │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│  │   Service.js   │     │       │    .js       │       │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  └───────┬────────┘     │       └──────┬───────┘       │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│          │              │              │                │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  ┌───────▼────────┐     │       ┌──────▼───────┐       │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  │  ollamaClient  │     │       │  OpenAI ou   │       │
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  │  groqClient    │     │       │  Anthropic   │       │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│  └───────┬────────┘     │       └──────────────┘       │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│          │              │                               │
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  ┌───────▼──────────────▼───┐                           │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  │  localRepetitionDetector │                           │
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│  └──────────────────────────┘                           │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>└──────────┬──────────────────────────────────────────────┘
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>           │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>┌──────────▼──────────────────────────────────────────────┐
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  Docker                                                 │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│  ┌──────────────┐                                       │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│  │   Ollama     │  ← GPU NVIDIA (qwen2.5:7b)           │
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│  │  :11435      │                                       │
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│  └──────────────┘                                       │
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="fluxo-de-uma-revisao-academica">Fluxo de uma Revisão Acadêmica<a class="headerlink" href="#fluxo-de-uma-revisao-academica" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Usuário clica em "Revisar Texto Completo" no painel IA</li>
+<li>Backend recebe texto + idioma (<code>POST /api/ai/review</code>)</li>
+<li>LaTeX é parseado (equações, figuras, citações são removidos)</li>
+<li>Texto é dividido em chunks (~2048 tokens cada)</li>
+<li>Chunks são processados em paralelo (máx. 3 simultâneos)</li>
+<li>Cada chunk é enviado ao LLM com prompt de revisão</li>
+<li>Detector local de repetições é executado em paralelo</li>
+<li>Resultados do LLM e do detector local são mesclados e deduplicados</li>
+<li>Resposta JSON é retornada ao frontend</li>
+<li>Frontend exibe correções com diff visual, repetições e sugestões</li>
+</ol>
+<hr />
+<h2 id="2-academic-review-ollama-groq">2. Academic Review (Ollama / Groq)<a class="headerlink" href="#2-academic-review-ollama-groq" title="Permanent link">&para;</a></h2>
+<h3 id="o-que-faz">O que faz<a class="headerlink" href="#o-que-faz" title="Permanent link">&para;</a></h3>
+<p>Revisão automática de textos acadêmicos com:</p>
+<ul>
+<li><strong>Correções gramaticais</strong> — ortografia, pontuação, concordância, regência</li>
+<li><strong>Detecção de repetições</strong> — palavras repetidas com sugestões de sinônimos</li>
+<li><strong>Variações de reescrita</strong> — alternativas com diferentes níveis de formalidade</li>
+<li><strong>Sugestões de melhoria</strong> — melhorias contextuais para o texto</li>
+<li><strong>Parsing de LaTeX</strong> — ignora equações, figuras, citações, comandos</li>
+</ul>
+<h3 id="pipeline">Pipeline<a class="headerlink" href="#pipeline" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Texto LaTeX/PT ou EN
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>       │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>       ▼
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>┌──────────────┐
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│ parseLatex() │  Remove equações, tikz, figuras, citações
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>└──────┬───────┘
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>       │
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>       ▼
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>┌──────────────┐
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│ chunkText()  │  Divide em chunks de ~2048 tokens
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>└──────┬───────┘
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>       │
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>       ▼
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>┌─────────────────────┐
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>│ processarEmParalelo │  Envia chunks ao LLM (máx. 3 simultâneos)
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>└──────┬──────────────┘
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>       │
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>       ├──────────────────────────┐
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>       │                          │
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>       ▼                          ▼
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>┌──────────────┐      ┌─────────────────────────┐
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>│  LLM Output  │      │ detectarRepeticoesLocais│
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>│  (por chunk) │      │  (texto completo)       │
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>└──────┬───────┘      └──────────┬──────────────┘
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>       │                         │
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>       ▼                         ▼
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>┌──────────────────────────────────────┐
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>│         deduplicarPalavras()         │
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>│  Mescla LLM + detector local        │
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>└──────────────────┬───────────────────┘
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>                   │
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>                   ▼
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>            Resposta JSON
+</code></pre></div>
+<h3 id="backend-detection">Backend Detection<a class="headerlink" href="#backend-detection" title="Permanent link">&para;</a></h3>
+<p>O sistema tenta backends nesta ordem (modo automático):</p>
+<ol>
+<li><strong>Ollama</strong> (preferido) — Verifica disponibilidade via <code>/api/tags</code></li>
+<li><strong>Groq</strong> (fallback) — Verifica se <code>GROQ_API_KEY</code> existe</li>
+<li><strong>Erro</strong> — Nenhum backend disponível</li>
+</ol>
+<p>O usuário também pode <strong>escolher manualmente</strong> o backend no painel IA (dropdown "Backend").</p>
+<h3 id="deteccao-de-repeticoes">Detecção de Repetições<a class="headerlink" href="#deteccao-de-repeticoes" title="Permanent link">&para;</a></h3>
+<p>Dois mecanismos trabalham juntos:</p>
+<table>
+<thead>
+<tr>
+<th>Mecanismo</th>
+<th>Escopo</th>
+<th>Vantagem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM</td>
+<td>Por chunk</td>
+<td>Contexto semântico</td>
+</tr>
+<tr>
+<td>Detector local</td>
+<td>Texto completo</td>
+<td>Visão global, lematização</td>
+</tr>
+</tbody>
+</table>
+<p>O detector local:
+- Lematiza palavras (regras para PT e EN)
+- Filtra stopwords
+- Conta frequência por lemma
+- Fornece sinônimos acadêmicos de um dicionário hardcoded
+- Marca resultados com <code>fonte: "local"</code> para diferenciação</p>
+<h3 id="processamento-paralelo">Processamento Paralelo<a class="headerlink" href="#processamento-paralelo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">CONCORRENCIA_MAX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="p">;</span><span class="w">  </span><span class="c1">// Chunks simultâneos</span>
+</code></pre></div>
+<ul>
+<li>Fila de chunks com processamento assíncrono</li>
+<li>Máximo 3 requests ao LLM ao mesmo tempo</li>
+<li>3 retries por chunk em caso de falha de parsing JSON</li>
+</ul>
+<hr />
+<h2 id="3-ai-suggest-openai-anthropic">3. AI Suggest (OpenAI / Anthropic)<a class="headerlink" href="#3-ai-suggest-openai-anthropic" title="Permanent link">&para;</a></h2>
+<h3 id="o-que-faz_1">O que faz<a class="headerlink" href="#o-que-faz_1" title="Permanent link">&para;</a></h3>
+<p>Assistência de IA livre para conteúdo LaTeX:</p>
+<ul>
+<li>Escrever novo conteúdo</li>
+<li>Corrigir trechos específicos</li>
+<li>Melhorar redação</li>
+<li>Qualquer instrução do usuário</li>
+</ul>
+<h3 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variável</th>
+<th>Valores</th>
+<th>Modelo padrão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AI_PROVIDER</code></td>
+<td><code>openai</code> ou <code>anthropic</code></td>
+<td><code>openai</code></td>
+</tr>
+<tr>
+<td><code>AI_API_KEY</code></td>
+<td>Chave da API</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Modelos utilizados:</strong>
+- OpenAI: <code>gpt-4o</code>
+- Anthropic: <code>claude-sonnet-4-20250514</code></p>
+<hr />
+<h2 id="4-configuracao">4. Configuração<a class="headerlink" href="#4-configuracao" title="Permanent link">&para;</a></h2>
+<h3 id="pre-requisitos">Pré-requisitos<a class="headerlink" href="#pre-requisitos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Obrigatório?</th>
+<th>Como instalar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Docker + Docker Compose</td>
+<td>Sim</td>
+<td><a href="https://docs.docker.com/compose/install/">docs.docker.com</a></td>
+</tr>
+<tr>
+<td>GPU NVIDIA</td>
+<td>Recomendado</td>
+<td>Driver NVIDIA instalado no host</td>
+</tr>
+<tr>
+<td>NVIDIA Container Toolkit</td>
+<td>Se usar GPU</td>
+<td><code>sudo apt install nvidia-container-toolkit</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="variaveis-de-ambiente">Variáveis de Ambiente<a class="headerlink" href="#variaveis-de-ambiente" title="Permanent link">&para;</a></h3>
+<h4 id="backend-em-docker-composeyml">Backend (em <code>docker-compose.yml</code>)<a class="headerlink" href="#backend-em-docker-composeyml" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variável</th>
+<th>Default</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OLLAMA_BASE_URL</code></td>
+<td><code>http://ollama:11434</code></td>
+<td>URL do Ollama (Docker network)</td>
+</tr>
+<tr>
+<td><code>OLLAMA_MODEL</code></td>
+<td><code>qwen2.5:7b</code></td>
+<td>Modelo Ollama para revisão</td>
+</tr>
+<tr>
+<td><code>GROQ_API_KEY</code></td>
+<td>—</td>
+<td>Chave API Groq (obrigatório para usar Groq)</td>
+</tr>
+<tr>
+<td><code>GROQ_MODEL</code></td>
+<td><code>llama-3.3-70b-versatile</code></td>
+<td>Modelo Groq para revisão</td>
+</tr>
+<tr>
+<td><code>AI_API_KEY</code></td>
+<td>—</td>
+<td>Chave OpenAI/Anthropic (para Suggest)</td>
+</tr>
+<tr>
+<td><code>AI_PROVIDER</code></td>
+<td><code>openai</code></td>
+<td>Provedor para Suggest</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ollama-em-docker-composeyml">Ollama (em <code>docker-compose.yml</code>)<a class="headerlink" href="#ollama-em-docker-composeyml" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variável</th>
+<th>Default</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OLLAMA_NUM_PARALLEL</code></td>
+<td><code>3</code></td>
+<td>Requests simultâneos</td>
+</tr>
+<tr>
+<td><code>OLLAMA_KEEP_ALIVE</code></td>
+<td><code>10m</code></td>
+<td>Tempo para manter modelo carregado</td>
+</tr>
+<tr>
+<td><code>OLLAMA_FLASH_ATTENTION</code></td>
+<td><code>1</code></td>
+<td>Otimização de memória</td>
+</tr>
+</tbody>
+</table>
+<h3 id="como-configurar-o-groq">Como configurar o Groq<a class="headerlink" href="#como-configurar-o-groq" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Criar conta gratuita</strong> em <a href="https://console.groq.com">console.groq.com</a> (sem cartão de crédito)</li>
+<li><strong>Gerar API Key</strong> em API Keys → Create API Key</li>
+<li><strong>Adicionar no arquivo <code>.env</code></strong> na raiz do projeto:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">GROQ_API_KEY</span><span class="o">=</span>gsk_sua_chave_aqui
+</code></pre></div>
+<ol>
+<li><strong>Reiniciar o backend:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>restart<span class="w"> </span>backend
+</code></pre></div>
+<ol>
+<li><strong>Verificar se funcionou:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl<span class="w"> </span>http://localhost:3001/api/ai/academic-status
+</code></pre></div>
+<p>Resposta esperada:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;ollama_disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;groq_disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">&quot;disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="docker-composeyml">docker-compose.yml<a class="headerlink" href="#docker-composeyml" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">services</span><span class="p">:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">ollama</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ollama/ollama:latest</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;11435:11434&quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ollama_data:/root/.ollama</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OLLAMA_FLASH_ATTENTION=1</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OLLAMA_NUM_PARALLEL=3</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OLLAMA_KEEP_ALIVE=10m</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">        </span><span class="nt">reservations</span><span class="p">:</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">          </span><span class="nt">devices</span><span class="p">:</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">              </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">              </span><span class="nt">capabilities</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gpu</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">  </span><span class="nt">backend</span><span class="p">:</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./backend</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;3001:3001&quot;</span>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OLLAMA_BASE_URL=http://ollama:11434</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OLLAMA_MODEL=qwen2.5:7b</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GROQ_API_KEY=${GROQ_API_KEY:-}</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GROQ_MODEL=llama-3.3-70b-versatile</span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ollama</span>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./projects:/app/projects</span>
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+</code></pre></div>
+<h3 id="modelos-suportados">Modelos Suportados<a class="headerlink" href="#modelos-suportados" title="Permanent link">&para;</a></h3>
+<h4 id="ollama-local-roda-no-seu-computador">Ollama (Local — roda no seu computador)<a class="headerlink" href="#ollama-local-roda-no-seu-computador" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Modelo</th>
+<th>Tamanho</th>
+<th>VRAM</th>
+<th>Velocidade</th>
+<th>Qualidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qwen2.5:7b</code></td>
+<td>4.7GB</td>
+<td>~5GB</td>
+<td>⚡ Rápido</td>
+<td>✅ Boa</td>
+</tr>
+<tr>
+<td><code>qwen2.5:14b</code></td>
+<td>8.5GB</td>
+<td>~10GB</td>
+<td>🐌 Lento*</td>
+<td>✅ Ótima</td>
+</tr>
+<tr>
+<td><code>llama3.1:8b</code></td>
+<td>4.7GB</td>
+<td>~5GB</td>
+<td>⚡ Rápido</td>
+<td>✅ Boa</td>
+</tr>
+</tbody>
+</table>
+<p>*qwen2.5:14b pode dividir processamento entre CPU/GPU em GPUs com 8GB VRAM.</p>
+<p><strong>Recomendação:</strong> <code>qwen2.5:7b</code> para GPUs com 8GB VRAM (100% GPU).</p>
+<h4 id="groq-cloud-roda-na-nuvem-sem-precisar-de-gpu">Groq (Cloud — roda na nuvem, sem precisar de GPU)<a class="headerlink" href="#groq-cloud-roda-na-nuvem-sem-precisar-de-gpu" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Modelo</th>
+<th>Plataforma</th>
+<th>Velocidade</th>
+<th>Qualidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llama-3.3-70b-versatile</code></td>
+<td>Groq (API)</td>
+<td>⚡ Muito rápido</td>
+<td>✅ Excelente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Vantagem do Groq:</strong> Não depende de hardware local. Funciona em qualquer computador com internet.</p>
+<blockquote>
+<p><strong>Atenção:</strong> Modelos podem ser descontinuados ou substituídos pela plataforma. Verifique sempre a documentação oficial do Groq para confirmar se o modelo está disponível: <a href="https://console.groq.com/docs/models">console.groq.com/docs/models</a></p>
+</blockquote>
+<h3 id="instalacao-do-nvidia-container-toolkit">Instalação do NVIDIA Container Toolkit<a class="headerlink" href="#instalacao-do-nvidia-container-toolkit" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Adicionar repositório</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://nvidia.github.io/libnvidia-container/gpgkey<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>gpg<span class="w"> </span>--dearmor<span class="w"> </span>-o<span class="w"> </span>/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>sed<span class="w"> </span><span class="s1">&#39;s#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/nvidia-container-toolkit.list
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Instalar</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>nvidia-container-toolkit
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="c1"># Configurar Docker</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>sudo<span class="w"> </span>nvidia-ctk<span class="w"> </span>runtime<span class="w"> </span>configure<span class="w"> </span>--runtime<span class="o">=</span>docker
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+</code></pre></div>
+<h3 id="pull-do-modelo">Pull do Modelo<a class="headerlink" href="#pull-do-modelo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Acessar container Ollama</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>overleaf-local-ollama-1<span class="w"> </span>ollama<span class="w"> </span>pull<span class="w"> </span>qwen2.5:7b
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Remover modelo antigo (opcional)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>overleaf-local-ollama-1<span class="w"> </span>ollama<span class="w"> </span>rm<span class="w"> </span>llama3.1:8b
+</code></pre></div>
+<hr />
+<h2 id="5-api-rest">5. API REST<a class="headerlink" href="#5-api-rest" title="Permanent link">&para;</a></h2>
+<p>Base URL: <code>http://localhost:3001/api</code></p>
+<h3 id="post-apiaireview">POST /api/ai/review<a class="headerlink" href="#post-apiaireview" title="Permanent link">&para;</a></h3>
+<p>Revisão acadêmica de texto.</p>
+<p><strong>Request:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Seu texto acadêmico aqui...&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">&quot;idioma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pt&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">&quot;backend&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>Sim</td>
+<td>Texto para revisar</td>
+</tr>
+<tr>
+<td><code>idioma</code></td>
+<td>string</td>
+<td>Não</td>
+<td><code>pt</code> (padrão) ou <code>en</code></td>
+</tr>
+<tr>
+<td><code>backend</code></td>
+<td>string</td>
+<td>Não</td>
+<td><code>auto</code> (padrão), <code>ollama</code> ou <code>groq</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">&quot;texto_corrigido&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Texto revisado...&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">&quot;correcoes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">      </span><span class="nt">&quot;original&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;O metodo utilizado foi&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">      </span><span class="nt">&quot;corrigido&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;O método utilizado foi&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">      </span><span class="nt">&quot;explicacao&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Acentuação ortográfica: &#39;método&#39; leva acento&quot;</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="nt">&quot;variacoes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="s2">&quot;A abordagem empregada consistiu em...&quot;</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">  </span><span class="nt">&quot;palavras_repetidas&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">      </span><span class="nt">&quot;palavra&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;método&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">      </span><span class="nt">&quot;lema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metodo&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">      </span><span class="nt">&quot;ocorrencias&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="w">      </span><span class="nt">&quot;paragrafos&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">],</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">      </span><span class="nt">&quot;sugestoes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;abordagem&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;procedimento&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;técnica&quot;</span><span class="p">],</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">      </span><span class="nt">&quot;fonte&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;llm&quot;</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="w">  </span><span class="nt">&quot;sugestoes_melhoria&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="w">    </span><span class="s2">&quot;Considere adicionar uma transição entre os parágrafos...&quot;</span>
+<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="w">  </span><span class="nt">&quot;erros&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="w">  </span><span class="nt">&quot;total_chunks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a><span class="w">  </span><span class="nt">&quot;chunks_processados&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="w">  </span><span class="nt">&quot;backend_usado&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ollama&quot;</span>
+<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a><span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>texto_corrigido</code></td>
+<td>string</td>
+<td>Texto completo revisado</td>
+</tr>
+<tr>
+<td><code>correcoes</code></td>
+<td>array</td>
+<td>Lista de correções com diff</td>
+</tr>
+<tr>
+<td><code>variacoes</code></td>
+<td>array</td>
+<td>Alternativas de reescrita</td>
+</tr>
+<tr>
+<td><code>palavras_repetidas</code></td>
+<td>array</td>
+<td>Palavras repetidas com sinônimos</td>
+</tr>
+<tr>
+<td><code>sugestoes_melhoria</code></td>
+<td>array</td>
+<td>Sugestões de melhoria</td>
+</tr>
+<tr>
+<td><code>erros</code></td>
+<td>array</td>
+<td>Índices de chunks com erro</td>
+</tr>
+<tr>
+<td><code>total_chunks</code></td>
+<td>number</td>
+<td>Total de chunks processados</td>
+</tr>
+<tr>
+<td><code>chunks_processados</code></td>
+<td>number</td>
+<td>Chunks com sucesso</td>
+</tr>
+<tr>
+<td><code>backend_usado</code></td>
+<td>string</td>
+<td><code>ollama</code> ou <code>groq</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="post-apiaisuggest">POST /api/ai/suggest<a class="headerlink" href="#post-apiaisuggest" title="Permanent link">&para;</a></h3>
+<p>Assistência LaTeX com IA.</p>
+<p><strong>Request:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">{</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">&quot;latexContent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\\begin{document}\n...&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">&quot;instruction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Adicione uma seção sobre metodologia&quot;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">&quot;suggestion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\\section{Metodologia}\n\\label{sec:metodo}\n...&quot;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="get-apiaistatus">GET /api/ai/status<a class="headerlink" href="#get-apiaistatus" title="Permanent link">&para;</a></h3>
+<p>Verifica se AI Suggest está disponível.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="get-apiaiacademic-status">GET /api/ai/academic-status<a class="headerlink" href="#get-apiaiacademic-status" title="Permanent link">&para;</a></h3>
+<p>Verifica status dos backends acadêmicos.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">&quot;ollama_disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="nt">&quot;groq_disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">&quot;disponivel&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="6-frontend">6. Frontend<a class="headerlink" href="#6-frontend" title="Permanent link">&para;</a></h2>
+<h3 id="painel-ia">Painel IA<a class="headerlink" href="#painel-ia" title="Permanent link">&para;</a></h3>
+<p>O painel é aberto pelo botão <strong>"IA"</strong> (ícone Sparkles) na toolbar.</p>
+<p><strong>Largura:</strong> 380px | <strong>Posição:</strong> Direita</p>
+<h3 id="abas">Abas<a class="headerlink" href="#abas" title="Permanent link">&para;</a></h3>
+<h4 id="1-revisar">1. Revisar<a class="headerlink" href="#1-revisar" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Seleção de idioma (PT/EN)</li>
+<li>Botão "Revisar Texto Completo"</li>
+<li>Exibe:</li>
+<li><strong>Correções</strong> — Lista com diff visual (vermelho = removido, verde = adicionado)</li>
+<li><strong>Variações</strong> — Alternativas de reescrita</li>
+<li><strong>Sugestões</strong> — Melhorias sugeridas</li>
+</ul>
+<h4 id="2-repeticao">2. Repetição<a class="headerlink" href="#2-repeticao" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Lista de palavras repetidas</li>
+<li>Para cada palavra:</li>
+<li>Ocorrências (ex: <code>5x</code>)</li>
+<li>Parágrafos onde aparece (ex: <code>§0, §2, §4</code>)</li>
+<li>Sinônimos acadêmicos sugeridos</li>
+</ul>
+<h4 id="3-sugerir">3. Sugerir<a class="headerlink" href="#3-sugerir" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Campo de texto livre para instruções</li>
+<li>Botão "Enviar"</li>
+<li>Resposta da IA exibida abaixo</li>
+</ul>
+<h3 id="visualizacao-de-diffs">Visualização de Diffs<a class="headerlink" href="#visualizacao-de-diffs" title="Permanent link">&para;</a></h3>
+<p>As correções são exibidas com estilo visual:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p">.</span><span class="nc">ai-diff-removed</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ef4444</span><span class="p">;</span><span class="w">        </span><span class="c">/* vermelho */</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">line-through</span><span class="p">;</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#fef2f2</span><span class="p">;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">}</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">.</span><span class="nc">ai-diff-added</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">  </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#22c55e</span><span class="p">;</span><span class="w">        </span><span class="c">/* verde */</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">  </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#f0fdf4</span><span class="p">;</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Exemplo:</strong></p>
+<p>~~O metodo~~ → <strong>O método</strong></p>
+<hr />
+<h2 id="7-inventario-de-arquivos">7. Inventário de Arquivos<a class="headerlink" href="#7-inventario-de-arquivos" title="Permanent link">&para;</a></h2>
+<h3 id="backend-servicos-de-ia">Backend — Serviços de IA<a class="headerlink" href="#backend-servicos-de-ia" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/src/services/academic/academicReviewService.js</code></td>
+<td>Orquestrador principal: parsing, chunking, LLM, deduplicação</td>
+</tr>
+<tr>
+<td><code>backend/src/services/academic/ollamaClient.js</code></td>
+<td>Cliente Ollama (health check + chat)</td>
+</tr>
+<tr>
+<td><code>backend/src/services/academic/groqClient.js</code></td>
+<td>Cliente Groq (API OpenAI-compatível)</td>
+</tr>
+<tr>
+<td><code>backend/src/services/academic/promptBuilder.js</code></td>
+<td>System prompts PT/EN + parsing JSON</td>
+</tr>
+<tr>
+<td><code>backend/src/services/academic/chunker.js</code></td>
+<td>Divisão de texto em chunks</td>
+</tr>
+<tr>
+<td><code>backend/src/services/academic/localRepetitionDetector.js</code></td>
+<td>Detector local com lematização</td>
+</tr>
+<tr>
+<td><code>backend/src/services/aiService.js</code></td>
+<td>Cliente OpenAI/Anthropic (Suggest)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="backend-rotas-e-controllers">Backend — Rotas e Controllers<a class="headerlink" href="#backend-rotas-e-controllers" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/src/routes/aiRoutes.js</code></td>
+<td>Definição das rotas <code>/api/ai/*</code></td>
+</tr>
+<tr>
+<td><code>backend/src/controllers/aiController.js</code></td>
+<td>Handlers das rotas</td>
+</tr>
+<tr>
+<td><code>backend/src/config/index.js</code></td>
+<td>Configuração de env vars</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontend">Frontend<a class="headerlink" href="#frontend" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frontend/src/components/ai/AiPanel.jsx</code></td>
+<td>Painel de IA (3 abas)</td>
+</tr>
+<tr>
+<td><code>frontend/src/hooks/useAi.js</code></td>
+<td>Hook React para estado da IA</td>
+</tr>
+<tr>
+<td><code>frontend/src/services/api.js</code></td>
+<td>Cliente HTTP para endpoints</td>
+</tr>
+<tr>
+<td><code>frontend/src/styles/global.css</code></td>
+<td>Estilos CSS do painel IA</td>
+</tr>
+<tr>
+<td><code>frontend/src/components/toolbar/Toolbar.jsx</code></td>
+<td>Botão "IA" na toolbar</td>
+</tr>
+<tr>
+<td><code>frontend/src/components/layout/AppLayout.jsx</code></td>
+<td>Integração do painel no layout</td>
+</tr>
+</tbody>
+</table>
+<h3 id="docker-config">Docker / Config<a class="headerlink" href="#docker-config" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker-compose.yml</code></td>
+<td>Serviços Ollama, backend, frontend</td>
+</tr>
+<tr>
+<td><code>backend/Dockerfile</code></td>
+<td>Build do backend (TeX Live + Node.js)</td>
+</tr>
+<tr>
+<td><code>frontend/Dockerfile</code></td>
+<td>Build do frontend (Node.js + Vite)</td>
+</tr>
+<tr>
+<td><code>.env</code></td>
+<td>Variáveis de ambiente</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-solucao-de-problemas">8. Solução de Problemas<a class="headerlink" href="#8-solucao-de-problemas" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Causa</th>
+<th>Solução</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Nenhum backend disponível"</td>
+<td>Ollama e Groq indisponíveis</td>
+<td>Verificar se Ollama está rodando: <code>docker ps</code></td>
+</tr>
+<tr>
+<td>Groq: "model decommissioned"</td>
+<td>Modelo descontinuado</td>
+<td>Verificar <code>GROQ_MODEL</code> em <code>docker-compose.yml</code></td>
+</tr>
+<tr>
+<td>Groq: "invalid_api_key"</td>
+<td>Chave inválida ou ausente</td>
+<td>Verificar <code>GROQ_API_KEY</code> no <code>.env</code></td>
+</tr>
+<tr>
+<td>Resposta muito lenta</td>
+<td>Modelo grande ou sem GPU</td>
+<td>Usar <code>qwen2.5:7b</code> com GPU ou Groq</td>
+</tr>
+<tr>
+<td>Erro de parsing JSON</td>
+<td>LLM retornou formato inválido</td>
+<td>Sistema faz retry automáticos (3x)</td>
+</tr>
+<tr>
+<td>GPU não utilizada</td>
+<td>NVIDIA Container Toolkit ausente</td>
+<td>Instalar toolkit e reiniciar Docker</td>
+</tr>
+<tr>
+<td>Modelo não encontrado</td>
+<td>Modelo não baixado</td>
+<td><code>docker exec ollama ollama pull qwen2.5:7b</code></td>
+</tr>
+<tr>
+<td>Repetições não aparecem</td>
+<td>Texto muito curto ou sem repetições</td>
+<td>Funciona melhor com textos &gt; 500 palavras</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/seu-usuario/overleaf-local" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
