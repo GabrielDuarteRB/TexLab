@@ -43,6 +43,12 @@ export const api = {
       body: JSON.stringify({ latexContent, instruction }),
     }),
   aiStatus: () => request('/ai/status'),
+  aiReview: (text, idioma = 'pt', backend = 'auto') =>
+    request('/ai/review', {
+      method: 'POST',
+      body: JSON.stringify({ text, idioma, backend }),
+    }),
+  aiAcademicStatus: () => request('/ai/academic-status'),
   createFolder: (projectId, folderPath) =>
     request(`/projects/${projectId}/folders`, {
       method: 'POST',
