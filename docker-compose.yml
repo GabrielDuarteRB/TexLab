@@ -1,10 +1,30 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_FLASH_ATTENTION=1
+      - OLLAMA_NUM_PARALLEL=3
+      - OLLAMA_KEEP_ALIVE=10m
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
+    depends_on:
+      - ollama
     volumes:
       - ./projects:/app/projects
       - ${GITCONFIG_PATH:-~/.gitconfig}:/root/.gitconfig:ro
@@ -14,6 +34,10 @@ services:
       - PROJECTS_DIR=/app/projects
       - AI_API_KEY=${AI_API_KEY:-}
       - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GROQ_MODEL=llama-3.3-70b-versatile
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=qwen2.5:7b
     restart: unless-stopped
 
   frontend:
@@ -29,3 +53,6 @@ services:
     volumes:
       - ./frontend/src:/app/src
     restart: unless-stopped
+
+volumes:
+  ollama_data:

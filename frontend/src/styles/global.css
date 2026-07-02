@@ -2247,3 +2247,400 @@ body {
   color: #79c0ff;
   margin-left: auto;
 }
+
+/* === Academic AI Panel === */
+.ai-panel {
+  width: 380px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ai-panel-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ai-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+
+.ai-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  border-bottom: 2px solid transparent;
+  justify-content: center;
+}
+
+.ai-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.ai-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+.ai-tab-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-idioma-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-idioma-selector label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ai-idioma-selector select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ai-idioma-selector select:focus {
+  border-color: var(--accent);
+}
+
+.ai-settings-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.ai-backend-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-backend-selector label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ai-backend-selector select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ai-backend-selector select:focus {
+  border-color: var(--accent);
+}
+
+.ai-backend-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+}
+
+.ai-review-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-review-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  justify-content: center;
+}
+
+.ai-review-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-result-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.ai-result-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ai-section {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.ai-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ai-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.ai-section-header h4 {
+  margin-bottom: 0;
+}
+
+.ai-section-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ai-pre {
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-primary);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.ai-corrections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ai-correction-item {
+  padding: 10px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--accent);
+}
+
+.ai-correction-diff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.ai-diff-removed {
+  background: rgba(243, 139, 168, 0.2);
+  color: var(--error);
+  padding: 2px 4px;
+  border-radius: 3px;
+  text-decoration: line-through;
+}
+
+.ai-diff-arrow {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ai-diff-added {
+  background: rgba(166, 227, 161, 0.2);
+  color: var(--success, #a6e3a1);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.ai-correction-explanation {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.ai-correction-icon {
+  flex-shrink: 0;
+}
+
+.ai-repetition-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-repetition-list.full {
+  gap: 8px;
+}
+
+.ai-repetition-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  font-size: 12px;
+}
+
+.ai-word-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.ai-word {
+  font-weight: 600;
+  color: var(--accent);
+  font-family: monospace;
+}
+
+.ai-lema {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.ai-count {
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(243, 139, 168, 0.15);
+  color: var(--error);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ai-paragrafos {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.ai-synonyms {
+  color: var(--text-secondary);
+  font-size: 12px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.ai-word-details {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ai-variation {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--bg-surface);
+  border-radius: var(--radius);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ai-variation-num {
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ai-variation p {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ai-suggestions-list {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.ai-suggestions-list li {
+  margin-bottom: 4px;
+}
+
+.ai-disabled {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.ai-disabled .ai-hint {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.ai-disabled a {
+  color: var(--accent);
+}
+
+.ai-disabled code {
+  background: var(--bg-surface);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.ai-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
