@@ -49,8 +49,10 @@ PROJECTS_DIR=./projects
 ## Subindo o sistema
 
 ```bash
-docker-compose up --build
+./docker.sh
 ```
+
+O script detecta automaticamente se seu computador tem GPU NVIDIA e usa a configuração adequada.
 
 Os projetos ficam salvos na pasta `./projects` do repositório.
 
@@ -64,7 +66,7 @@ Os projetos ficam salvos na pasta `./projects` do repositório.
 ## Parando o sistema
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## Reconstruindo
@@ -72,5 +74,5 @@ docker-compose down
 Se houver alterações no código, reconstrua os containers:
 
 ```bash
-docker-compose up --build
+./docker.sh
 ```

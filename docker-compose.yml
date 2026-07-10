@@ -9,13 +9,6 @@ services:
       - OLLAMA_FLASH_ATTENTION=1
       - OLLAMA_NUM_PARALLEL=3
       - OLLAMA_KEEP_ALIVE=10m
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
     restart: unless-stopped
   backend:
     build:

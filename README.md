@@ -8,8 +8,9 @@ Editor LaTeX local inspirado no Overleaf, com React + Express + Docker.
 # Copiar configuração
 cp .env.example .env
 
-# Subir com Docker
-docker-compose up --build
+# Subir com Docker (detecta GPU automaticamente)
+chmod +x docker.sh
+./docker.sh
 ```
 
 - **Frontend:** http://localhost:5173

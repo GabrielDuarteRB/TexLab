@@ -257,7 +257,17 @@ Resposta esperada:
 }
 ```
 
-### docker-compose.yml
+### Estrutura Docker
+
+O projeto utiliza dois arquivos de compose para gerenciar GPU:
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `docker-compose.yml` | Configuração base (sem GPU) |
+| `docker-compose.gpu.yml` | Override com GPU NVIDIA |
+| `docker.sh` | Script de auto-detecção |
+
+#### `docker-compose.yml` (base)
 
 ```yaml
 services:
@@ -271,13 +281,6 @@ services:
       - OLLAMA_FLASH_ATTENTION=1
       - OLLAMA_NUM_PARALLEL=3
       - OLLAMA_KEEP_ALIVE=10m
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
     restart: unless-stopped
 
   backend:
@@ -295,6 +298,46 @@ services:
       - ./projects:/app/projects
     restart: unless-stopped
 ```
+
+#### `docker-compose.gpu.yml` (override GPU)
+
+```yaml
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
+
+#### `docker.sh` (auto-detecção)
+
+```bash
+#!/bin/bash
+
+if command -v nvidia-smi &> /dev/null && nvidia-smi &> /dev/null; then
+    echo "✓ GPU NVIDIA detectada, habilitando GPU..."
+    docker compose -f docker-compose.yml -f docker-compose.gpu.yml up
+else
+    echo "✗ Sem GPU NVIDIA, rodando sem GPU..."
+    docker compose -f docker-compose.yml up
+fi
+```
+
+#### Como usar
+
+```bash
+# Tornar executável (só uma vez)
+chmod +x docker.sh
+
+# Rodar
+./docker.sh
+```
+
+O script detecta automaticamente se tem GPU NVIDIA e usa a configuração adequada.
 
 ### Modelos Suportados
 
