@@ -787,8 +787,9 @@
 </tbody>
 </table>
 <h2 id="subindo-o-sistema">Subindo o sistema<a class="headerlink" href="#subindo-o-sistema" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>--build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>./docker.sh
 </code></pre></div>
+<p>O script detecta automaticamente se seu computador tem GPU NVIDIA e usa a configuração adequada.</p>
 <p>Os projetos ficam salvos na pasta <code>./projects</code> do repositório.</p>
 <h2 id="urls-de-acesso">URLs de acesso<a class="headerlink" href="#urls-de-acesso" title="Permanent link">&para;</a></h2>
 <table>
@@ -810,11 +811,11 @@
 </tbody>
 </table>
 <h2 id="parando-o-sistema">Parando o sistema<a class="headerlink" href="#parando-o-sistema" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker-compose<span class="w"> </span>down
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>down
 </code></pre></div>
 <h2 id="reconstruindo">Reconstruindo<a class="headerlink" href="#reconstruindo" title="Permanent link">&para;</a></h2>
 <p>Se houver alterações no código, reconstrua os containers:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>--build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>./docker.sh
 </code></pre></div>
 
 
