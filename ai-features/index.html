@@ -13,6 +13,10 @@
         <link rel="canonical" href="https://gabrielduarterb.github.io/TexLab/ai-features/">
       
       
+        <link rel="prev" href="../revisao-ortografica/">
+      
+      
+        <link rel="next" href="../funcs-git/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>Funcionalidades de IA - TexLab</title>
+        <title>Funcionalidades IA - TexLab</title>
       
     
     
@@ -110,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Funcionalidades de IA
+              Funcionalidades IA
             
           </span>
         </div>
@@ -302,6 +306,751 @@
   
 
       </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revisao-ortografica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Revisão Ortográfica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades IA
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionalidades IA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ollama-vs-groq-qual-usar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama vs Groq: Qual usar?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-arquitetura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Arquitetura
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Arquitetura">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#visao-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-de-uma-revisao-academica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fluxo de uma Revisão Acadêmica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-academic-review-ollama-groq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Academic Review (Ollama / Groq)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Academic Review (Ollama / Groq)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-faz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que faz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deteccao-de-repeticoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detecção de Repetições
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processamento-paralelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Processamento Paralelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ai-suggest-openai-anthropic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. AI Suggest (OpenAI / Anthropic)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. AI Suggest (OpenAI / Anthropic)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-faz_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que faz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuração
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configuração">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pré-requisitos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variaveis-de-ambiente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variáveis de Ambiente
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variáveis de Ambiente">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-em-docker-composeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (em docker-compose.yml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ollama-em-docker-composeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama (em docker-compose.yml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-configurar-o-groq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como configurar o Groq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estrutura-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estrutura Docker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estrutura Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-composeyml-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docker-compose.yml (base)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-composegpuyml-override-gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docker-compose.gpu.yml (override GPU)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dockersh-auto-deteccao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docker.sh (auto-detecção)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-usar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como usar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modelos-suportados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelos Suportados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelos Suportados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ollama-local-roda-no-seu-computador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ollama (Local — roda no seu computador)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groq-cloud-roda-na-nuvem-sem-precisar-de-gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groq (Cloud — roda na nuvem, sem precisar de GPU)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacao-do-nvidia-container-toolkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalação do NVIDIA Container Toolkit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-do-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull do Modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-api-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. API REST
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. API REST">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-apiaireview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/ai/review
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-apiaisuggest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /api/ai/suggest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apiaistatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/ai/status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-apiaiacademic-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /api/ai/academic-status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Frontend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Frontend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#painel-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Painel IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Abas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-revisar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Revisar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-repeticao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Repetição
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sugerir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sugerir
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualizacao-de-diffs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualização de Diffs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-inventario-de-arquivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Inventário de Arquivos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Inventário de Arquivos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-servicos-de-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend — Serviços de IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-rotas-e-controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend — Rotas e Controllers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker / Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-solucao-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-revisao-ortografica-em-tempo-real-ltex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Revisão Ortográfica em Tempo Real (LTEX+)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Revisão Ortográfica em Tempo Real (LTEX+)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como funciona
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracao_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solucao-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1023,6 +1772,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#9-revisao-ortografica-em-tempo-real-ltex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Revisão Ortográfica em Tempo Real (LTEX+)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Revisão Ortográfica em Tempo Real (LTEX+)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como funciona
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracao_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solucao-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1041,6 +1851,10 @@
 
 
 <h1 id="funcionalidades-de-ia">Funcionalidades de IA<a class="headerlink" href="#funcionalidades-de-ia" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Guia rápido de uso</p>
+<p>Este documento é a <strong>referência técnica completa</strong> das integrações com IA. Se você quer apenas <strong>usar a revisão ortográfica em tempo real</strong>, comece pelo guia amigável: <a href="../revisao-ortografica/">Revisão Ortográfica</a>.</p>
+</div>
 <p>O TexLab possui dois sistemas de IA independentes para auxiliar na escrita acadêmica:</p>
 <table>
 <thead>
@@ -1965,6 +2779,99 @@
 <td>Repetições não aparecem</td>
 <td>Texto muito curto ou sem repetições</td>
 <td>Funciona melhor com textos &gt; 500 palavras</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-revisao-ortografica-em-tempo-real-ltex">9. Revisão Ortográfica em Tempo Real (LTEX+)<a class="headerlink" href="#9-revisao-ortografica-em-tempo-real-ltex" title="Permanent link">&para;</a></h2>
+<p>A partir desta versão, o TexLab exibe <strong>marcadores de erros ortográficos/gramaticais diretamente no editor</strong>, sem precisar clicar em "Revisar".</p>
+<h3 id="como-funciona">Como funciona<a class="headerlink" href="#como-funciona" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Ao abrir um arquivo <code>.tex</code> ou <code>.bib</code>, o frontend dispara uma checagem inicial.</li>
+<li>A cada edição, o conteúdo é reenviado para o backend após <strong>800 ms de inatividade</strong> (debounce).</li>
+<li>O backend consulta o servidor <code>ltex-ls-plus</code> (LanguageTool Extended) via LSP, que devolve diagnósticos em <code>pt-BR</code>.</li>
+<li>Os diagnósticos são convertidos em markers do Monaco Editor, exibidos como <strong>sublinhado ondulado</strong> (squiggly) com cor de aviso.</li>
+<li>Ao passar o mouse sobre o trecho, aparece a mensagem de erro. O ícone de <strong>lightbulb (💡)</strong> oferece sugestões de correção que aplicam a substituição automaticamente.</li>
+</ol>
+<h3 id="componentes">Componentes<a class="headerlink" href="#componentes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frontend/src/hooks/useRealtimeSpellCheck.js</code></td>
+<td>Hook de debounce + AbortController + cancelamento de requests antigas</td>
+</tr>
+<tr>
+<td><code>frontend/src/components/editor/TexLabEditor.jsx</code></td>
+<td>Renderiza markers, registra CodeActionProvider e exibe indicator</td>
+</tr>
+<tr>
+<td><code>frontend/src/components/ai/AiPanel.jsx</code></td>
+<td>Toggle on/off na aba Revisar</td>
+</tr>
+<tr>
+<td><code>frontend/src/services/api.js</code></td>
+<td><code>aiLtexCheck()</code> e <code>aiLtexStatus()</code></td>
+</tr>
+<tr>
+<td><code>backend/src/services/ltex/ltexClient.js</code></td>
+<td>Pool de conexões LSP com <code>ltex-ls-plus</code></td>
+</tr>
+<tr>
+<td><code>backend/src/routes/aiRoutes.js</code></td>
+<td><code>POST /api/ai/ltex-check</code> e <code>GET /api/ai/ltex-status</code></td>
+</tr>
+<tr>
+<td><code>ltex-ls/Dockerfile</code></td>
+<td>Imagem do servidor LSP (v18.7.0)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuracao_1">Configuração<a class="headerlink" href="#configuracao_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>O idioma é fixo em <strong>pt-BR</strong> no handshake LSP (<code>backend/src/services/ltex/ltexClient.js</code>). Para mudar, edite o <code>language</code> em <code>createConnection</code> e o parâmetro do <code>checkDocument</code>.</li>
+<li>O <strong>toggle</strong> está na aba "Revisar" do painel IA: marcar/desmarcar a caixa "Checagem ortográfica em tempo real".</li>
+<li>O indicator no canto inferior direito do editor mostra: "Verificação ortográfica" (ocioso), "Verificando..." (durante checagem), ou "ltex indisponível" (se o servidor LSP estiver offline).</li>
+</ul>
+<h3 id="solucao-de-problemas">Solução de Problemas<a class="headerlink" href="#solucao-de-problemas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Causa</th>
+<th>Solução</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Marcadores não aparecem</td>
+<td>Container <code>ltex-ls</code> não está rodando</td>
+<td><code>docker ps</code> — reiniciar com <code>docker compose up -d ltex-ls</code></td>
+</tr>
+<tr>
+<td><code>ltex indisponível</code> no indicator</td>
+<td>Backend não consegue alcançar o LSP</td>
+<td>Verificar <code>LTEX_HOST=ltex-ls</code> e <code>LTEX_PORT=2222</code> no <code>docker-compose.yml</code></td>
+</tr>
+<tr>
+<td>Checagem lenta</td>
+<td>Documento grande</td>
+<td>Reduzir debounce em <code>useRealtimeSpellCheck.js</code> (<code>DEBOUNCE_MS</code>) ou desabilitar o toggle</td>
+</tr>
+<tr>
+<td>Marcadores somem ao editar</td>
+<td>Comportamento esperado — debounce reaplica após 800 ms</td>
+<td>Aguardar ou reduzir debounce</td>
+</tr>
+<tr>
+<td>Sugestões (💡) não aparecem</td>
+<td>ltex-ls pode não devolver <code>codeAction</code> para o tipo de erro</td>
+<td>Erros de "Unknown word" geralmente não têm sugestão automática</td>
 </tr>
 </tbody>
 </table>
