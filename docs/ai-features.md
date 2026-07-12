@@ -1,5 +1,8 @@
 # Funcionalidades de IA
 
+!!! tip "Guia rápido de uso"
+    Este documento é a **referência técnica completa** das integrações com IA. Se você quer apenas **usar a revisão ortográfica em tempo real**, comece pelo guia amigável: [Revisão Ortográfica](revisao-ortografica.md).
+
 O TexLab possui dois sistemas de IA independentes para auxiliar na escrita acadêmica:
 
 | Sistema | Tipo | Backend | Uso |
@@ -626,3 +629,45 @@ As correções são exibidas com estilo visual:
 | GPU não utilizada | NVIDIA Container Toolkit ausente | Instalar toolkit e reiniciar Docker |
 | Modelo não encontrado | Modelo não baixado | `docker exec ollama ollama pull qwen2.5:7b` |
 | Repetições não aparecem | Texto muito curto ou sem repetições | Funciona melhor com textos > 500 palavras |
+
+---
+
+## 9. Revisão Ortográfica em Tempo Real (LTEX+)
+
+A partir desta versão, o TexLab exibe **marcadores de erros ortográficos/gramaticais diretamente no editor**, sem precisar clicar em "Revisar".
+
+### Como funciona
+
+1. Ao abrir um arquivo `.tex` ou `.bib`, o frontend dispara uma checagem inicial.
+2. A cada edição, o conteúdo é reenviado para o backend após **800 ms de inatividade** (debounce).
+3. O backend consulta o servidor `ltex-ls-plus` (LanguageTool Extended) via LSP, que devolve diagnósticos em `pt-BR`.
+4. Os diagnósticos são convertidos em markers do Monaco Editor, exibidos como **sublinhado ondulado** (squiggly) com cor de aviso.
+5. Ao passar o mouse sobre o trecho, aparece a mensagem de erro. O ícone de **lightbulb (💡)** oferece sugestões de correção que aplicam a substituição automaticamente.
+
+### Componentes
+
+| Arquivo | Papel |
+|---|---|
+| `frontend/src/hooks/useRealtimeSpellCheck.js` | Hook de debounce + AbortController + cancelamento de requests antigas |
+| `frontend/src/components/editor/TexLabEditor.jsx` | Renderiza markers, registra CodeActionProvider e exibe indicator |
+| `frontend/src/components/ai/AiPanel.jsx` | Toggle on/off na aba Revisar |
+| `frontend/src/services/api.js` | `aiLtexCheck()` e `aiLtexStatus()` |
+| `backend/src/services/ltex/ltexClient.js` | Pool de conexões LSP com `ltex-ls-plus` |
+| `backend/src/routes/aiRoutes.js` | `POST /api/ai/ltex-check` e `GET /api/ai/ltex-status` |
+| `ltex-ls/Dockerfile` | Imagem do servidor LSP (v18.7.0) |
+
+### Configuração
+
+- O idioma é fixo em **pt-BR** no handshake LSP (`backend/src/services/ltex/ltexClient.js`). Para mudar, edite o `language` em `createConnection` e o parâmetro do `checkDocument`.
+- O **toggle** está na aba "Revisar" do painel IA: marcar/desmarcar a caixa "Checagem ortográfica em tempo real".
+- O indicator no canto inferior direito do editor mostra: "Verificação ortográfica" (ocioso), "Verificando..." (durante checagem), ou "ltex indisponível" (se o servidor LSP estiver offline).
+
+### Solução de Problemas
+
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| Marcadores não aparecem | Container `ltex-ls` não está rodando | `docker ps` — reiniciar com `docker compose up -d ltex-ls` |
+| `ltex indisponível` no indicator | Backend não consegue alcançar o LSP | Verificar `LTEX_HOST=ltex-ls` e `LTEX_PORT=2222` no `docker-compose.yml` |
+| Checagem lenta | Documento grande | Reduzir debounce em `useRealtimeSpellCheck.js` (`DEBOUNCE_MS`) ou desabilitar o toggle |
+| Marcadores somem ao editar | Comportamento esperado — debounce reaplica após 800 ms | Aguardar ou reduzir debounce |
+| Sugestões (💡) não aparecem | ltex-ls pode não devolver `codeAction` para o tipo de erro | Erros de "Unknown word" geralmente não têm sugestão automática |

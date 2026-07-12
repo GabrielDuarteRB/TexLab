@@ -1,7 +1,8 @@
 import aiService from '../services/aiService.js';
-import { revisarTexto } from '../services/academic/academicReviewService.js';
+import { revisarTexto, checarComLtex } from '../services/academic/academicReviewService.js';
 import { ollamaDisponivel } from '../services/academic/ollamaClient.js';
 import { groqDisponivel } from '../services/academic/groqClient.js';
+import { checkHealth, getPoolStatus } from '../services/ltex/ltexClient.js';
 
 export async function suggest(req, res) {
   const { latexContent, instruction } = req.body;
@@ -37,4 +38,32 @@ export async function academicStatus(req, res) {
     groq_disponivel: groq,
     disponivel: ollama || groq,
   });
+}
+
+export async function ltexStatus(req, res) {
+  const pool = getPoolStatus();
+  const health = await checkHealth();
+  res.json({
+    disponivel: health.available,
+    version: health.version || null,
+    erro: health.error || null,
+    pool,
+  });
+}
+
+export async function ltexCheck(req, res) {
+  const { text, language, languageId, includeSuggestions } = req.body;
+  if (!text) {
+    return res.status(400).json({ error: 'text is required' });
+  }
+  try {
+    const diagnostics = await checarComLtex(text, {
+      language,
+      languageId,
+      includeSuggestions,
+    });
+    res.json({ diagnostics });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }

@@ -15,7 +15,8 @@ O TexLab é uma ferramenta para escrever, compilar e visualizar documentos LaTeX
 - Visualização de PDF lado a lado
 - Gerenciamento de projetos e arquivos
 - Importar projetos de pastas, .zip ou GitHub
-- Assistente IA para sugestões (em desenvolvimento)
+- **Revisão ortográfica em tempo real** com LanguageTool (pt-BR)
+- Assistente IA para revisão acadêmica (Ollama local ou Groq cloud)
 
 ### Stack
 
@@ -49,6 +50,8 @@ docker-compose up --build
 |---|---|
 | [Instalação](instalacao.md) | Pré-requisitos, configuração e execução |
 | [Uso Geral](uso-geral.md) | Como usar o editor e compilar documentos |
+| [Revisão Ortográfica](revisao-ortografica.md) | Checagem ortográfica/gramatical em tempo real |
+| [Funcionalidades IA](ai-features.md) | Revisão acadêmica via Ollama/Groq e detalhes técnicos |
 | [Importar Projetos](importar.md) | Importar de pastas ou arquivos .zip |
 | [Clonar do GitHub](clone-github.md) | Clonar repositórios públicos e privados |
 | [Configuração Git](config-git.md) | Configurar credenciais e caminhos |

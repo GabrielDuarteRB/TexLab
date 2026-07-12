@@ -44,6 +44,8 @@ nav:
   - Início: index.md
   - Instalação: instalacao.md
   - Uso Geral: uso-geral.md
+  - Revisão Ortográfica: revisao-ortografica.md
+  - Funcionalidades IA: ai-features.md
   - Funcionalidades Git: funcs-git.md
   - Importar Projetos: importar.md
   - Clonar do GitHub: clone-github.md

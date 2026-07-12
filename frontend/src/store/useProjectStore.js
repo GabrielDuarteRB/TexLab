@@ -19,6 +19,16 @@ const useProjectStore = create((set, get) => ({
   gitDiff: [],
   expandedFiles: {},
   fileDiffs: {},
+  editorMarkers: [],
+  realtimeCheckEnabled: true,
+  ltexStatus: null,
+  spellChecking: false,
+
+  setEditorMarkers: (markers) => set({ editorMarkers: markers }),
+  clearEditorMarkers: () => set({ editorMarkers: [] }),
+  setRealtimeCheckEnabled: (enabled) => set({ realtimeCheckEnabled: enabled }),
+  setLtexStatus: (status) => set({ ltexStatus: status }),
+  setSpellChecking: (checking) => set({ spellChecking: checking }),
 
   fetchProjects: async () => {
     try {

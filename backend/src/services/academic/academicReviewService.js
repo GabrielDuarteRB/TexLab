@@ -3,6 +3,7 @@ import { groqDisponivel, chamarGroq } from './groqClient.js';
 import { getSystemPrompt, extrairJson } from './promptBuilder.js';
 import { chunkText } from './chunker.js';
 import { detectarRepeticoesLocais, deduplicarPalavras } from './localRepetitionDetector.js';
+import { checkDocument, getPoolStatus, checkHealth } from '../ltex/ltexClient.js';
 
 async function detectarBackend(opcao = 'auto') {
   if (opcao === 'ollama' && await ollamaDisponivel()) {
@@ -103,14 +104,55 @@ async function processarEmParalelo(chunks, idioma, chamarLLM) {
 }
 
 export async function revisarTexto(texto, idioma = 'pt', opcaoBackend = 'auto') {
-  const textoLimpo = texto.includes('\\begin{') || texto.includes('\\section')
-    ? parseLatex(texto)
-    : texto;
+  const isLatex = texto.includes('\\begin{') || texto.includes('\\section');
+
+  // Fase 1: Checagem ortográfica/gramatical via ltex-ls-plus (se disponível)
+  let correcoesLtex = [];
+  let ltexDisponivel = false;
+  try {
+    const ltexDiagnostics = await checkDocument(texto, {
+      languageId: isLatex ? 'latex' : 'plaintext',
+      language: idioma === 'pt' ? 'pt-BR' : idioma,
+    });
+    ltexDisponivel = true;
+    correcoesLtex = ltexDiagnostics.map(d => ({
+      tipo: 'ortografia',
+      original: texto.slice(d.startOffset, d.endOffset),
+      corrigido: d.suggestions.length > 0 ? d.suggestions[0] : d.message,
+      mensagem: d.message,
+      sugestoes: d.suggestions,
+      offset: d.startOffset,
+      fonte: 'ltex',
+    }));
+    console.log(`[AcademicReview] ltex: ${correcoesLtex.length} diagnósticos`);
+  } catch (err) {
+    console.warn(`[AcademicReview] ltex indisponível: ${err.message}`);
+  }
+
+  // Fase 2: Processamento via LLM (refinamento acadêmico)
+  const textoLimpo = isLatex ? parseLatex(texto) : texto;
 
   const paragrafos = textoLimpo.split('\n').filter(p => p.trim());
   const chunks = chunkText(paragrafos);
 
-  const backend = await detectarBackend(opcaoBackend);
+  let backend;
+  try {
+    backend = await detectarBackend(opcaoBackend);
+  } catch {
+    // Se não tem LLM disponível, retorna só correções do ltex
+    return {
+      texto_corrigido: texto,
+      correcoes: correcoesLtex.slice(0, 30),
+      variacoes: [],
+      palavras_repetidas: [],
+      sugestoes_melhoria: [],
+      erros: [],
+      total_chunks: 0,
+      chunks_processados: 0,
+      backend_usado: ltexDisponivel ? 'ltex' : 'none',
+    };
+  }
+
   console.log(`[AcademicReview] Backend: ${backend.backend}, Chunks: ${chunks.length}, Concorrência: ${CONCORRENCIA_MAX}`);
 
   const { resultadosLLM, erros } = await processarEmParalelo(chunks, idioma, backend.chamar);
@@ -150,15 +192,37 @@ export async function revisarTexto(texto, idioma = 'pt', opcaoBackend = 'auto') 
   const repeticoesLocais = detectarRepeticoesLocais(paragrafos, idioma);
   const todasRepeticoes = deduplicarPalavras([...palavrasRepetidasLLM, ...repeticoesLocais]);
 
+  // Merge: correções do ltex + correções do LLM (ltex tem prioridade por ser mais preciso)
+  const todasCorrecoesComLtex = [...correcoesLtex, ...todasCorrecoes];
+
   return {
     texto_corrigido: textoCorrigido.join('\n\n'),
-    correcoes: todasCorrecoes.slice(0, 30),
+    correcoes: todasCorrecoesComLtex.slice(0, 30),
     variacoes: todasVariacoes.slice(0, 8),
     palavras_repetidas: todasRepeticoes.slice(0, 20),
     sugestoes_melhoria: todasSugestoes.slice(0, 15),
     erros,
     total_chunks: chunks.length,
     chunks_processados: resultadosLLM.size,
-    backend_usado: backend.backend,
+    backend_usado: `${backend.backend}${ltexDisponivel ? '+ltex' : ''}`,
+    ltex: ltexDisponivel ? { status: 'ok', correcoes: correcoesLtex.length } : { status: 'unavailable' },
   };
+}
+
+/**
+ * Checagem ortográfica/gramatical isolada via ltex-ls-plus (sem LLM).
+ * Retorna diagnósticos no formato { startOffset, endOffset, message, suggestions }.
+ *
+ * @param {string} texto - Conteúdo LaTeX ou texto plano
+ * @param {Object} [options]
+ * @param {string} [options.languageId='latex']
+ * @param {string} [options.language='pt-BR']
+ * @returns {Promise<Array<{startOffset: number, endOffset: number, message: string, suggestions: string[]}>>}
+ */
+export async function checarComLtex(texto, options = {}) {
+  const isLatex = texto.includes('\\begin{') || texto.includes('\\section');
+  return checkDocument(texto, {
+    languageId: options.languageId || (isLatex ? 'latex' : 'plaintext'),
+    language: options.language || 'pt-BR',
+  });
 }

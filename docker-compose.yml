@@ -10,6 +10,17 @@ services:
       - OLLAMA_NUM_PARALLEL=3
       - OLLAMA_KEEP_ALIVE=10m
     restart: unless-stopped
+  ltex-ls:
+    build:
+      context: ./ltex-ls
+      args:
+        - LTEX_VERSION=18.7.0
+    ports:
+      - "${LTEX_PORT:-2222}:2222"
+    environment:
+      - LTEX_PORT=2222
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -18,6 +29,7 @@ services:
       - "3001:3001"
     depends_on:
       - ollama
+      - ltex-ls
     volumes:
       - ./projects:/app/projects
       - ${GITCONFIG_PATH:-~/.gitconfig}:/root/.gitconfig:ro
@@ -31,6 +43,8 @@ services:
       - GROQ_MODEL=llama-3.3-70b-versatile
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=qwen2.5:7b
+      - LTEX_HOST=ltex-ls
+      - LTEX_PORT=2222
     restart: unless-stopped
 
   frontend:

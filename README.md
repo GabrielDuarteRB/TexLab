@@ -23,7 +23,8 @@ chmod +x docker.sh
 - Visualização de PDF lado a lado
 - Gerenciamento de projetos e arquivos
 - Importar de pastas, .zip ou GitHub
-- IA opcional para sugestões (configurar `AI_API_KEY` no `.env`)
+- **Revisão ortográfica em tempo real** com LanguageTool (pt-BR)
+- IA opcional para revisão acadêmica (configurar `GROQ_API_KEY` ou Ollama no `.env`)
 
 ## Documentação
 
@@ -33,6 +34,8 @@ A documentação completa está na pasta [`docs/`](docs/), disponível também v
 |---|---|
 | [Instalação](docs/instalacao.md) | Pré-requisitos, configuração e execução |
 | [Uso Geral](docs/uso-geral.md) | Como usar o editor e compilar documentos |
+| [Revisão Ortográfica](docs/revisao-ortografica.md) | Checagem ortográfica/gramatical em tempo real |
+| [Funcionalidades IA](docs/ai-features.md) | Revisão acadêmica via Ollama/Groq e detalhes técnicos |
 | [Importar Projetos](docs/importar.md) | Importar de pastas ou arquivos .zip |
 | [Clonar do GitHub](docs/clone-github.md) | Clonar repositórios públicos e privados |
 | [Configuração Git](docs/config-git.md) | Configurar credenciais e caminhos |
