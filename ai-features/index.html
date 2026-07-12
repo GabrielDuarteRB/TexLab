@@ -1047,6 +1047,100 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#10-explicacao-de-erros-de-compilacao-com-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Explicação de Erros de Compilação com IA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Explicação de Erros de Compilação com IA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como funciona
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roteamento-groq-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roteamento Groq → Ollama
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#privacidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacidade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solucao-de-problemas_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1819,6 +1913,100 @@
         
           <li class="md-nav__item">
   <a href="#solucao-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solução de Problemas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-explicacao-de-erros-de-compilacao-com-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Explicação de Erros de Compilação com IA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Explicação de Erros de Compilação com IA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Como funciona
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roteamento-groq-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roteamento Groq → Ollama
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#privacidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privacidade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#componentes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solucao-de-problemas_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Solução de Problemas
@@ -2872,6 +3060,157 @@
 <td>Sugestões (💡) não aparecem</td>
 <td>ltex-ls pode não devolver <code>codeAction</code> para o tipo de erro</td>
 <td>Erros de "Unknown word" geralmente não têm sugestão automática</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-explicacao-de-erros-de-compilacao-com-ia">10. Explicação de Erros de Compilação com IA<a class="headerlink" href="#10-explicacao-de-erros-de-compilacao-com-ia" title="Permanent link">&para;</a></h2>
+<p>Quando uma compilação LaTeX falha, o TexLab oferece um botão <strong>"Explicar erro"</strong> que envia o log de erro bruto para a IA e devolve um diagnóstico em português do Brasil.</p>
+<h3 id="como-funciona_1">Como funciona<a class="headerlink" href="#como-funciona_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>O usuário compila o documento. Se houver erro, o painel vermelho "Erro na compilação" aparece no toolbar.</li>
+<li>Ao expandir o painel, o botão <strong>"✨ Explicar erro"</strong> fica disponível no header (ao lado do X).</li>
+<li>Ao clicar, o backend:</li>
+<li>Extrai apenas a parte relevante do log (linhas em torno de <code>!</code> e as últimas 15 linhas), evitando mandar o <code>.log</code> inteiro para o modelo.</li>
+<li>Detecta a <code>l.N</code> (linha) e o arquivo <code>.tex</code> mencionados pelo LaTeX.</li>
+<li>Monta um prompt em PT-BR com: (a) o log extraído; (b) o trecho do <code>.tex</code> próximo à linha do erro (com <code>&gt;&gt;&gt;</code> marcando a linha problemática).</li>
+<li>Pede resposta curta e direta, no formato <code>(a) causa em 1-2 frases; (b) sugestão de correção</code>. Quando a IA consegue identificar o trecho exato, ela retorna um bloco estruturado <code>&lt;&lt;&lt;correction&gt;&gt;&gt; / original: ... / replacement: ... / &lt;&lt;&lt;/correction&gt;&gt;&gt;</code> para permitir substituição <strong>precisa</strong> (não substitui a linha inteira).</li>
+<li>A resposta aparece num <strong>drawer lateral fixo</strong> (não modal) — ocupa toda a altura da viewport abaixo do toolbar. O usuário pode continuar editando enquanto lê.</li>
+<li>Se a IA sugerir um trecho corrigido, o drawer oferece:</li>
+<li><strong>Copiar</strong> o trecho.</li>
+<li><strong>Aplicar</strong> — abre um diff preview:<ul>
+<li>Se a IA retornou <code>&lt;&lt;&lt;correction&gt;&gt;&gt;</code> (caso comum): mostra a linha INTEIRA com o <code>trecho_original</code> riscado em vermelho e o <code>replacement</code> em verde, na mesma linha. A substituição é feita via <code>indexOf</code> no <code>trecho_original</code> — só o fragmento é trocado, o resto do texto da linha é preservado.</li>
+<li>Se a IA não retornou <code>&lt;&lt;&lt;correction&gt;&gt;&gt;</code> (modelo antigo): mostra aviso "A linha INTEIRA será substituída" e usa a substituição da linha toda (comportamento legado).</li>
+</ul>
+</li>
+<li>Se a linha do arquivo foi editada entre "Explicar" e "Aplicar" e o <code>trecho_original</code> não bate mais: mostra "O trecho original não foi encontrado na linha atual" e desabilita "Confirmar".</li>
+<li>Se nenhum backend de IA estiver configurado, o botão é substituído por um hint: "Configure uma IA para usar 'Explicar erro'".</li>
+</ol>
+<h3 id="cache">Cache<a class="headerlink" href="#cache" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Chave: <code>sha256(log bruto)</code>.</li>
+<li>Escopo: memória de sessão (não persiste em banco, não atravessa reloads).</li>
+<li>Invalidação: implícita. Quando o usuário corrige o documento e o log muda na próxima compilação, o hash muda e a cache miss dispara nova chamada.</li>
+<li>O cache fica em <code>frontend/src/hooks/useAiError.js</code>. Não cacheia erros (permite retry).</li>
+</ul>
+<h3 id="roteamento-groq-ollama">Roteamento Groq → Ollama<a class="headerlink" href="#roteamento-groq-ollama" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Groq é a primeira opção</strong> (mais rápido, modelo maior, free tier generoso para baixa frequência de uso).</li>
+<li>Se <code>GROQ_API_KEY</code> ausente → tenta Ollama local.</li>
+<li>Se Groq retornar rate limit (HTTP 429) e Ollama estiver rodando → faz fallback automático para Ollama.</li>
+<li>Se nenhum backend disponível → 500 com mensagem amigável <code>"Nenhum backend de IA disponível. Instale Ollama ou configure GROQ_API_KEY no .env"</code>.</li>
+</ul>
+<h3 id="privacidade">Privacidade<a class="headerlink" href="#privacidade" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A chave <code>GROQ_API_KEY</code> é lida <strong>apenas no backend</strong> via <code>process.env</code>. O frontend nunca envia nem recebe a chave.</li>
+<li>O <code>.tex</code> completo <strong>não</strong> é enviado — apenas o trecho de ±5 linhas ao redor da <code>linhaErro</code> (quando o log indica a linha). Isso reduz custo de tokens e expõe menos conteúdo do que o necessário.</li>
+</ul>
+<h3 id="endpoint">Endpoint<a class="headerlink" href="#endpoint" title="Permanent link">&para;</a></h3>
+<p><code>POST /api/ai/explain-latex-error</code></p>
+<p>Request:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p">{</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="nt">&quot;log&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string (obrigatório, não vazio)&quot;</span><span class="p">,</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="nt">&quot;texContexto&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string ou null (opcional)&quot;</span><span class="p">,</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="nt">&quot;linhaErro&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="nt">&quot;arquivoErro&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main.tex&quot;</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="p">}</span>
+</code></pre></div></p>
+<p>Response 200:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p">{</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">&quot;explicacao&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Texto da resposta da IA em PT-BR (pode incluir bloco &lt;&lt;&lt;correction&gt;&gt;&gt;...&lt;&lt;&lt;/correction&gt;&gt;&gt;)&quot;</span><span class="p">,</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="nt">&quot;trecho_corrigido_sugerido&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fragmento LaTeX que substitui o trecho_original (string)&quot;</span><span class="p">,</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="nt">&quot;trecho_original&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fragmento exato a ser substituído na linha (string ou null se a IA não souber)&quot;</span><span class="p">,</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="nt">&quot;linhaErro&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="nt">&quot;arquivoErro&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main.tex&quot;</span><span class="p">,</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">  </span><span class="nt">&quot;backend_usado&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;groq&quot;</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="s2">&quot;ollama&quot;</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="s2">&quot;ollama (fallback de groq)&quot;</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="p">}</span>
+</code></pre></div></p>
+<p>Response 400: <code>{ "error": "log é obrigatório e não pode estar vazio" }</code>
+Response 500: <code>{ "error": "&lt;mensagem amigável&gt;" }</code> (ex: rate limit, IA indisponível, etc.)</p>
+<h3 id="componentes_1">Componentes<a class="headerlink" href="#componentes_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/src/services/latexErrorExplainerService.js</code></td>
+<td>Extração de log, montagem de prompt, chamada Groq/Ollama com fallback</td>
+</tr>
+<tr>
+<td><code>backend/src/controllers/aiController.js</code></td>
+<td><code>explainError</code> — valida input e chama o service</td>
+</tr>
+<tr>
+<td><code>backend/src/routes/aiRoutes.js</code></td>
+<td><code>POST /api/ai/explain-latex-error</code></td>
+</tr>
+<tr>
+<td><code>frontend/src/services/api.js</code></td>
+<td><code>aiExplainLatexError({ log, texContexto, linhaErro, arquivoErro })</code></td>
+</tr>
+<tr>
+<td><code>frontend/src/hooks/useAiError.js</code></td>
+<td>Estado + cache por hash do log + chamada à API</td>
+</tr>
+<tr>
+<td><code>frontend/src/components/toolbar/Toolbar.jsx</code></td>
+<td>Sub-componente <code>CompileErrorExplainer</code> com botão + popover</td>
+</tr>
+</tbody>
+</table>
+<h3 id="solucao-de-problemas_1">Solução de Problemas<a class="headerlink" href="#solucao-de-problemas_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Causa</th>
+<th>Solução</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Botão "Explicar erro" não aparece</td>
+<td>Nenhum backend de IA configurado</td>
+<td>Instalar Ollama ou configurar <code>GROQ_API_KEY</code> no <code>.env</code></td>
+</tr>
+<tr>
+<td>Erro "Nenhum backend de IA disponível" no popover</td>
+<td><code>GROQ_API_KEY</code> ausente e Ollama offline</td>
+<td>Verificar <code>.env</code> e/ou <code>docker compose up -d ollama</code></td>
+</tr>
+<tr>
+<td>"Limite de requisições do Groq atingido"</td>
+<td>Rate limit do free tier</td>
+<td>Fallback automático para Ollama; ou aguardar</td>
+</tr>
+<tr>
+<td>Botão "Aplicar" desabilitado</td>
+<td>Arquivo foi editado desde a explicação</td>
+<td>Editar e clicar em "Explicar erro" novamente (gera nova chamada)</td>
+</tr>
+<tr>
+<td>Resposta vazia ou irrelevante</td>
+<td>Log sem <code>!</code> ou sem linha de erro explícita</td>
+<td>Normal — o modelo dirá "não foi possível identificar com confiança" em vez de inventar causa</td>
+</tr>
+<tr>
+<td>Substituição removeu texto da linha</td>
+<td>Comportamento antigo (antes da v2) — substituía linha inteira</td>
+<td>Agora a IA retorna <code>&lt;&lt;&lt;correction&gt;&gt;&gt;</code> com <code>original</code> e <code>replacement</code> para troca precisa. Front faz busca exata do <code>original</code> na linha.</td>
+</tr>
+<tr>
+<td>"O trecho original não foi encontrado na linha atual"</td>
+<td>Usuário editou a linha entre "Explicar" e "Aplicar", e o <code>original</code> da IA não bate mais</td>
+<td>Clique em "Reexplicar" para regenerar a explicação com a linha atualizada</td>
+</tr>
+<tr>
+<td>"A linha INTEIRA será substituída"</td>
+<td>A IA não retornou <code>&lt;&lt;&lt;correction&gt;&gt;&gt;</code> (modelo que não segue o novo formato)</td>
+<td>Verifique o diff com atenção. A linha toda vai ser trocada pelo <code>replacement</code>.</td>
 </tr>
 </tbody>
 </table>
