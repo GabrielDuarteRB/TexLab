@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Send, Loader2, Sparkles, FileText, Repeat, RefreshCw, Check, Copy, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Send, Loader2, Sparkles, FileText, Repeat, RefreshCw, Check, Copy, AlertCircle, Wand2 } from 'lucide-react';
 import { useAi } from '../../hooks/useAi.js';
 import useProjectStore from '../../store/useProjectStore.js';
 
@@ -11,7 +11,7 @@ const TABS = [
 
 export default function AiPanel({ onClose }) {
   const { enabled, loading, result, suggest, academicEnabled, academicBackend, academicLoading, academicResult, review } = useAi();
-  const { currentFile, fileContents, saveFile } = useProjectStore();
+  const { currentFile, fileContents, saveFile, updateFileContent, setEditorMarkers, clearEditorMarkers, realtimeCheckEnabled, setRealtimeCheckEnabled, ltexStatus } = useProjectStore();
   const [activeTab, setActiveTab] = useState('review');
   const [instruction, setInstruction] = useState('');
   const [idioma, setIdioma] = useState('pt');
@@ -27,13 +27,64 @@ export default function AiPanel({ onClose }) {
 
   const handleReview = async () => {
     if (!content.trim()) return;
+    clearEditorMarkers();
     await review(content, idioma, backendOpcao);
   };
+
+  // Converte correções do ltex em markers do Monaco após cada revisão
+  useEffect(() => {
+    if (!academicResult || academicResult.error) {
+      clearEditorMarkers();
+      return;
+    }
+
+    const correcoes = academicResult.correcoes || [];
+    if (correcoes.length === 0) {
+      clearEditorMarkers();
+      return;
+    }
+
+    // Filtra apenas correções do ltex que têm offset
+    const markers = correcoes
+      .filter((c) => c.offset !== undefined && c.startOffset === undefined)
+      .map((c) => ({
+        startOffset: c.offset,
+        endOffset: c.offset + (c.original ? c.original.length : 0),
+        message: c.mensagem || c.explicacao || '',
+        suggestions: c.sugestoes || [],
+        severity: 'warning',
+      }));
+
+    // Também inclui correções que já têm startOffset (formato ltex direto)
+    const directMarkers = correcoes
+      .filter((c) => c.startOffset !== undefined)
+      .map((c) => ({
+        startOffset: c.startOffset,
+        endOffset: c.endOffset,
+        message: `${c.message || c.mensagem || c.explicacao || ''}${(c.suggestions || c.sugestoes || []).length > 0 ? '|||' + (c.suggestions || c.sugestoes).join(', ') : ''}`,
+        suggestions: c.suggestions || c.sugestoes || [],
+        severity: 'warning',
+      }));
+
+    setEditorMarkers([...directMarkers, ...markers]);
+  }, [academicResult]);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Aplica uma sugestão substituindo o trecho no conteúdo do arquivo
+  // Os offsets são índices de caractere (UTF-16), compatíveis com String.slice()
+  const applySuggestion = (correcao, sugestao) => {
+    if (!content) return;
+
+    const startOffset = correcao.startOffset ?? correcao.offset ?? 0;
+    const endOffset = correcao.endOffset ?? (startOffset + (correcao.original || '').length);
+
+    const newText = content.slice(0, startOffset) + sugestao + content.slice(endOffset);
+    updateFileContent(currentFile, newText);
   };
 
   const renderTab = (tabId) => {
@@ -51,6 +102,17 @@ export default function AiPanel({ onClose }) {
 
   const renderReviewTab = () => (
     <div className="ai-tab-content">
+      <label className="ai-toggle-row">
+        <input
+          type="checkbox"
+          checked={realtimeCheckEnabled}
+          onChange={(e) => setRealtimeCheckEnabled(e.target.checked)}
+        />
+        <span>Checagem ortográfica em tempo real</span>
+        {ltexStatus && ltexStatus.disponivel === false && (
+          <span className="ai-toggle-warn">(ltex indisponível)</span>
+        )}
+      </label>
       <div className="ai-settings-row">
         <div className="ai-idioma-selector">
           <label>Idioma:</label>
@@ -135,14 +197,28 @@ export default function AiPanel({ onClose }) {
               {correcoes.map((correcao, i) => (
                 <div key={i} className="ai-correction-item">
                   <div className="ai-correction-diff">
-                    <span className="ai-diff-removed">{correcao.original}</span>
+                    <span className="ai-diff-removed">{correcao.original || ''}</span>
                     <span className="ai-diff-arrow">→</span>
-                    <span className="ai-diff-added">{correcao.corrigido}</span>
+                    <span className="ai-diff-added">{correcao.corrigido || ''}</span>
                   </div>
                   <div className="ai-correction-explanation">
                     <span className="ai-correction-icon">💡</span>
-                    {correcao.explicacao}
+                    {correcao.explicacao || correcao.mensagem || ''}
                   </div>
+                  {(correcao.sugestoes || correcao.suggestions || []).length > 0 && (
+                    <div className="ai-suggestion-chips">
+                      {(correcao.sugestoes || correcao.suggestions || []).map((sug, j) => (
+                        <button
+                          key={j}
+                          className="ai-suggestion-chip"
+                          onClick={() => applySuggestion(correcao, sug)}
+                        >
+                          <Wand2 size={11} />
+                          {sug}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

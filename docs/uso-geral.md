@@ -46,6 +46,18 @@ O editor usa o Monaco Editor (mesmo do VS Code) com syntax highlight para LaTeX.
 - PDF compilado à direita
 - Navegação por seções (outline) no canto do PDF
 
+### Revisão Ortográfica em Tempo Real
+
+O canto inferior direito do editor mostra um indicator com o estado da checagem ortográfica automática:
+
+- **Verificação ortográfica** — checagem ativa, ocioso
+- **Verificando...** — processando após uma edição
+- **ltex indisponível** — o servidor de checagem está offline
+
+Erros aparecem como sublinhado ondulado sob o trecho. Clique no ícone 💡 para ver e aplicar sugestões de correção. Para ligar/desligar, use o painel IA → aba Revisar.
+
+Veja o guia completo em [Revisão Ortográfica](revisao-ortografica.md).
+
 ## Compilar e Baixar PDF
 
 1. Clique em **"Compilar"** na barra de ferramentas

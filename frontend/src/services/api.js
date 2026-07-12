@@ -1,9 +1,11 @@
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function request(url, options = {}) {
+  const { signal, ...rest } = options;
   const res = await fetch(`${API_URL}${url}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
+    headers: { 'Content-Type': 'application/json', ...rest.headers },
+    ...rest,
+    ...(signal ? { signal } : {}),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
@@ -49,6 +51,16 @@ export const api = {
       body: JSON.stringify({ text, idioma, backend }),
     }),
   aiAcademicStatus: () => request('/ai/academic-status'),
+  aiLtexCheck: (text, languageId = 'latex', language = 'pt-BR', { signal, includeSuggestions } = {}) =>
+    request('/ai/ltex-check', {
+      method: 'POST',
+      body: JSON.stringify({
+        text, languageId, language,
+        ...(includeSuggestions !== undefined ? { includeSuggestions } : {}),
+      }),
+      signal,
+    }),
+  aiLtexStatus: () => request('/ai/ltex-status'),
   createFolder: (projectId, folderPath) =>
     request(`/projects/${projectId}/folders`, {
       method: 'POST',
