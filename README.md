@@ -24,6 +24,7 @@ chmod +x docker.sh
 - Gerenciamento de projetos e arquivos
 - Importar de pastas, .zip ou GitHub
 - **Revisão ortográfica em tempo real** com LanguageTool (pt-BR)
+- **Explicação de erros de compilação** com IA: clique em "Explicar erro" no painel de log para receber diagnóstico em PT-BR
 - IA opcional para revisão acadêmica (configurar `GROQ_API_KEY` ou Ollama no `.env`)
 
 ## Documentação

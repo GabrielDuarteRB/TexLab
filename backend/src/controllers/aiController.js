@@ -3,6 +3,7 @@ import { revisarTexto, checarComLtex } from '../services/academic/academicReview
 import { ollamaDisponivel } from '../services/academic/ollamaClient.js';
 import { groqDisponivel } from '../services/academic/groqClient.js';
 import { checkHealth, getPoolStatus } from '../services/ltex/ltexClient.js';
+import { explainLatexError } from '../services/latexErrorExplainerService.js';
 
 export async function suggest(req, res) {
   const { latexContent, instruction } = req.body;
@@ -65,5 +66,19 @@ export async function ltexCheck(req, res) {
     res.json({ diagnostics });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+}
+
+export async function explainError(req, res) {
+  const { log, texContexto, linhaErro, arquivoErro } = req.body || {};
+  if (!log || typeof log !== 'string' || log.trim().length < 5) {
+    return res.status(400).json({ error: 'log é obrigatório e não pode estar vazio' });
+  }
+  try {
+    const result = await explainLatexError({ log, texContexto, linhaErro, arquivoErro });
+    res.json(result);
+  } catch (err) {
+    const msg = err.message || 'Erro ao explicar erro de LaTeX';
+    res.status(500).json({ error: msg });
   }
 }
