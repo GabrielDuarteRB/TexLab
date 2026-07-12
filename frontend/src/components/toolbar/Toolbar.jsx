@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft, Download, Github } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
+import CompileErrorExplainer from '../ai/CompileErrorExplainer.jsx';
 import Toast from '../ui/Toast.jsx';
 import GitInitModal from '../ui/GitInitModal.jsx';
 import GitBranchDropdown from '../ui/GitBranchDropdown.jsx';
@@ -14,7 +15,7 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
   const navigate = useNavigate();
   const {
     saveAndCompile, compile, compiling, currentProject, currentFile, fileContents,
-    compileResult, updateProject, pdfUrl, initGit,
+    compileResult, updateProject, pdfUrl, initGit, updateFileContent,
     gitStatus, branches, fetchGitStatus, fetchBranches, fetchGitDiff, gitDiff,
     createBranch, checkoutBranch, commitAll, pushBranch, abortStashPop, fetchRemote,
     saveFile, addFile, finalizeStash,
@@ -36,6 +37,7 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
   const gitBtnRef = useRef(null);
 
   const hasGit = currentProject && gitStatus;
+  const compileError = compileResult && !compileResult.success;
 
   useEffect(() => {
     if (currentProject) {
@@ -43,6 +45,10 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
       fetchBranches();
     }
   }, [currentProject?.id]);
+
+  useEffect(() => {
+    setShowLog(false);
+  }, [compileResult]);
 
   const handleSave = () => {
     if (currentFile) {
@@ -295,7 +301,7 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
               IA
             </button>
           )}
-          {compileResult && !compileResult.success && (
+          {compileError && (
             <button
               className="compile-status error compile-toggle"
               onClick={() => setShowLog(!showLog)}
@@ -309,13 +315,21 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
           )}
         </div>
       </header>
-      {showLog && compileResult && compileResult.log && (
+      {showLog && compileError && compileResult.log && (
         <div className="compile-error-panel">
           <div className="compile-error-header">
             <span>Log de compilação</span>
-            <button className="icon-btn small" onClick={() => setShowLog(false)}>
-              <X size={14} />
-            </button>
+            <div className="compile-error-header-actions">
+              <CompileErrorExplainer
+                log={compileResult.log}
+                fileContents={fileContents}
+                currentFile={currentFile}
+                updateFileContent={updateFileContent}
+              />
+              <button className="icon-btn small" onClick={() => setShowLog(false)}>
+                <X size={14} />
+              </button>
+            </div>
           </div>
           <pre className="compile-error-log">{compileResult.log}</pre>
         </div>

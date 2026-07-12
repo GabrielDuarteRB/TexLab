@@ -61,6 +61,11 @@ export const api = {
       signal,
     }),
   aiLtexStatus: () => request('/ai/ltex-status'),
+  aiExplainLatexError: ({ log, texContexto, linhaErro, arquivoErro }) =>
+    request('/ai/explain-latex-error', {
+      method: 'POST',
+      body: JSON.stringify({ log, texContexto, linhaErro, arquivoErro }),
+    }),
   createFolder: (projectId, folderPath) =>
     request(`/projects/${projectId}/folders`, {
       method: 'POST',

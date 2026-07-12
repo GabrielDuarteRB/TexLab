@@ -671,3 +671,99 @@ A partir desta versão, o TexLab exibe **marcadores de erros ortográficos/grama
 | Checagem lenta | Documento grande | Reduzir debounce em `useRealtimeSpellCheck.js` (`DEBOUNCE_MS`) ou desabilitar o toggle |
 | Marcadores somem ao editar | Comportamento esperado — debounce reaplica após 800 ms | Aguardar ou reduzir debounce |
 | Sugestões (💡) não aparecem | ltex-ls pode não devolver `codeAction` para o tipo de erro | Erros de "Unknown word" geralmente não têm sugestão automática |
+
+---
+
+## 10. Explicação de Erros de Compilação com IA
+
+Quando uma compilação LaTeX falha, o TexLab oferece um botão **"Explicar erro"** que envia o log de erro bruto para a IA e devolve um diagnóstico em português do Brasil.
+
+### Como funciona
+
+1. O usuário compila o documento. Se houver erro, o painel vermelho "Erro na compilação" aparece no toolbar.
+2. Ao expandir o painel, o botão **"✨ Explicar erro"** fica disponível no header (ao lado do X).
+3. Ao clicar, o backend:
+   - Extrai apenas a parte relevante do log (linhas em torno de `!` e as últimas 15 linhas), evitando mandar o `.log` inteiro para o modelo.
+   - Detecta a `l.N` (linha) e o arquivo `.tex` mencionados pelo LaTeX.
+   - Monta um prompt em PT-BR com: (a) o log extraído; (b) o trecho do `.tex` próximo à linha do erro (com `>>>` marcando a linha problemática).
+   - Pede resposta curta e direta, no formato `(a) causa em 1-2 frases; (b) sugestão de correção`. Quando a IA consegue identificar o trecho exato, ela retorna um bloco estruturado `<<<correction>>> / original: ... / replacement: ... / <<</correction>>>` para permitir substituição **precisa** (não substitui a linha inteira).
+4. A resposta aparece num **drawer lateral fixo** (não modal) — ocupa toda a altura da viewport abaixo do toolbar. O usuário pode continuar editando enquanto lê.
+5. Se a IA sugerir um trecho corrigido, o drawer oferece:
+   - **Copiar** o trecho.
+   - **Aplicar** — abre um diff preview:
+     - Se a IA retornou `<<<correction>>>` (caso comum): mostra a linha INTEIRA com o `trecho_original` riscado em vermelho e o `replacement` em verde, na mesma linha. A substituição é feita via `indexOf` no `trecho_original` — só o fragmento é trocado, o resto do texto da linha é preservado.
+     - Se a IA não retornou `<<<correction>>>` (modelo antigo): mostra aviso "A linha INTEIRA será substituída" e usa a substituição da linha toda (comportamento legado).
+   - Se a linha do arquivo foi editada entre "Explicar" e "Aplicar" e o `trecho_original` não bate mais: mostra "O trecho original não foi encontrado na linha atual" e desabilita "Confirmar".
+6. Se nenhum backend de IA estiver configurado, o botão é substituído por um hint: "Configure uma IA para usar 'Explicar erro'".
+
+### Cache
+
+- Chave: `sha256(log bruto)`.
+- Escopo: memória de sessão (não persiste em banco, não atravessa reloads).
+- Invalidação: implícita. Quando o usuário corrige o documento e o log muda na próxima compilação, o hash muda e a cache miss dispara nova chamada.
+- O cache fica em `frontend/src/hooks/useAiError.js`. Não cacheia erros (permite retry).
+
+### Roteamento Groq → Ollama
+
+- **Groq é a primeira opção** (mais rápido, modelo maior, free tier generoso para baixa frequência de uso).
+- Se `GROQ_API_KEY` ausente → tenta Ollama local.
+- Se Groq retornar rate limit (HTTP 429) e Ollama estiver rodando → faz fallback automático para Ollama.
+- Se nenhum backend disponível → 500 com mensagem amigável `"Nenhum backend de IA disponível. Instale Ollama ou configure GROQ_API_KEY no .env"`.
+
+### Privacidade
+
+- A chave `GROQ_API_KEY` é lida **apenas no backend** via `process.env`. O frontend nunca envia nem recebe a chave.
+- O `.tex` completo **não** é enviado — apenas o trecho de ±5 linhas ao redor da `linhaErro` (quando o log indica a linha). Isso reduz custo de tokens e expõe menos conteúdo do que o necessário.
+
+### Endpoint
+
+`POST /api/ai/explain-latex-error`
+
+Request:
+```json
+{
+  "log": "string (obrigatório, não vazio)",
+  "texContexto": "string ou null (opcional)",
+  "linhaErro": 42,
+  "arquivoErro": "main.tex"
+}
+```
+
+Response 200:
+```json
+{
+  "explicacao": "Texto da resposta da IA em PT-BR (pode incluir bloco <<<correction>>>...<<</correction>>>)",
+  "trecho_corrigido_sugerido": "fragmento LaTeX que substitui o trecho_original (string)",
+  "trecho_original": "fragmento exato a ser substituído na linha (string ou null se a IA não souber)",
+  "linhaErro": 42,
+  "arquivoErro": "main.tex",
+  "backend_usado": "groq" | "ollama" | "ollama (fallback de groq)"
+}
+```
+
+Response 400: `{ "error": "log é obrigatório e não pode estar vazio" }`
+Response 500: `{ "error": "<mensagem amigável>" }` (ex: rate limit, IA indisponível, etc.)
+
+### Componentes
+
+| Arquivo | Papel |
+|---|---|
+| `backend/src/services/latexErrorExplainerService.js` | Extração de log, montagem de prompt, chamada Groq/Ollama com fallback |
+| `backend/src/controllers/aiController.js` | `explainError` — valida input e chama o service |
+| `backend/src/routes/aiRoutes.js` | `POST /api/ai/explain-latex-error` |
+| `frontend/src/services/api.js` | `aiExplainLatexError({ log, texContexto, linhaErro, arquivoErro })` |
+| `frontend/src/hooks/useAiError.js` | Estado + cache por hash do log + chamada à API |
+| `frontend/src/components/toolbar/Toolbar.jsx` | Sub-componente `CompileErrorExplainer` com botão + popover |
+
+### Solução de Problemas
+
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| Botão "Explicar erro" não aparece | Nenhum backend de IA configurado | Instalar Ollama ou configurar `GROQ_API_KEY` no `.env` |
+| Erro "Nenhum backend de IA disponível" no popover | `GROQ_API_KEY` ausente e Ollama offline | Verificar `.env` e/ou `docker compose up -d ollama` |
+| "Limite de requisições do Groq atingido" | Rate limit do free tier | Fallback automático para Ollama; ou aguardar |
+| Botão "Aplicar" desabilitado | Arquivo foi editado desde a explicação | Editar e clicar em "Explicar erro" novamente (gera nova chamada) |
+| Resposta vazia ou irrelevante | Log sem `!` ou sem linha de erro explícita | Normal — o modelo dirá "não foi possível identificar com confiança" em vez de inventar causa |
+| Substituição removeu texto da linha | Comportamento antigo (antes da v2) — substituía linha inteira | Agora a IA retorna `<<<correction>>>` com `original` e `replacement` para troca precisa. Front faz busca exata do `original` na linha. |
+| "O trecho original não foi encontrado na linha atual" | Usuário editou a linha entre "Explicar" e "Aplicar", e o `original` da IA não bate mais | Clique em "Reexplicar" para regenerar a explicação com a linha atualizada |
+| "A linha INTEIRA será substituída" | A IA não retornou `<<<correction>>>` (modelo que não segue o novo formato) | Verifique o diff com atenção. A linha toda vai ser trocada pelo `replacement`. |
