@@ -1,4 +1,5 @@
 import * as repo from '../repositories/projectRepository.js';
+import { detectarPastasImagem, criarPastaImagemPadrao, calcularCaminhoRelativo } from '../services/imageFolderService.js';
 
 export async function listProjects(req, res) {
   const projects = await repo.listProjects();
@@ -269,6 +270,39 @@ export async function getGitFileDiff(req, res) {
     if (!filePath) return res.status(400).json({ error: 'file query param required' });
     const diff = await repo.getGitFileDiff(req.params.id, filePath);
     res.type('text/plain').send(diff);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function getImageFolders(req, res) {
+  try {
+    const result = await detectarPastasImagem(req.params.id);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function createDefaultImageFolder(req, res) {
+  try {
+    const pasta = await criarPastaImagemPadrao(req.params.id);
+    const result = await detectarPastasImagem(req.params.id);
+    res.status(201).json({ path: pasta, ...result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function resolveImagePath(req, res) {
+  const { filePath } = req.body || {};
+  if (!filePath || typeof filePath !== 'string') {
+    return res.status(400).json({ error: 'filePath é obrigatório' });
+  }
+  try {
+    const detected = await detectarPastasImagem(req.params.id);
+    const relativePath = calcularCaminhoRelativo(filePath, detected.graphicsPaths || []);
+    res.json({ filePath, relativePath });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

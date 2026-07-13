@@ -1,18 +1,24 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { Loader2, SpellCheck, SpellCheck2 } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import { useRealtimeSpellCheck } from '../../hooks/useRealtimeSpellCheck.js';
+import {
+  filterCommands,
+  findCommand,
+  removeSlashPrefix,
+  insertSnippet,
+} from './slashCommands.js';
+import SlashCommandForm from './SlashCommandForm.jsx';
+import TableForm from './TableForm.jsx';
+import ImageForm from './ImageForm.jsx';
+import { registerLatexLanguage } from './latexLanguage.js';
 
-/**
- * Converte índice de caractere → { line, column } (1-indexed) para o Monaco.
- * Os offsets do backend são índices de caractere UTF-16 (compatíveis com String.slice).
- */
 function offsetToLineCol(text, offset) {
   let line = 1;
   let col = 1;
   for (let i = 0; i < offset && i < text.length; i++) {
-    if (text.charCodeAt(i) === 0x0a) { // \n
+    if (text.charCodeAt(i) === 0x0a) {
       line++;
       col = 1;
     } else {
@@ -22,21 +28,15 @@ function offsetToLineCol(text, offset) {
   return { line, column: col };
 }
 
-/**
- * Converte markers do formato do projeto para o formato Monaco.
- * Projeto: { startOffset, endOffset, message, suggestions, severity }
- * Monaco: { severity, message, startLineNumber, startColumn, endLineNumber, endColumn }
- */
 function toMonacoMarkers(markers, text) {
   if (!markers || markers.length === 0) return [];
   return markers.map((m) => {
     const start = offsetToLineCol(text, m.startOffset);
     const end = offsetToLineCol(text, m.endOffset);
-    // Mapeia severidade textual (ou numérica LSP) → Monaco MarkerSeverity
-    let severity = 4; // Warning default (gramática/estilo)
-    if (m.severity === 'error' || m.severity === 1) severity = 8; // Error
+    let severity = 4;
+    if (m.severity === 'error' || m.severity === 1) severity = 8;
     else if (m.severity === 'info' || m.severity === 'hint' || m.severity === 2 || m.severity === 4) {
-      severity = 2; // Info
+      severity = 2;
     }
     return {
       severity,
@@ -54,11 +54,15 @@ function toMonacoMarkers(markers, text) {
 export default function TexLabEditor() {
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
+  const completionRegistrationRef = useRef(null);
+  const slashActionRef = useRef(null);
+  const slashShortcutCmdRef = useRef(null);
   const {
-    currentFile, fileContents, updateFileContent, saveFile, editorMarkers,
+    currentFile, fileContents, updateFileContent, saveAndCompile, editorMarkers,
     realtimeCheckEnabled, ltexStatus, spellChecking,
   } = useProjectStore();
   const content = fileContents[currentFile] || '';
+  const [activeForm, setActiveForm] = useState(null);
 
   useRealtimeSpellCheck({ currentFile, content, enabled: realtimeCheckEnabled });
 
@@ -67,10 +71,18 @@ export default function TexLabEditor() {
   };
 
   const handleSave = () => {
-    saveFile(currentFile, content);
+    const { currentFile: file, saveAndCompile: save } = useProjectStore.getState();
+    const editor = editorRef.current;
+    const value = editor ? editor.getValue() : '';
+    if (!file) return;
+    save(file, value);
   };
 
-  // Atualiza markers no Monaco sempre que editorMarkers ou content mudar
+  const handleSnippetInsert = (body) => {
+    insertSnippet(editorRef.current, monacoRef.current, body);
+    setActiveForm(null);
+  };
+
   useEffect(() => {
     const editor = editorRef.current;
     const monaco = monacoRef.current;
@@ -83,52 +95,13 @@ export default function TexLabEditor() {
     monaco.editor.setModelMarkers(model, 'ltex', markers);
   }, [editorMarkers, content, currentFile]);
 
-  // Registra CodeActionProvider para lightbulb (💡) com sugestões
   useEffect(() => {
-    const monaco = monacoRef.current;
-    if (!monaco) return;
-
-    const registration = monaco.languages.registerCodeActionProvider('latex', {
-      provideCodeActions: (model, range, context) => {
-        const markersAtRange = context.markers.filter(
-          (m) => m.source === 'ltex' && m.tags?.includes(1)
-        );
-
-        if (markersAtRange.length === 0) return { actions: [], dispose: () => {} };
-
-        const actions = [];
-        for (const marker of markersAtRange) {
-          // Extrai sugestões da mensagem do marker (formato: "msg | sug1, sug2, sug3")
-          const parts = marker.message.split('|||');
-          const baseMessage = parts[0]?.trim() || marker.message;
-          const suggestions = parts[1]?.split(',').map(s => s.trim()).filter(Boolean) || [];
-
-          for (const suggestion of suggestions) {
-            actions.push({
-              title: `Aplicar: "${suggestion}"`,
-              kind: 'quickfix',
-              diagnostics: [marker],
-              edit: {
-                edits: [{
-                  resource: model.uri,
-                  textEdit: {
-                    range: marker.range,
-                    text: suggestion,
-                  },
-                  versionId: model.getAlternativeVersionId(),
-                }],
-              },
-              isPreferred: true,
-            });
-          }
-        }
-
-        return { actions, dispose: () => {} };
-      },
-    });
-
-    return () => registration.dispose();
-  }, [currentFile]);
+    return () => {
+      completionRegistrationRef.current?.dispose?.();
+      slashActionRef.current?.dispose?.();
+      slashShortcutCmdRef.current?.dispose?.();
+    };
+  }, []);
 
   if (!currentFile) {
     return (
@@ -139,6 +112,8 @@ export default function TexLabEditor() {
   }
 
   const ltexUnavailable = ltexStatus && ltexStatus.disponivel === false;
+
+  const handleCloseForm = () => setActiveForm(null);
 
   return (
     <div className="editor-wrapper">
@@ -152,8 +127,86 @@ export default function TexLabEditor() {
           editorRef.current = editor;
           monacoRef.current = monaco;
 
-          editor.addCommand(0, 'ctrl+s', handleSave);
-          editor.addCommand(0, 'cmd+s', handleSave);
+          registerLatexLanguage(monaco);
+
+          const model = editor.getModel();
+          if (model && model.getLanguageId() !== 'latex') {
+            monaco.editor.setModelLanguage(model, 'latex');
+          }
+
+          completionRegistrationRef.current = monaco.languages.registerCompletionItemProvider('latex', {
+            triggerCharacters: ['/'],
+            provideCompletionItems: (model, position) => {
+              const lineText = model.getLineContent(position.lineNumber);
+              const before = lineText.substring(0, position.column - 1);
+              const match = before.match(/\/([a-zA-Z]*)$/);
+              if (!match) return { suggestions: [] };
+
+              const prefix = match[1];
+              const startCol = position.column - match[0].length;
+              const range = {
+                startLineNumber: position.lineNumber,
+                endLineNumber: position.lineNumber,
+                startColumn: startCol,
+                endColumn: position.column,
+              };
+              const filtered = filterCommands(prefix);
+              return {
+                suggestions: filtered.map((cmd) => ({
+                  label: `/${cmd.id}`,
+                  kind: monaco.languages.CompletionItemKind.Snippet,
+                  insertText: cmd.kind === 'snippet' ? cmd.body : '',
+                  insertTextRules: cmd.kind === 'snippet'
+                    ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+                    : monaco.languages.CompletionItemInsertTextRule.None,
+                  detail: cmd.label,
+                  documentation: cmd.description,
+                  range,
+                  command: cmd.kind === 'form' ? {
+                    id: 'texlab.openSlashForm',
+                    title: 'Open Slash Form',
+                    arguments: [cmd.id],
+                  } : undefined,
+                })),
+              };
+            },
+            resolveCompletionItem: (item) => item,
+          });
+
+          slashActionRef.current = monaco.editor.registerCommand('texlab.openSlashForm', (_accessor, formId) => {
+            const cmd = findCommand(formId);
+            if (!cmd || cmd.kind !== 'form') return;
+            removeSlashPrefix(editor, monaco);
+            setActiveForm({ kind: formId });
+          });
+
+          editor.addCommand(
+            monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+            handleSave
+          );
+
+          const handleSlashShortcut = () => {
+            const position = editor.getPosition();
+            const model = editor.getModel();
+            if (!position || !model) return;
+            const lineText = model.getLineContent(position.lineNumber);
+            const before = lineText.substring(0, position.column - 1);
+            if (before.match(/\/([a-zA-Z]*)$/)) {
+              editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+              return;
+            }
+            editor.executeEdits('slash-insert', [{
+              range: { ...position, startColumn: position.column, endColumn: position.column },
+              text: '/',
+              forceMoveMarkers: true,
+            }]);
+            editor.setPosition({ ...position, column: position.column + 1 });
+            setTimeout(() => editor.trigger('keyboard', 'editor.action.triggerSuggest', {}), 0);
+          };
+          slashShortcutCmdRef.current = editor.addCommand(
+            monaco.KeyMod.CtrlCmd | monaco.KeyCode.Slash,
+            handleSlashShortcut
+          );
         }}
         options={{
           fontSize: 14,
@@ -191,6 +244,35 @@ export default function TexLabEditor() {
           </span>
         </div>
       )}
+
+      <SlashCommandForm
+        open={activeForm?.kind === 'table'}
+        title="Inserir Tabela"
+        onClose={handleCloseForm}
+      >
+        <TableForm
+          onConfirm={handleSnippetInsert}
+          onCancel={handleCloseForm}
+        />
+      </SlashCommandForm>
+
+      <SlashCommandForm
+        open={activeForm?.kind === 'image'}
+        title="Inserir Imagem/Figura"
+        onClose={handleCloseForm}
+        width={600}
+      >
+        <ImageForm
+          editor={editorRef.current}
+          monaco={monacoRef.current}
+          insertSnippet={(editor, monaco, body) => {
+            insertSnippet(editor, monaco, body);
+            setActiveForm(null);
+          }}
+          onCancel={handleCloseForm}
+          onInserted={handleCloseForm}
+        />
+      </SlashCommandForm>
     </div>
   );
 }

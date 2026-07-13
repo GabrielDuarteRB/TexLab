@@ -1,29 +1,23 @@
 import { useState, useEffect } from 'react';
-import { X, Send, Loader2, Sparkles, FileText, Repeat, RefreshCw, Check, Copy, AlertCircle, Wand2 } from 'lucide-react';
+import { X, Loader2, Sparkles, FileText, RefreshCw, Check, Wand2, AlertCircle, MessageCircle } from 'lucide-react';
 import { useAi } from '../../hooks/useAi.js';
 import useProjectStore from '../../store/useProjectStore.js';
+import LatexChat from './LatexChat.jsx';
 
 const TABS = [
+  { id: 'chat', label: 'Chat', icon: MessageCircle },
   { id: 'review', label: 'Revisar', icon: FileText },
-  { id: 'repetition', label: 'Repetição', icon: Repeat },
-  { id: 'suggest', label: 'Sugerir', icon: Sparkles },
 ];
 
 export default function AiPanel({ onClose }) {
-  const { enabled, loading, result, suggest, academicEnabled, academicBackend, academicLoading, academicResult, review } = useAi();
-  const { currentFile, fileContents, saveFile, updateFileContent, setEditorMarkers, clearEditorMarkers, realtimeCheckEnabled, setRealtimeCheckEnabled, ltexStatus } = useProjectStore();
-  const [activeTab, setActiveTab] = useState('review');
-  const [instruction, setInstruction] = useState('');
+  const { academicEnabled, academicBackend, academicLoading, academicResult, review } = useAi();
+  const { currentFile, fileContents, updateFileContent, setEditorMarkers, clearEditorMarkers, realtimeCheckEnabled, setRealtimeCheckEnabled, ltexStatus } = useProjectStore();
+  const [activeTab, setActiveTab] = useState('chat');
   const [idioma, setIdioma] = useState('pt');
   const [backendOpcao, setBackendOpcao] = useState('auto');
   const [copied, setCopied] = useState(false);
 
   const content = currentFile ? (fileContents[currentFile] || '') : '';
-
-  const handleSuggest = async () => {
-    if (!instruction.trim() || !currentFile) return;
-    await suggest(content, instruction);
-  };
 
   const handleReview = async () => {
     if (!content.trim()) return;
@@ -31,7 +25,6 @@ export default function AiPanel({ onClose }) {
     await review(content, idioma, backendOpcao);
   };
 
-  // Converte correções do ltex em markers do Monaco após cada revisão
   useEffect(() => {
     if (!academicResult || academicResult.error) {
       clearEditorMarkers();
@@ -44,7 +37,6 @@ export default function AiPanel({ onClose }) {
       return;
     }
 
-    // Filtra apenas correções do ltex que têm offset
     const markers = correcoes
       .filter((c) => c.offset !== undefined && c.startOffset === undefined)
       .map((c) => ({
@@ -55,7 +47,6 @@ export default function AiPanel({ onClose }) {
         severity: 'warning',
       }));
 
-    // Também inclui correções que já têm startOffset (formato ltex direto)
     const directMarkers = correcoes
       .filter((c) => c.startOffset !== undefined)
       .map((c) => ({
@@ -75,8 +66,6 @@ export default function AiPanel({ onClose }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Aplica uma sugestão substituindo o trecho no conteúdo do arquivo
-  // Os offsets são índices de caractere (UTF-16), compatíveis com String.slice()
   const applySuggestion = (correcao, sugestao) => {
     if (!content) return;
 
@@ -91,10 +80,8 @@ export default function AiPanel({ onClose }) {
     switch (tabId) {
       case 'review':
         return renderReviewTab();
-      case 'repetition':
-        return renderRepetitionTab();
-      case 'suggest':
-        return renderSuggestTab();
+      case 'chat':
+        return <LatexChat />;
       default:
         return null;
     }
@@ -265,104 +252,6 @@ export default function AiPanel({ onClose }) {
       </div>
     );
   };
-
-  const renderRepetitionTab = () => {
-    if (!academicResult || academicResult.error) {
-      return (
-        <div className="ai-tab-content">
-          <p className="ai-hint">Faça uma revisão primeiro (aba "Revisar") para ver palavras repetidas.</p>
-          <button
-            className="toolbar-btn primary ai-review-btn"
-            onClick={handleReview}
-            disabled={academicLoading || !content}
-          >
-            {academicLoading ? <Loader2 size={16} className="spin" /> : <RefreshCw size={16} />}
-            Revisar Agora
-          </button>
-        </div>
-      );
-    }
-
-    const palavras = academicResult.palavras_repetidas || [];
-    if (palavras.length === 0) {
-      return (
-        <div className="ai-tab-content">
-          <p>Nenhuma palavra com repetição significativa encontrada.</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="ai-tab-content">
-        <h4>Palavras Repetidas ({palavras.length})</h4>
-        <div className="ai-repetition-list full">
-          {palavras.map((r, i) => (
-            <div key={i} className="ai-repetition-item">
-              <div className="ai-word-info">
-                <span className="ai-word">{r.palavra}</span>
-              </div>
-              <div className="ai-word-details">
-                <span className="ai-count">{r.ocorrencias} ocorrências</span>
-                <span className="ai-paragrafos">§{r.paragrafos.join(', §')}</span>
-              </div>
-              <div className="ai-synonyms">
-                <strong>Sugestões:</strong> {r.sugestoes.join(', ')}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderSuggestTab = () => (
-    <div className="ai-tab-content">
-      {!enabled ? (
-        <div className="ai-disabled">
-          <AlertCircle size={20} />
-          <p>Assistente IA não configurado.</p>
-          <p className="ai-hint">
-            Adicione <code>AI_API_KEY</code> no <code>.env</code> para usar OpenAI ou Anthropic.
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="ai-input">
-            <textarea
-              placeholder="Ex: Reescreva esta seção em tom mais formal..."
-              value={instruction}
-              onChange={(e) => setInstruction(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSuggest();
-                }
-              }}
-              rows={3}
-            />
-            <button
-              className="toolbar-btn primary"
-              onClick={handleSuggest}
-              disabled={loading || !currentFile || !instruction.trim()}
-            >
-              {loading ? <Loader2 size={16} className="spin" /> : <Send size={16} />}
-              Enviar
-            </button>
-          </div>
-
-          {result && (
-            <div className={`ai-result ${result.success ? 'success' : 'error'}`}>
-              {result.success ? (
-                <pre className="ai-pre">{result.suggestion}</pre>
-              ) : (
-                <p>{result.error}</p>
-              )}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
 
   return (
     <aside className="ai-panel">

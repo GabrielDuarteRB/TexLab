@@ -39,12 +39,6 @@ export const api = {
     }),
   getPdfUrl: (projectId, file) => `${API_URL}/projects/${projectId}/pdf?file=${file || 'main.pdf'}&t=${Date.now()}`,
   getLog: (projectId) => fetch(`${API_URL}/projects/${projectId}/log`).then((r) => r.text()),
-  aiSuggest: (latexContent, instruction) =>
-    request('/ai/suggest', {
-      method: 'POST',
-      body: JSON.stringify({ latexContent, instruction }),
-    }),
-  aiStatus: () => request('/ai/status'),
   aiReview: (text, idioma = 'pt', backend = 'auto') =>
     request('/ai/review', {
       method: 'POST',
@@ -65,6 +59,11 @@ export const api = {
     request('/ai/explain-latex-error', {
       method: 'POST',
       body: JSON.stringify({ log, texContexto, linhaErro, arquivoErro }),
+    }),
+  aiLatexChat: ({ pergunta, historico, contextoDocumento, includeContext }) =>
+    request('/ai/latex-chat', {
+      method: 'POST',
+      body: JSON.stringify({ pergunta, historico, contextoDocumento, includeContext }),
     }),
   createFolder: (projectId, folderPath) =>
     request(`/projects/${projectId}/folders`, {
@@ -175,6 +174,14 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ originalBranch }),
+    }),
+  getImageFolders: (projectId) => request(`/projects/${projectId}/image-folders`),
+  createDefaultImageFolder: (projectId) =>
+    request(`/projects/${projectId}/image-folders/default`, { method: 'POST' }),
+  resolveImagePath: (projectId, filePath) =>
+    request(`/projects/${projectId}/image-folders/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ filePath }),
     }),
   addFile: (projectId, filepath) =>
     request(`/projects/${projectId}/git/add`, {
