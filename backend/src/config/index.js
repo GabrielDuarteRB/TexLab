@@ -5,10 +5,6 @@ dotenv.config();
 const config = {
   port: parseInt(process.env.PORT || '3001', 10),
   projectsDir: process.env.PROJECTS_DIR || './projects',
-  ai: {
-    apiKey: process.env.AI_API_KEY || '',
-    provider: process.env.AI_PROVIDER || 'openai',
-  },
 };
 
 export default config;

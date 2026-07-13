@@ -36,3 +36,27 @@ export async function chamarOllama(systemPrompt, userText, temperatura = 0.3) {
   const data = await res.json();
   return data.message?.content || '';
 }
+
+export async function chamarOllamaChat(messages, temperatura = 0.4) {
+  const payload = {
+    model: OLLAMA_MODEL,
+    messages,
+    stream: false,
+    temperature: temperatura,
+  };
+
+  const res = await fetch(`${OLLAMA_BASE}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(120000),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Ollama error ${res.status}: ${text}`);
+  }
+
+  const data = await res.json();
+  return data.message?.content || '';
+}

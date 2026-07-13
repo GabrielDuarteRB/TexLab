@@ -2,17 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api.js';
 
 export function useAi() {
-  const [enabled, setEnabled] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-
   const [academicEnabled, setAcademicEnabled] = useState(false);
   const [academicBackend, setAcademicBackend] = useState('');
   const [academicLoading, setAcademicLoading] = useState(false);
   const [academicResult, setAcademicResult] = useState(null);
 
   useEffect(() => {
-    api.aiStatus().then((res) => setEnabled(res.enabled)).catch(() => {});
     api.aiAcademicStatus()
       .then((res) => {
         setAcademicEnabled(res.disponivel);
@@ -21,19 +16,6 @@ export function useAi() {
       })
       .catch(() => {});
   }, []);
-
-  const suggest = async (latexContent, instruction) => {
-    setLoading(true);
-    try {
-      const res = await api.aiSuggest(latexContent, instruction);
-      setResult(res);
-      setLoading(false);
-      return res;
-    } catch (error) {
-      setLoading(false);
-      setResult({ success: false, error: error.message });
-    }
-  };
 
   const review = useCallback(async (text, idioma = 'pt', backend = 'auto') => {
     setAcademicLoading(true);
@@ -50,7 +32,6 @@ export function useAi() {
   }, []);
 
   return {
-    enabled, loading, result, suggest,
     academicEnabled, academicBackend, academicLoading, academicResult, review,
   };
 }

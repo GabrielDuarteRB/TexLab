@@ -1,18 +1,9 @@
-import aiService from '../services/aiService.js';
 import { revisarTexto, checarComLtex } from '../services/academic/academicReviewService.js';
 import { ollamaDisponivel } from '../services/academic/ollamaClient.js';
 import { groqDisponivel } from '../services/academic/groqClient.js';
 import { checkHealth, getPoolStatus } from '../services/ltex/ltexClient.js';
 import { explainLatexError } from '../services/latexErrorExplainerService.js';
-
-export async function suggest(req, res) {
-  const { latexContent, instruction } = req.body;
-  if (!latexContent || !instruction) {
-    return res.status(400).json({ error: 'latexContent and instruction required' });
-  }
-  const result = await aiService.suggest(latexContent, instruction);
-  res.json(result);
-}
+import { chatLatex } from '../services/latexChatService.js';
 
 export async function review(req, res) {
   const { text, idioma, backend: backendOpcao } = req.body;
@@ -25,10 +16,6 @@ export async function review(req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
-
-export async function aiStatus(req, res) {
-  res.json({ enabled: aiService.enabled });
 }
 
 export async function academicStatus(req, res) {
@@ -79,6 +66,23 @@ export async function explainError(req, res) {
     res.json(result);
   } catch (err) {
     const msg = err.message || 'Erro ao explicar erro de LaTeX';
+    res.status(500).json({ error: msg });
+  }
+}
+
+export async function latexChat(req, res) {
+  const { pergunta, historico, contextoDocumento, includeContext } = req.body || {};
+  if (!pergunta || typeof pergunta !== 'string' || !pergunta.trim()) {
+    return res.status(400).json({ error: 'pergunta é obrigatória e não pode estar vazia' });
+  }
+  if (historico !== undefined && !Array.isArray(historico)) {
+    return res.status(400).json({ error: 'historico deve ser um array' });
+  }
+  try {
+    const result = await chatLatex({ pergunta, historico, contextoDocumento, includeContext });
+    res.json(result);
+  } catch (err) {
+    const msg = err.message || 'Erro no chat LaTeX';
     res.status(500).json({ error: msg });
   }
 }
