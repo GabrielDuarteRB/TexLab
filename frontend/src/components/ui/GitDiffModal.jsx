@@ -1,112 +1,145 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, FilePlus, FileMinus, FileEdit, FileQuestion, ChevronRight, ChevronDown } from 'lucide-react';
+import { DiffEditor } from '@monaco-editor/react';
+import { X, Loader2 } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 
-const STATUS_CONFIG = {
-  added: { icon: FilePlus, color: 'var(--success)', label: 'Adicionado' },
-  modified: { icon: FileEdit, color: '#e0a800', label: 'Modificado' },
-  deleted: { icon: FileMinus, color: 'var(--error)', label: 'Excluído' },
-  untracked: { icon: FileQuestion, color: 'var(--text-muted)', label: 'Não rastreado' },
-  renamed: { icon: FileEdit, color: '#89b4fa', label: 'Renomeado' },
-};
-
-function parseDiffLines(diffText) {
-  if (!diffText) return [];
-  return diffText.split('\n').map((line, i) => {
-    if (line.startsWith('+')) return { type: 'add', content: line, key: `a${i}` };
-    if (line.startsWith('-')) return { type: 'del', content: line, key: `d${i}` };
-    if (line.startsWith('@@')) return { type: 'hunk', content: line, key: `h${i}` };
-    return { type: 'ctx', content: line, key: `c${i}` };
-  });
-}
-
-function DiffFileItem({ file }) {
-  const { expandedFiles, toggleFileDiff, fileDiffs, fetchFileDiff } = useProjectStore();
-  const expanded = !!expandedFiles[file.path];
-  const diffContent = fileDiffs[file.path];
-  const config = STATUS_CONFIG[file.type] || STATUS_CONFIG.modified;
-  const Icon = config.icon;
-  const Chevron = expanded ? ChevronDown : ChevronRight;
-  const lines = expanded ? parseDiffLines(diffContent) : [];
-
-  const handleClick = async () => {
-    toggleFileDiff(file.path);
-    if (!expanded && diffContent === undefined) {
-      await fetchFileDiff(file.path);
+function parseDiffText(diffText) {
+  if (!diffText) return { original: '', modified: '' };
+  const originalLines = [];
+  const modifiedLines = [];
+  const lines = diffText.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('diff --git') || line.startsWith('index ') || line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('new file') || line.startsWith('deleted file') || line.startsWith('rename ') || line.startsWith('Binary ')) {
+      continue;
     }
-  };
-
-  return (
-    <li className="git-diff-item-wrapper">
-      <div className="git-diff-item" onClick={handleClick} style={{ cursor: 'pointer' }}>
-        <span className="git-diff-chevron">
-          <Chevron size={14} />
-        </span>
-        <span className="git-diff-badge" style={{ color: config.color }}>
-          <Icon size={14} />
-        </span>
-        <span className="git-diff-filepath">{file.path}</span>
-        <span className="git-diff-type" style={{ color: config.color }}>
-          {config.label}
-        </span>
-      </div>
-      {expanded && (
-        <div className="git-diff-code">
-          {lines.length === 0 ? (
-            <div className="git-diff-line git-diff-line-ctx">Sem alterações para exibir</div>
-          ) : (
-            lines.map((line) => (
-              <div key={line.key} className={`git-diff-line git-diff-line-${line.type}`}>
-                {line.content}
-              </div>
-            ))
-          )}
-        </div>
-      )}
-    </li>
-  );
+    if (line.startsWith('@@')) continue;
+    if (line.startsWith('+')) {
+      modifiedLines.push(line.slice(1));
+    } else if (line.startsWith('-')) {
+      originalLines.push(line.slice(1));
+    } else if (line.startsWith(' ')) {
+      originalLines.push(line.slice(1));
+      modifiedLines.push(line.slice(1));
+    } else if (line.trim() === '') {
+      originalLines.push('');
+      modifiedLines.push('');
+    }
+  }
+  return { original: originalLines.join('\n'), modified: modifiedLines.join('\n') };
 }
 
-export default function GitDiffModal({ open, files, branchName, onClose }) {
+export default function GitDiffModal({ open, mode, file, commit, onClose }) {
+  const fetchFileDiff = useProjectStore((s) => s.fetchFileDiff);
+  const fetchCommitDiff = useProjectStore((s) => s.fetchCommitDiff);
+  const [original, setOriginal] = useState('');
+  const [modified, setModified] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (!open) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open) return;
+    setLoading(true);
+    setError(null);
+    setOriginal('');
+    setModified('');
+
+    (async () => {
+      try {
+        if (mode === 'commit') {
+          if (!commit?.hash) {
+            throw new Error('Hash do commit ausente');
+          }
+          const diff = await fetchCommitDiff(commit.hash);
+          const { original: o, modified: m } = parseDiffText(diff);
+          setOriginal(o);
+          setModified(m);
+        } else if (mode === 'file') {
+          const diff = await fetchFileDiff(file.path);
+          if (diff && diff.trim()) {
+            const { original: o, modified: m } = parseDiffText(diff);
+            setOriginal(o);
+            setModified(m);
+          } else if (file.type === 'untracked') {
+            setOriginal('');
+            const content = await (await fetch(`/api/projects/${useProjectStore.getState().currentProject?.id}/files/${file.path}`)).text();
+            setModified(content);
+          } else {
+            setOriginal('');
+            setModified('');
+          }
+        }
+      } catch (err) {
+        setError(err.message || 'Erro ao carregar diff');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [open, mode, file, commit, fetchFileDiff, fetchCommitDiff]);
+
   if (!open) return null;
+
+  let title = '';
+  if (mode === 'file') {
+    title = file?.path || '';
+  } else if (mode === 'commit') {
+    title = commit?.message || commit?.shortHash || '';
+  }
 
   return createPortal(
     <div className="confirm-modal-overlay" onClick={onClose}>
       <div className="git-diff-modal" onClick={(e) => e.stopPropagation()}>
         <div className="git-diff-header">
-          <h3>Alterações na branch <span className="git-diff-branch">{branchName}</span></h3>
+          <div className="git-diff-title">
+            <span className="git-diff-label">Diff:</span>
+            <span className="git-diff-branch">{title}</span>
+          </div>
           <button className="icon-btn small" onClick={onClose}>
             <X size={14} />
           </button>
         </div>
         <div className="git-diff-content">
-          {files.length === 0 ? (
-            <p className="git-diff-empty">Nenhuma alteração pendente.</p>
+          {loading ? (
+            <div className="git-diff-loading">
+              <Loader2 size={20} className="spin" />
+              <span>Carregando diff...</span>
+            </div>
+          ) : error ? (
+            <div className="git-diff-error">{error}</div>
+          ) : original === '' && modified === '' ? (
+            <div className="git-diff-empty">
+              {mode === 'commit'
+                ? 'Nenhuma alteração de conteúdo neste commit'
+                : 'Sem alterações para exibir'}
+            </div>
           ) : (
-            <ul className="git-diff-list">
-              {files.map((file) => (
-                <DiffFileItem key={file.path} file={file} />
-              ))}
-            </ul>
+            <DiffEditor
+              original={original}
+              modified={modified}
+              language="latex"
+              theme="vs-dark"
+              height="100%"
+              options={{
+                readOnly: true,
+                renderSideBySide: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                wordWrap: 'on',
+              }}
+            />
           )}
-        </div>
-        <div className="git-diff-footer">
-          <button className="confirm-modal-btn cancel" onClick={onClose}>
-            Fechar
-          </button>
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

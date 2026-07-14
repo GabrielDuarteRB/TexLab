@@ -1,5 +1,15 @@
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
+export class ApiError extends Error {
+  constructor(message, { code, conflictFiles, status } = {}) {
+    super(message);
+    this.name = 'ApiError';
+    this.code = code || null;
+    this.conflictFiles = conflictFiles || null;
+    this.status = status || null;
+  }
+}
+
 async function request(url, options = {}) {
   const { signal, ...rest } = options;
   const res = await fetch(`${API_URL}${url}`, {
@@ -9,7 +19,11 @@ async function request(url, options = {}) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || 'Request failed');
+    throw new ApiError(err.error || 'Request failed', {
+      code: err.code,
+      conflictFiles: err.conflictFiles,
+      status: res.status,
+    });
   }
   if (res.status === 204) return null;
   return res.json();
@@ -134,13 +148,14 @@ export const api = {
       body: JSON.stringify({ name, url, keepGit }),
     });
   },
-  initGit: async (projectId, remoteUrl) => {
+  initGit: async (projectId, { remoteUrl, userName, userEmail } = {}) => {
     return request(`/projects/${projectId}/git/init`, {
       method: 'POST',
-      body: JSON.stringify({ remoteUrl }),
+      body: JSON.stringify({ remoteUrl, userName, userEmail }),
     });
   },
   getGitStatus: (projectId) => request(`/projects/${projectId}/git/status`),
+  getGitConfig: (projectId) => request(`/projects/${projectId}/git/config`),
   listBranches: (projectId) => request(`/projects/${projectId}/git/branches`),
   fetchRemote: (projectId) =>
     request(`/projects/${projectId}/git/fetch`, { method: 'POST' }),
@@ -149,10 +164,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ name }),
     }),
-  checkoutBranch: (projectId, name, keepChanges = true) =>
+  checkoutBranch: (projectId, name) =>
     request(`/projects/${projectId}/git/checkout`, {
       method: 'POST',
-      body: JSON.stringify({ name, keepChanges }),
+      body: JSON.stringify({ name }),
     }),
   commitAll: (projectId, message) =>
     request(`/projects/${projectId}/git/commit`, {
@@ -161,20 +176,40 @@ export const api = {
     }),
   pushBranch: (projectId) =>
     request(`/projects/${projectId}/git/push`, { method: 'POST' }),
-  getGitDiff: (projectId) => request(`/projects/${projectId}/git/diff`),
-  getGitFileDiff: (projectId, filePath) =>
-    fetch(`${API_URL}/projects/${projectId}/git/diff/file?file=${encodeURIComponent(filePath)}`).then((r) => r.text()),
-  resolveConflicts: (projectId, strategy) =>
-    request(`/projects/${projectId}/git/resolve`, {
+  pullBranch: (projectId) =>
+    request(`/projects/${projectId}/git/pull`, { method: 'POST' }),
+  mergeBranch: (projectId, source) =>
+    request(`/projects/${projectId}/git/merge`, {
       method: 'POST',
-      body: JSON.stringify({ strategy }),
+      body: JSON.stringify({ source }),
     }),
-  abortStashPop: (projectId, originalBranch) =>
-    request(`/projects/${projectId}/git/abort`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ originalBranch }),
-    }),
+  getGitLog: (projectId, { limit = 15, skip = 0 } = {}) =>
+    request(`/projects/${projectId}/git/log?limit=${limit}&skip=${skip}`),
+  getGitDiff: (projectId) => request(`/projects/${projectId}/git/diff/files`),
+  getGitFileDiff: async (projectId, filePath, { base, head } = {}) => {
+    const params = new URLSearchParams({ file: filePath });
+    if (base) params.set('base', base);
+    if (head) params.set('head', head);
+    const res = await fetch(`${API_URL}/projects/${projectId}/git/diff/file?${params}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new ApiError(err.error || 'Falha ao buscar diff do arquivo', { code: err.code, status: res.status });
+    }
+    return res.text();
+  },
+  getCommitDiff: async (projectId, sha) => {
+    if (!sha || typeof sha !== 'string') {
+      throw new ApiError('sha inválido', { code: 'INVALID_INPUT' });
+    }
+    const res = await fetch(`${API_URL}/projects/${projectId}/git/diff/commit?commit=${encodeURIComponent(sha)}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new ApiError(err.error || 'Falha ao buscar diff do commit', { code: err.code, status: res.status });
+    }
+    return res.text();
+  },
+  discardChanges: (projectId) =>
+    request(`/projects/${projectId}/git/discard`, { method: 'POST' }),
   getImageFolders: (projectId) => request(`/projects/${projectId}/image-folders`),
   createDefaultImageFolder: (projectId) =>
     request(`/projects/${projectId}/image-folders/default`, { method: 'POST' }),
@@ -183,12 +218,4 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ filePath }),
     }),
-  addFile: (projectId, filepath) =>
-    request(`/projects/${projectId}/git/add`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filepath }),
-    }),
-  finalizeStash: (projectId) =>
-    request(`/projects/${projectId}/git/finalize-stash`, { method: 'POST' }),
 };

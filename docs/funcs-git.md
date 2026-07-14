@@ -1,189 +1,163 @@
 # Funcionalidades Git
 
-O TexLab possui integração completa com Git, permitindo gerenciar versionamento diretamente pelo editor. Todas as funcionalidades Git ficam acessíveis pelo **botão Git** na barra de ferramentas superior.
+O TexLab possui integração completa com Git, permitindo gerenciar versionamento diretamente pelo editor. Todas as funcionalidades ficam acessíveis pelo **botão Git** na barra de ferramentas superior.
 
 !!! info "Pré-requisito"
-    Para usar as funcionalidades Git, o projeto precisa ter um repositório inicializado. Se ainda não tiver, veja a seção [Inicializar Git](#inicializar-git) abaixo ou a página [Clonar do GitHub](clone-github.md).
+    Para usar, o projeto precisa ter um repositório inicializado. Se ainda não tiver, veja [Inicializar Git](#inicializar-git). A autenticação usa as chaves SSH do seu sistema (veja [Configuração Git](config-git.md)).
 
 ---
 
-## Status do Repositório
+## Botão Git na toolbar
 
-Ao abrir um projeto com Git, o TexLab exibe na barra de ferramentas:
+Ao lado do nome do projeto na barra de ferramentas, há um botão **`⎇ main`** com a branch atual. À direita, dois contadores:
 
-- **Nome da branch atual** — ex: `main`, `feature/novo-sumario`
-- **Indicador de alterações pendentes** — quantidade de arquivos modificados não commitados (ex: "3 alterações")
+- **`↓N`** (pull) — quantos commits o remote tem à frente da sua branch
+- **`↑N`** (push) — quantos commits você tem à frente do remote
 
-O status é atualizado automaticamente após cada operação Git (commit, checkout, push, etc.).
+Clicar em qualquer um dos contadores dispara a operação correspondente. Se houver alterações não commitadas, um modal pergunta se você quer fazer commit antes.
 
----
+Clicar no nome da branch abre o **painel Source Control** (popover ancorado) com:
 
-## Gerenciamento de Branches
-
-Clique no botão Git na barra de ferramentas para abrir o dropdown de branches.
-
-### Listar Branches
-
-O dropdown mostra duas seções:
-
-| Seção | Descrição |
-|---|---|
-| **Branches locais** | Branches existentes no repositório local |
-| **Branches remotas** | Branches disponíveis no repositório remoto (GitHub) que ainda não existem localmente |
-
-- A branch atual aparece com um ícone de ✓ e não é clicável
-- Branches remotas exibem um badge "remota"
-
-### Criar Nova Branch
-
-1. Clique em **"Nova Branch"** (ícone de +) no dropdown
-2. Digite o nome da branch no campo que aparece
-3. Pressione **Enter** ou clique em **"Criar"**
-4. A nova branch é criada a partir da branch atual
-
-!!! note
-    Criar uma branch não muda automaticamente para ela. Use o checkout para trocar.
-
-### Trocar de Branch (Checkout)
-
-1. Clique no nome de uma branch diferente na lista
-2. **Se não houver alterações pendentes**, a troca é feita imediatamente
-3. **Se houver alterações pendentes**, um modal de aviso aparece com duas opções:
-
-| Opção | O que acontece |
-|---|---|
-| **Manter alterações** | As alterações são salvas em stash, a branch é trocada, e as alterações são restauradas. Se houver conflitos, o modal de resolução de conflitos é aberto. |
-| **Zerar branch** | Todas as alterações locais são descartadas e a branch é trocada forçadamente |
-
-### Resolução de Conflitos
-
-Se ao trocar de branch com "Manter alterações" houver conflitos entre suas alterações e a branch de destino, o **modal de conflitos** é exibido.
-
-O modal mostra uma lista de arquivos em conflito. Para resolver:
-
-1. **Clique em um arquivo** para expandi-lo
-2. O conteúdo do arquivo é carregado com os marcadores de conflito do Git:
-    ```
-    <<<<<<< HEAD
-    conteúdo da branch de destino
-    =======
-    suas alterações
-    >>>>>>> stash@{0}
-    ```
-3. **Edite o conteúdo** no textarea, removendo os marcadores e escolhendo quais alterações manter
-4. Clique em **"Resolver"** para salvar
-5. Repita para todos os arquivos em conflito
-6. Quando todos estiverem resolvidos, clique em **"Concluir"**
-
-!!! tip
-    Cada arquivo pode ter múltiplas regiões de conflito. O badge ao lado do nome do arquivo indica quantos conflitos existem.
-
----
-
-## Commitar Alterações
-
-1. Clique em **"Commitar"** no dropdown Git (ícone de check)
-2. Digite uma **mensagem descrevendo** a alteração
-3. Clique em **"Commitar"** ou pressione **Enter**
-
-O que acontece por baixo dos panos:
-
-```
-git add .
-git commit -sua mensagem
-```
-
-!!! warning "Boas práticas"
-    - Use mensagens descritivas e concisas
-    - Exemplos boas: "Adiciona sumário automático", "Corrige formatação da bibliografia"
-    - Evite mensagens vagas como "atualização" ou "fix"
-
----
-
-## Enviar para o Remoto (Push)
-
-1. Clique em **"Push"** no dropdown Git (ícone de upload)
-2. A branch atual é enviada para o repositório remoto (origin)
-
-!!! warning "Requisitos"
-    - O projeto precisa ter um repositório remoto configurado
-    - Suas credenciais SSH ou HTTPS precisam estar configuradas
-    - Veja [Configuração Git](config-git.md) para mais detalhes
-
----
-
-## Buscar Branches Remotas (Fetch)
-
-1. Clique em **"Buscar branches remotas"** no dropdown Git (ícone de refresh)
-2. O TexLab busca as atualizações do repositório remoto
-
-Isso atualiza a lista de branches disponíveis, incluindo branches que foram criadas por outros colaboradores no GitHub.
-
-!!! info "Quando usar"
-    Use o fetch antes de trocar de branch para garantir que você tenha a versão mais recente das branches remotas.
-
----
-
-## Visualizar Alterações (Diff)
-
-1. Clique em **"Ver alterações"** no dropdown Git (ícone de lupa)
-2. Um modal abre mostrando a lista de arquivos modificados
-
-Cada arquivo é分类ado por tipo de alteração:
-
-| Tipo | Cor | Descrição |
-|---|---|---|
-| **Adicionado** | Verde | Arquivo novo, ainda não commitado |
-| **Modificado** | Amarelo | Arquivo existente que foi alterado |
-| **Excluído** | Vermelho | Arquivo que foi removido |
-| **Não rastreado** | Cinza | Arquivo novo que ainda não foi adicionado ao Git |
-| **Renomeado** | Azul | Arquivo que teve o nome alterado |
-
-### Ver Diff de um Arquivo
-
-Clique em um arquivo na lista para expandir e ver as alterações específicas:
-
-- **Linhas verdes** (`+`) — conteúdo adicionado
-- **Linhas vermelhas** (`-`) — conteúdo removido
-- **Linhas cinzas** — contexto (sem alteração)
-
-Clique novamente para recolher.
+- **Header**: nome da branch + clique para abrir o submenu de branches
+- **Caixa de commit**: textarea + botão "Commitar" (Ctrl+Enter)
+- **Conflitos** (se houver): lista de arquivos com conflito — clique abre no editor
+- **Alterações**: lista de arquivos modificados — clique abre o diff
+- **Histórico**: últimos commits com hash curto, autor, tempo relativo e mensagem — clique abre o diff daquele commit
 
 ---
 
 ## Inicializar Git
 
-Se o projeto não tiver um repositório Git:
+Se o projeto não tem repositório:
 
-1. O modal **"Inicializar Git"** aparece automaticamente ou pode ser acessado pelo dropdown
-2. Opcionalmente, insira a **URL do repositório remoto** (ex: `https://github.com/usuario/repo.git`)
-3. Clique em **"Confirmar"**
+1. Clique no botão **"Git"** na toolbar
+2. No modal, preencha (opcional):
+    - **URL do remoto** — use SSH: `git@github.com:usuario/repo.git` ou `ssh://...`
+    - **Seu nome** — autor dos commits (pré-preenchido do `git config --global` se existir)
+    - **Seu e-mail** — idem
+3. Clique em **"Inicializar"**
 
-O que acontece:
+Por baixo dos panos:
 
 ```
 git init
-git remote add origin <sua-url>    # se informada
-git add .
-git commit -m "Initial commit"
+git config user.name "<seu nome>"     # se preenchido
+git config user.email "<seu email>"   # se preenchido
+# cria .gitignore LaTeX se não existir
+git remote add origin <url>           # se preenchida
+git add . && git commit -m "Initial commit"   # se há arquivos
 ```
 
-!!! tip
-    Se você já tem um repositório no GitHub, é mais rápido usar a opção **"Clonar do GitHub"** na tela inicial. Veja [Clonar do GitHub](clone-github.md).
+!!! tip "`.gitignore` LaTeX padrão"
+    É criado automaticamente (se não existir) com:
+    `*.aux *.log *.out *.toc *.synctex.gz *.fls *.fdb_latexmk *.bbl *.bcf *.run.xml *.nav *.snm`
+    O `*.pdf` **não** é ignorado — comum em projetos LaTeX acadêmicos (Overleaf, abnTeX2).
+
+---
+
+## Commitar Alterações
+
+1. Abra o painel Git (clique no nome da branch na toolbar)
+2. Digite a **mensagem do commit** na caixa
+3. Pressione **Ctrl+Enter** ou clique em **"Commitar"**
+
+Equivale a `git add . && git commit -m "<msg>"`.
+
+---
+
+## Push / Pull
+
+### Push
+Clique no contador **`↑N`** ao lado do nome da branch, ou abra o painel e clique em "Push" no submenu de branches.
+
+### Pull
+Clique no contador **`↓N`** ou abra "Pull" no submenu.
+
+!!! warning "Working tree sujo"
+    Se houver alterações não commitadas, o TexLab pergunta se você quer fazer commit antes. **Não há auto-resolve**: você precisa resolver tudo manualmente (veja [Conflitos](#conflitos)).
+
+---
+
+## Diff
+
+### Diff de arquivo
+- Clique em um arquivo na lista **"Alterações"** do painel — abre o **Monaco Diff Editor** comparando o arquivo no working tree vs `HEAD`
+- Arquivos não rastreados (novos) mostram o conteúdo inteiro como "added"
+
+### Diff de commit
+- Clique em um item do **Histórico** — abre o Monaco Diff Editor mostrando aquele commit
+
+O Monaco Diff Editor é o mesmo do VS Code: side-by-side, com destaque de adições/remoções.
+
+---
+
+## Branches
+
+Abra o painel Git e clique no nome da branch para entrar no **submenu de branches**.
+
+- **Listar**: locais + remotas (com badge "remota" para as que não existem localmente)
+- **Criar**: clique em "Nova branch" e digite o nome
+- **Trocar (checkout)**: clique em uma branch
+    - Se houver alterações não commitadas, o checkout é **recusado** com erro `DIRTY_WORKING_TREE` — faça commit ou descarte antes
+    - Se houver conflitos de merge não resolvidos, o checkout também é recusado
+- **Fetch**: clique em "Buscar" para atualizar a lista de branches remotas
+
+---
+
+## Merge
+
+1. No submenu de branches, clique em **"Merge"**
+2. Digite o nome da branch de origem (ex: `feature-x` ou `origin/feature-x`)
+3. Clique em "Mesclar"
+
+- **Sem conflito**: cria commit de merge automaticamente
+- **Com conflito**: o merge para e os arquivos vão para o estado `unmerged`. Veja [Conflitos](#conflitos).
+
+---
+
+## Conflitos
+
+O TexLab **não resolve conflitos automaticamente**. O fluxo é:
+
+1. Após `pull` ou `merge` com conflito, o backend retorna `409` com `conflictFiles: [...]`
+2. O painel Git mostra uma seção **"Conflitos (N)"** no topo
+3. **Clique em um arquivo** da lista de conflitos — o arquivo abre no editor principal com os marcadores `<<<<<<<` / `=======` / `>>>>>>>` destacados pelo mesmo padrão de marcadores usado pelo LanguageTool
+4. **Edite o arquivo** no editor principal: escolha uma versão ou combine as duas; remova os marcadores
+5. À medida que você apaga os marcadores, o destaque some automaticamente
+6. Quando **todos** os arquivos conflitantes perdem os marcadores, a seção "Conflitos" do painel some
+7. **Faça commit** da resolução — o commit substitui o estado de merge
+
+O estado do working tree permanece sujo durante todo o processo até você commitar.
+
+---
+
+## Erros amigáveis
+
+Mensagens comuns do Git são traduzidas para PT-BR com orientação:
+
+| Mensagem do Git | O que o TexLab mostra |
+|---|---|
+| `Permission denied (publickey)` | "Falha de autenticação SSH. Verifique se sua chave privada está em `~/.ssh/` com permissão 600 e se foi adicionada ao repositório remoto. Teste com `ssh -T git@github.com`." |
+| `Repository not found` | "Repositório não encontrado. Verifique se a URL está correta." |
+| `Please tell me who you are` | "Configure seu nome e e-mail antes de commitar. Preencha os campos no modal de inicialização, ou rode `git config --global user.name/email`." |
+| `failed to push some refs` | "Push rejeitado: o remote tem commits que você não tem localmente. Faça pull primeiro." |
+| `Your local changes would be overwritten` | "Suas alterações locais seriam sobrescritas. Faça commit ou descarte antes de continuar." |
+| `nothing to commit` | "Nada para commitar." |
+| URL inválida (não-SSH) | "URL inválida. Use SSH (ex: `git@github.com:usuario/repo.git`)." |
 
 ---
 
 ## Resumo Rápido
 
-| Funcionalidade | Botão | O que faz |
-|---|---|---|
-| Ver status | — | Exibe branch atual e alterações pendentes |
-| Listar branches | Dropdown Git | Mostra branches locais e remotas |
-| Criar branch | + no dropdown | Cria nova branch a partir da atual |
-| Trocar branch | Clique na branch | Faz checkout (com ou sem stash) |
-| Commitar | Check no dropdown | `git add .` + `git commit` |
-| Push | Upload no dropdown | `git push -u origin <branch>` |
-| Fetch | Refresh no dropdown | `git fetch origin` |
-| Ver diff | Lupa no dropdown | Lista de arquivos alterados com diff inline |
-| Resolver conflitos | Automático | Modal com textarea para edição manual |
-| Inicializar Git | Modal de init | `git init` + commit inicial |
+| Ação | Como |
+|---|---|
+| Inicializar Git | Botão "Git" na toolbar → modal |
+| Commit | Painel Git → textarea + "Commitar" (Ctrl+Enter) |
+| Push | Contador `↑N` na toolbar OU "Push" no submenu |
+| Pull | Contador `↓N` na toolbar OU "Pull" no submenu |
+| Merge | Submenu de branches → "Merge" |
+| Trocar branch | Submenu de branches → clique na branch |
+| Criar branch | Submenu de branches → "Nova branch" |
+| Ver diff de arquivo | Painel → "Alterações" → clique no arquivo |
+| Ver diff de commit | Painel → "Histórico" → clique no commit |
+| Resolver conflito | Painel → "Conflitos" → clique no arquivo → editar no editor |
