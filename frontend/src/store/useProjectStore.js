@@ -15,10 +15,14 @@ const useProjectStore = create((set, get) => ({
   error: null,
   sidebarCollapsed: false,
   gitStatus: null,
-  branches: [],
+  branches: null,
+  gitLog: [],
+  gitLogTotal: 0,
+  gitLogPage: 1,
   gitDiff: [],
   expandedFiles: {},
   fileDiffs: {},
+  gitConflictFiles: [],
   editorMarkers: [],
   realtimeCheckEnabled: true,
   ltexStatus: null,
@@ -44,7 +48,7 @@ const useProjectStore = create((set, get) => ({
       set({ currentProject: null, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0 });
       return;
     }
-    set({ loading: true, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0 });
+    set({ loading: true, currentFile: null, fileContents: {}, pdfUrl: null, compileResult: null, pageNumber: 1, pdfPageCount: 0, gitStatus: null, branches: null, gitLog: [], gitLogTotal: 0, gitLogPage: 1, gitConflictFiles: [] });
     try {
       const project = await api.getProject(id);
       const texFiles = [];
@@ -193,21 +197,30 @@ const useProjectStore = create((set, get) => ({
     }
   },
 
-  initGit: async (remoteUrl) => {
+  initGit: async ({ remoteUrl, userName, userEmail } = {}) => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
-      const project = await api.initGit(currentProject.id, remoteUrl);
-      set({ currentProject: project });
+      await api.initGit(currentProject.id, { remoteUrl, userName, userEmail });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
+    }
+  },
+
+  getGitConfig: async () => {
+    const { currentProject } = get();
+    if (!currentProject) return { userName: null, userEmail: null };
+    try {
+      return await api.getGitConfig(currentProject.id);
+    } catch {
+      return { userName: null, userEmail: null };
     }
   },
 
   fetchGitStatus: async () => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return null;
     try {
       const status = await api.getGitStatus(currentProject.id);
       set({ gitStatus: status });
@@ -220,7 +233,7 @@ const useProjectStore = create((set, get) => ({
 
   fetchBranches: async () => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return [];
     try {
       const branches = await api.listBranches(currentProject.id);
       set({ branches });
@@ -231,41 +244,54 @@ const useProjectStore = create((set, get) => ({
     }
   },
 
+  fetchGitLog: async (page = 1, pageSize = 15) => {
+    const { currentProject } = get();
+    if (!currentProject) return { commits: [], total: 0 };
+    const skip = (page - 1) * pageSize;
+    try {
+      const { commits, total } = await api.getGitLog(currentProject.id, { limit: pageSize, skip });
+      set({ gitLog: commits, gitLogTotal: total, gitLogPage: page });
+      return { commits, total };
+    } catch {
+      set({ gitLog: [], gitLogTotal: 0 });
+      return { commits: [], total: 0 };
+    }
+  },
+
   fetchRemote: async () => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
-      const branches = await api.fetchRemote(currentProject.id);
-      set({ branches });
+      await api.fetchRemote(currentProject.id);
+      await get().fetchBranches();
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
     }
   },
 
   createBranch: async (name) => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
       const branches = await api.createBranch(currentProject.id, name);
       set({ branches });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
     }
   },
 
-  checkoutBranch: async (name, keepChanges = true) => {
+  checkoutBranch: async (name) => {
     const { currentProject, currentFile } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
       set({ loading: true });
-      const result = await api.checkoutBranch(currentProject.id, name, keepChanges);
-      const { stashConflict, conflicts, originalBranch, ...status } = result;
-      set({ gitStatus: status });
+      await api.checkoutBranch(currentProject.id, name);
+      const status = await api.getGitStatus(currentProject.id);
+      set({ gitStatus: status, fileContents: {}, pdfUrl: null, compileResult: null, gitConflictFiles: [] });
       const branches = await api.listBranches(currentProject.id);
       set({ branches });
-      set({ fileContents: {}, pdfUrl: null, compileResult: null });
       await get().refreshFileTree();
       if (currentFile) {
         try {
@@ -276,77 +302,72 @@ const useProjectStore = create((set, get) => ({
         }
       }
       set({ loading: false });
-      return { success: true, stashConflict, conflicts, originalBranch };
+      return { success: true };
     } catch (error) {
       set({ loading: false });
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
     }
-  },
-
-  resolveConflicts: async (strategy) => {
-    const { currentProject } = get();
-    if (!currentProject) return;
-    try {
-      const status = await api.resolveConflicts(currentProject.id, strategy);
-      set({ gitStatus: status });
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
-
-  abortStashPop: async (originalBranch) => {
-    const { currentProject } = get();
-    if (!currentProject) return;
-    try {
-      const status = await api.abortStashPop(currentProject.id, originalBranch);
-      set({ gitStatus: status });
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
-
-  addFile: async (filepath) => {
-    const { currentProject } = get();
-    if (!currentProject) return;
-    await api.addFile(currentProject.id, filepath);
-  },
-
-  finalizeStash: async () => {
-    const { currentProject } = get();
-    if (!currentProject) return;
-    const status = await api.finalizeStash(currentProject.id);
-    set({ gitStatus: status });
-    return status;
   },
 
   commitAll: async (message) => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
-      const status = await api.commitAll(currentProject.id, message);
-      set({ gitStatus: status });
+      await api.commitAll(currentProject.id, message);
+      await get().fetchGitStatus();
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
     }
   },
 
   pushBranch: async () => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
     try {
       await api.pushBranch(currentProject.id);
+      await get().fetchGitStatus();
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, code: error.code };
+    }
+  },
+
+  pullBranch: async () => {
+    const { currentProject } = get();
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
+    try {
+      await api.pullBranch(currentProject.id);
+      await get().fetchGitStatus();
+      return { success: true };
+    } catch (error) {
+      const conflictFiles = error.conflictFiles || [];
+      if (conflictFiles.length) {
+        set({ gitConflictFiles: conflictFiles });
+      }
+      return { success: false, error: error.message, code: error.code, conflictFiles };
+    }
+  },
+
+  mergeBranch: async (source) => {
+    const { currentProject } = get();
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
+    try {
+      await api.mergeBranch(currentProject.id, source);
+      await get().fetchGitStatus();
+      return { success: true };
+    } catch (error) {
+      const conflictFiles = error.conflictFiles || [];
+      if (conflictFiles.length) {
+        set({ gitConflictFiles: conflictFiles });
+      }
+      return { success: false, error: error.message, code: error.code, conflictFiles };
     }
   },
 
   fetchGitDiff: async () => {
     const { currentProject } = get();
-    if (!currentProject) return;
+    if (!currentProject) return [];
     try {
       const files = await api.getGitDiff(currentProject.id);
       set({ gitDiff: files, expandedFiles: {}, fileDiffs: {} });
@@ -361,16 +382,60 @@ const useProjectStore = create((set, get) => ({
     expandedFiles: { ...state.expandedFiles, [filePath]: !state.expandedFiles[filePath] },
   })),
 
-  fetchFileDiff: async (filePath) => {
+  fetchFileDiff: async (filePath, opts = {}) => {
+    const { currentProject } = get();
+    if (!currentProject) return '';
+    try {
+      const diff = await api.getGitFileDiff(currentProject.id, filePath, opts);
+      set({ fileDiffs: { ...get().fileDiffs, [filePath]: diff } });
+      return diff;
+    } catch (err) {
+      set({ fileDiffs: { ...get().fileDiffs, [filePath]: '' } });
+      throw err;
+    }
+  },
+
+  fetchCommitDiff: async (sha) => {
+    const { currentProject } = get();
+    if (!currentProject) throw new Error('Nenhum projeto aberto');
+    return await api.getCommitDiff(currentProject.id, sha);
+  },
+
+  discardChanges: async () => {
+    const { currentProject, currentFile, fileContents } = get();
+    if (!currentProject) return { success: false, error: 'Nenhum projeto aberto' };
+    try {
+      const status = await api.discardChanges(currentProject.id);
+      set({ gitStatus: status });
+      await get().fetchGitDiff();
+      await get().refreshFileTree();
+      if (currentFile) {
+        try {
+          const content = await api.readFile(currentProject.id, currentFile);
+          set({ fileContents: { ...fileContents, [currentFile]: content } });
+        } catch {
+          set({ currentFile: null });
+        }
+      }
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message, code: error.code };
+    }
+  },
+
+  openConflictFile: async (filePath) => {
     const { currentProject } = get();
     if (!currentProject) return;
     try {
-      const diff = await api.getGitFileDiff(currentProject.id, filePath);
-      set({ fileDiffs: { ...get().fileDiffs, [filePath]: diff } });
-    } catch {
-      set({ fileDiffs: { ...get().fileDiffs, [filePath]: '' } });
-    }
+      const content = await api.readFile(currentProject.id, filePath);
+      set({
+        fileContents: { ...get().fileContents, [filePath]: content },
+        currentFile: filePath,
+      });
+    } catch {}
   },
+
+  clearGitConflicts: () => set({ gitConflictFiles: [] }),
 
   deleteProject: async (id) => {
     try {

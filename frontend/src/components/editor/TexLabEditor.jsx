@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react';
 import { Loader2, SpellCheck, SpellCheck2 } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import { useRealtimeSpellCheck } from '../../hooks/useRealtimeSpellCheck.js';
+import { useGitConflictMarkers } from '../../hooks/useGitConflictMarkers.js';
 import {
   filterCommands,
   findCommand,
@@ -28,7 +29,7 @@ function offsetToLineCol(text, offset) {
   return { line, column: col };
 }
 
-function toMonacoMarkers(markers, text) {
+function toMonacoMarkers(markers, text, source) {
   if (!markers || markers.length === 0) return [];
   return markers.map((m) => {
     const start = offsetToLineCol(text, m.startOffset);
@@ -45,7 +46,7 @@ function toMonacoMarkers(markers, text) {
       startColumn: start.column,
       endLineNumber: end.line,
       endColumn: end.column,
-      source: 'ltex',
+      source,
       tags: m.suggestions?.length > 0 ? [1] : [],
     };
   });
@@ -65,6 +66,7 @@ export default function TexLabEditor() {
   const [activeForm, setActiveForm] = useState(null);
 
   useRealtimeSpellCheck({ currentFile, content, enabled: realtimeCheckEnabled });
+  useGitConflictMarkers();
 
   const handleChange = (value) => {
     updateFileContent(currentFile, value);
@@ -91,8 +93,11 @@ export default function TexLabEditor() {
     const model = editor.getModel();
     if (!model) return;
 
-    const markers = toMonacoMarkers(editorMarkers, content);
-    monaco.editor.setModelMarkers(model, 'ltex', markers);
+    const ltexMarkers = (editorMarkers || []).filter((m) => m.source === 'ltex' || !m.source);
+    const gitMarkers = (editorMarkers || []).filter((m) => m.source === 'git');
+
+    monaco.editor.setModelMarkers(model, 'ltex', toMonacoMarkers(ltexMarkers, content, 'ltex'));
+    monaco.editor.setModelMarkers(model, 'git', toMonacoMarkers(gitMarkers, content, 'git'));
   }, [editorMarkers, content, currentFile]);
 
   useEffect(() => {

@@ -24,7 +24,7 @@ export default function CreateProjectModal({ open, onClose }) {
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [selectedCount, setSelectedCount] = useState(0);
   const [gitUrl, setGitUrl] = useState('');
-  const [keepGit, setKeepGit] = useState(false);
+  const [keepGit, setKeepGit] = useState(true);
   const [loading, setLoading] = useState(false);
   const folderInputRef = useRef(null);
   const zipInputRef = useRef(null);

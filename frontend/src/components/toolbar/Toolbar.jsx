@@ -1,49 +1,44 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft, Download, Github } from 'lucide-react';
+import { Play, Save, Sparkles, Loader2, ChevronDown, ChevronUp, X, Check, Pencil, ArrowLeft, Download, Github, ArrowUp, ArrowDown } from 'lucide-react';
 import useProjectStore from '../../store/useProjectStore.js';
 import CompileErrorExplainer from '../ai/CompileErrorExplainer.jsx';
 import Toast from '../ui/Toast.jsx';
 import GitInitModal from '../ui/GitInitModal.jsx';
-import GitBranchDropdown from '../ui/GitBranchDropdown.jsx';
-import GitCommitModal from '../ui/GitCommitModal.jsx';
+import GitPanel from '../ui/GitPanel.jsx';
 import GitDiffModal from '../ui/GitDiffModal.jsx';
-import GitCheckoutWarningModal from '../ui/GitCheckoutWarningModal.jsx';
-import GitConflictModal from '../ui/GitConflictModal.jsx';
+import ConfirmModal from '../ui/ConfirmModal.jsx';
 
 export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
   const navigate = useNavigate();
   const {
     saveAndCompile, compile, compiling, currentProject, currentFile, fileContents,
-    compileResult, updateProject, pdfUrl, initGit, updateFileContent,
-    gitStatus, branches, fetchGitStatus, fetchBranches, fetchGitDiff, gitDiff,
-    createBranch, checkoutBranch, commitAll, pushBranch, abortStashPop, fetchRemote,
-    saveFile, addFile, finalizeStash,
+    compileResult, updateProject, pdfUrl, gitStatus, initGit,
+    fetchGitStatus, fetchBranches, fetchGitLog, fetchGitDiff, fetchRemote,
+    commitAll, pullBranch, pushBranch, clearGitConflicts,
   } = useProjectStore();
   const [showLog, setShowLog] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState('');
-  const [gitLoading, setGitLoading] = useState(false);
   const [toast, setToast] = useState(null);
-  const [showGitModal, setShowGitModal] = useState(false);
-  const [showGitDropdown, setShowGitDropdown] = useState(false);
-  const [showCommitModal, setShowCommitModal] = useState(false);
-  const [showDiffModal, setShowDiffModal] = useState(false);
-  const [showCheckoutWarning, setShowCheckoutWarning] = useState(false);
-  const [checkoutTargetBranch, setCheckoutTargetBranch] = useState(null);
-  const [showConflictModal, setShowConflictModal] = useState(false);
-  const [conflictFiles, setConflictFiles] = useState([]);
-  const [originalBranch, setOriginalBranch] = useState(null);
+  const [showInitModal, setShowInitModal] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
+  const [diffState, setDiffState] = useState({ open: false, mode: null, file: null, commit: null });
+  const [confirmDirty, setConfirmDirty] = useState(null);
   const gitBtnRef = useRef(null);
 
   const hasGit = currentProject && gitStatus;
   const compileError = compileResult && !compileResult.success;
 
   useEffect(() => {
-    if (currentProject) {
-      fetchGitStatus();
-      fetchBranches();
-    }
+    if (!currentProject) return;
+    Promise.all([
+      fetchGitStatus(),
+      fetchBranches(),
+      fetchGitLog(5),
+      fetchGitDiff(),
+      fetchRemote(),
+    ]);
   }, [currentProject?.id]);
 
   useEffect(() => {
@@ -83,123 +78,84 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
     setRenameValue('');
   };
 
-  const handleInitGit = async (remoteUrl) => {
-    setGitLoading(true);
-    try {
-      const result = await initGit(remoteUrl);
-      if (result.success) {
-        setToast({ message: 'Repositório Git inicializado com sucesso!', type: 'success' });
-        await fetchGitStatus();
-        await fetchBranches();
-      } else {
-        setToast({ message: result.error || 'Erro ao inicializar Git', type: 'error' });
-      }
-    } catch (err) {
-      setToast({ message: err.message || 'Erro ao inicializar Git', type: 'error' });
+  const handleInit = async ({ remoteUrl, userName, userEmail }) => {
+    const res = await initGit({ remoteUrl, userName, userEmail });
+    if (res.success) {
+      setShowInitModal(false);
+      setToast({ message: 'Repositório Git inicializado!', type: 'success' });
+      await fetchGitStatus();
+      await fetchBranches();
+      await fetchGitLog(5);
+      await fetchGitDiff();
     }
-    setGitLoading(false);
-    setShowGitModal(false);
+    return res;
   };
 
   const handleGitBtnClick = () => {
     if (!hasGit) {
-      setShowGitModal(true);
+      setShowInitModal(true);
     } else {
-      setShowGitDropdown(!showGitDropdown);
+      setShowPanel((v) => !v);
     }
   };
 
-  const handleCheckout = async (name) => {
-    setShowGitDropdown(false);
-    const branchExists = branches.some(b => b.name === name && !b.current);
-    if (gitStatus?.dirty && branchExists) {
-      await fetchGitDiff();
-      setCheckoutTargetBranch(name);
-      setShowCheckoutWarning(true);
+  const handlePullClick = async () => {
+    if (!hasGit) return;
+    if (gitStatus.dirty) {
+      setConfirmDirty({ op: 'pull' });
       return;
     }
-    await doCheckout(name, true);
-  };
-
-  const doCheckout = async (name, keepChanges = true) => {
-    const result = await checkoutBranch(name, keepChanges);
-    if (result.success) {
-      if (result.stashConflict) {
-        setConflictFiles(result.conflicts || []);
-        setOriginalBranch(result.originalBranch || null);
-        setShowConflictModal(true);
-      } else {
-        setToast({ message: `Branch alterada para "${name}"`, type: 'success' });
-      }
+    const res = await pullBranch();
+    if (res.success) {
+      setToast({ message: 'Pull realizado com sucesso', type: 'success' });
+      await fetchGitStatus();
+      await fetchGitLog(5);
+      await fetchGitDiff();
     } else {
-      setToast({ message: result.error || 'Erro ao trocar branch', type: 'error' });
+      setToast({ message: res.error || 'Erro no pull', type: 'error' });
     }
   };
 
-  const handleConfirmCheckout = async (keepChanges) => {
-    setShowCheckoutWarning(false);
-    await doCheckout(checkoutTargetBranch, keepChanges);
-  };
-
-  const handleResolveFile = async (filepath, content) => {
-    await saveFile(filepath, content);
-    await addFile(filepath);
-  };
-
-  const handleFinalizeConflicts = async () => {
-    await finalizeStash();
-    setShowConflictModal(false);
-    setOriginalBranch(null);
-    setToast({ message: 'Conflitos resolvidos com sucesso!', type: 'success' });
-  };
-
-  const handleCreateBranch = async (name) => {
-    const result = await createBranch(name);
-    if (result.success) {
-      setToast({ message: `Branch "${name}" criada`, type: 'success' });
+  const handlePushClick = async () => {
+    if (!hasGit) return;
+    if (gitStatus.dirty) {
+      setConfirmDirty({ op: 'push' });
+      return;
+    }
+    const res = await pushBranch();
+    if (res.success) {
+      setToast({ message: 'Push realizado com sucesso', type: 'success' });
+      await fetchGitStatus();
+      await fetchGitLog(5);
     } else {
-      setToast({ message: result.error || 'Erro ao criar branch', type: 'error' });
+      setToast({ message: res.error || 'Erro no push', type: 'error' });
     }
   };
 
-  const handleCommit = async (message) => {
-    const result = await commitAll(message);
-    if (result.success) {
-      setToast({ message: 'Commit realizado com sucesso!', type: 'success' });
-    } else {
-      setToast({ message: result.error || 'Erro ao commitar', type: 'error' });
+  const handleConfirmDirty = async () => {
+    const op = confirmDirty?.op;
+    setConfirmDirty(null);
+    if (!op) return;
+    const message = window.prompt(`Mensagem do commit antes de ${op === 'pull' ? 'pull' : 'push'}:`);
+    if (!message || !message.trim()) {
+      setToast({ message: 'Operação cancelada', type: 'error' });
+      return;
     }
-    setShowCommitModal(false);
-  };
-
-  const handleCommitFromDropdown = async () => {
-    setShowGitDropdown(false);
-    setShowCommitModal(true);
-  };
-
-  const handlePush = async () => {
-    const result = await pushBranch();
-    if (result.success) {
-      setToast({ message: 'Push realizado com sucesso!', type: 'success' });
-    } else {
-      setToast({ message: result.error || 'Erro ao fazer push', type: 'error' });
+    const res = await commitAll(message.trim());
+    if (!res.success) {
+      setToast({ message: res.error || 'Erro no commit', type: 'error' });
+      return;
     }
-    setShowGitDropdown(false);
+    if (op === 'pull') handlePullClick();
+    else if (op === 'push') handlePushClick();
   };
 
-  const handleFetch = async () => {
-    const result = await fetchRemote();
-    if (result?.success) {
-      setToast({ message: 'Branchs atualizadas', type: 'success' });
-    } else {
-      setToast({ message: result?.error || 'Erro ao buscar branches', type: 'error' });
-    }
+  const handleDiffFile = (file) => {
+    setDiffState({ open: true, mode: 'file', file, commit: null });
   };
 
-  const handleViewDiff = async () => {
-    setShowGitDropdown(false);
-    await fetchGitDiff();
-    setShowDiffModal(true);
+  const handleDiffCommit = (commit) => {
+    setDiffState({ open: true, mode: 'commit', file: null, commit });
   };
 
   return (
@@ -269,26 +225,58 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
             <div className="toolbar-git-wrapper">
               <button
                 ref={gitBtnRef}
-                className={`toolbar-btn ${hasGit ? 'has-git' : ''}`}
+                className={`toolbar-btn ${hasGit ? 'has-git' : ''} ${showPanel ? 'active' : ''}`}
                 onClick={handleGitBtnClick}
-                disabled={gitLoading}
                 title={hasGit ? `Branch: ${gitStatus.branch}` : 'Inicializar Git'}
               >
-                {gitLoading ? <Loader2 size={16} className="spin" /> : <Github size={16} />}
-                {hasGit ? gitStatus.branch : 'Git'}
+                <Github size={16} />
+                {hasGit ? (
+                  <span className="toolbar-git-branch">{gitStatus.branch || '(sem branch)'}</span>
+                ) : (
+                  <span>Git</span>
+                )}
               </button>
-              <GitBranchDropdown
-                open={showGitDropdown}
+              {hasGit && (
+                <div className="toolbar-git-counters">
+                  <button
+                    className="toolbar-git-counter"
+                    onClick={handlePullClick}
+                    disabled={gitStatus.behind === 0 || gitStatus.dirty}
+                    title={
+                      gitStatus.dirty
+                        ? 'Faça commit das alterações antes de pull'
+                        : gitStatus.behind === 0
+                          ? 'Sem commits à frente do remote'
+                          : `${gitStatus.behind} commit(s) atrás do remoto`
+                    }
+                  >
+                    <ArrowDown size={12} />
+                    <span>{gitStatus.behind}</span>
+                  </button>
+                  <button
+                    className="toolbar-git-counter"
+                    onClick={handlePushClick}
+                    disabled={gitStatus.ahead === 0 || gitStatus.dirty}
+                    title={
+                      gitStatus.dirty
+                        ? 'Faça commit das alterações antes de push'
+                        : gitStatus.ahead === 0
+                          ? 'Sem commits à frente'
+                          : `${gitStatus.ahead} commit(s) à frente do remoto`
+                    }
+                  >
+                    <ArrowUp size={12} />
+                    <span>{gitStatus.ahead}</span>
+                  </button>
+                </div>
+              )}
+              <GitPanel
+                open={showPanel}
                 anchorRef={gitBtnRef}
-                branches={branches}
-                gitStatus={gitStatus}
-                onCheckout={handleCheckout}
-                onCreateBranch={handleCreateBranch}
-                onFetch={handleFetch}
-                onCommit={handleCommitFromDropdown}
-                onPush={handlePush}
-                onViewDiff={handleViewDiff}
-                onClose={() => setShowGitDropdown(false)}
+                onClose={() => setShowPanel(false)}
+                onDiffFile={handleDiffFile}
+                onDiffCommit={handleDiffCommit}
+                onToast={(message, type) => setToast({ message, type })}
               />
             </div>
           )}
@@ -324,7 +312,7 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
                 log={compileResult.log}
                 fileContents={fileContents}
                 currentFile={currentFile}
-                updateFileContent={updateFileContent}
+                updateFileContent={useProjectStore.getState().updateFileContent}
               />
               <button className="icon-btn small" onClick={() => setShowLog(false)}>
                 <X size={14} />
@@ -341,36 +329,26 @@ export default function Toolbar({ onToggleAi, aiOpen, saveStatus }) {
         onClose={() => setToast(null)}
       />
       <GitInitModal
-        open={showGitModal}
-        onConfirm={handleInitGit}
-        onCancel={() => setShowGitModal(false)}
-      />
-      <GitCommitModal
-        open={showCommitModal}
-        gitStatus={gitStatus}
-        onConfirm={handleCommit}
-        onCancel={() => setShowCommitModal(false)}
+        open={showInitModal}
+        onConfirm={handleInit}
+        onCancel={() => setShowInitModal(false)}
       />
       <GitDiffModal
-        open={showDiffModal}
-        files={gitDiff}
-        branchName={gitStatus?.branch || ''}
-        onClose={() => setShowDiffModal(false)}
+        open={diffState.open}
+        mode={diffState.mode}
+        file={diffState.file}
+        commit={diffState.commit}
+        onClose={() => setDiffState({ open: false, mode: null, file: null, commit: null })}
       />
-      <GitCheckoutWarningModal
-        open={showCheckoutWarning}
-        files={gitDiff}
-        branchName={checkoutTargetBranch || ''}
-        onConfirm={handleConfirmCheckout}
-        onCancel={() => setShowCheckoutWarning(false)}
-      />
-      <GitConflictModal
-        open={showConflictModal}
-        files={conflictFiles}
-        branchName={checkoutTargetBranch || ''}
-        onResolveFile={handleResolveFile}
-        onFinalize={handleFinalizeConflicts}
-        onClose={() => setShowConflictModal(false)}
+      <ConfirmModal
+        open={!!confirmDirty}
+        message={
+          confirmDirty?.op === 'pull'
+            ? 'Você tem alterações não commitadas. Quer fazer um commit antes do pull?'
+            : 'Você tem alterações não commitadas. Quer fazer um commit antes do push?'
+        }
+        onConfirm={handleConfirmDirty}
+        onCancel={() => setConfirmDirty(null)}
       />
     </header>
   );
